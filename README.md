@@ -4,9 +4,20 @@
 [![npm package][npm-badge]][npm]
 [![Coveralls][coveralls-badge]][coveralls]
 
-Note: This is in active develop mode and not ready for production.  
+Note: This is in active develop mode and not ready for production.
 
-#### Example usage:
+### Instructions
+Import the root component from `react-iiif-media-player`, and place somewhere in your React application.  The imported component will look for a `div` with the following attributes on which to mount itself to, rendering a MediaelementJS player (http://www.mediaelementjs.com/) and any defined IIIF `structures []` navigation links found in the IIIF manifest.
+
+`<div id="avln-iiif-player-root" data-manifest-url="https://mallorn.dlib.indiana.edu/lunchroom_manners.manifest.json"></div>`
+
+`data-manifest-url` should be a uri for a public IIIF manifest 3.0 json file.
+
+#### Sample IIIF 3.0 spec manifest
+https://mallorn.dlib.indiana.edu/lunchroom_manners.manifest.json
+
+
+### Example usage:
 ```
 import React, { Component } from 'react';
 import { render } from 'react-dom';
@@ -25,6 +36,11 @@ class Demo extends Component {
 
 render(<Demo />, document.querySelector('#demo'));
 ```
+
+### IIIF Manifest Testing
+To live test IIIF 3.0 spec manifests, the following Github branch is set up for testing:
+https://avalonmediasystem.github.io/avalon-iiif-player/
+
 
 [build-badge]: https://img.shields.io/travis/user/repo/master.png?style=flat-square
 [build]: https://travis-ci.org/user/repo
