@@ -4,7 +4,7 @@
 [![npm package][npm-badge]][npm]
 [![Coveralls][coveralls-badge]][coveralls]
 
-Describe react-iiif-media-player here.
+[TESTING MODE]. This eventually will provide a React component which can be imported in your React application which renders a MediaElementJS media player from a IIIF 3.0 spec manifest.
 
 [build-badge]: https://img.shields.io/travis/user/repo/master.png?style=flat-square
 [build]: https://travis-ci.org/user/repo

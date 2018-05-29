@@ -1,7 +1,7 @@
 {
   "name": "react-iiif-media-player",
   "version": "1.0.0",
-  "description": "react-iiif-media-player React component",
+  "description": "react-iiif-media-player React component for rendering a media player for a IIIF 3.0 spec manifest",
   "main": "lib/index.js",
   "module": "es/index.js",
   "files": [
@@ -23,15 +23,27 @@
     "react": "16.x"
   },
   "devDependencies": {
+    "mediaelement": "^4.2.9",
     "nwb": "0.21.x",
+    "prop-types": "^15.6.1",
     "react": "^16.4.0",
-    "react-dom": "^16.4.0"
+    "react-dom": "^16.4.0",
+    "react-redux": "^5.0.7",
+    "react-scripts": "1.1.4",
+    "redux": "^4.0.0",
+    "redux-thunk": "^2.2.0"
   },
-  "author": "",
+  "author": "Adam Arling <aarling@gmail.com>",
   "homepage": "",
-  "license": "MIT",
-  "repository": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avalonmediasystem/avalon-iiif-player.git"
+  },
   "keywords": [
+    "IIIF",
+    "media",
+    "player",
     "react-component"
   ]
 }
