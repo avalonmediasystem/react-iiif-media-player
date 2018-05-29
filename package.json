@@ -18,12 +18,13 @@
     "test:coverage": "nwb test-react --coverage",
     "test:watch": "nwb test-react --server"
   },
-  "dependencies": {},
+  "dependencies": {
+    "mediaelement": "^4.2.9"
+  },
   "peerDependencies": {
     "react": "16.x"
   },
   "devDependencies": {
-    "mediaelement": "^4.2.9",
     "nwb": "0.21.x",
     "prop-types": "^15.6.1",
     "react": "^16.4.0",
