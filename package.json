@@ -36,7 +36,7 @@
   },
   "author": "Adam Arling <aarling@gmail.com>",
   "homepage": "",
-  "license": "ISC",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/avalonmediasystem/avalon-iiif-player.git"
