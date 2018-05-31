@@ -1,6 +1,6 @@
 {
   "name": "react-iiif-media-player",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "react-iiif-media-player React component for rendering a media player for a IIIF 3.0 spec manifest",
   "main": "lib/index.js",
   "module": "es/index.js",
