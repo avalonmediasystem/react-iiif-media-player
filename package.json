@@ -21,7 +21,6 @@
   "dependencies": {
     "mediaelement": "^4.2.9",
     "react-redux": "^5.0.7",
-    "react-scripts": "1.1.4",
     "redux": "^4.0.0",
     "redux-thunk": "^2.2.0"
   },
