@@ -8,7 +8,7 @@ class Demo extends Component {
     return (
       <div>
         <h1>react-iiif-media-player Demo</h1>
-        <div id="avln-iiif-player-root" data-manifest-url="https://fluorine.dlib.indiana.edu/concern/generic_works/pn89d6567/manifest"></div>
+        <div id="avln-iiif-player-root" data-manifest-url="https://mallorn.dlib.indiana.edu/lunchroom_manners.manifest.json"></div>
         <IIIFPlayer />
       </div>
     );
