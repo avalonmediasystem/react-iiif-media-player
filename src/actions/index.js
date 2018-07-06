@@ -36,6 +36,13 @@ export function navItemClick(url) {
   };
 }
 
+export function updateExternalConfig(config) {
+  return {
+    type: types.UPDATE_EXTERNAL_CONFIG,
+    payload: config
+  };
+}
+
 export function getRemoteManifest(url) {
   return dispatch => {
     dispatch(fetchManifestRequest(url));

@@ -4,7 +4,7 @@ import Root from './Root';
 export default class extends Component {
   render() {
     return (
-      <Root />
+      <Root config={this.props.config} />
     );
   }
 }

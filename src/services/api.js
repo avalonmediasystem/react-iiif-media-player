@@ -1,7 +1,11 @@
 import mockManifest from '../json/lunchroom-manners';
+// Import the redux store, which is holding external configuration we might need
+import { store } from '../Root';
 
 export function fetchManifest(url) {
-  return fetch(url)
+  const externalConfig = getExternalConfig();
+
+  return fetch(url, externalConfig)
     .then(response => {
       if (response.ok) {
         return response.json();
@@ -22,4 +26,17 @@ export function fetchLocalManifest() {
       resolve(mockManifest);
     }, 500);
   });
+}
+
+
+function getExternalConfig() {
+  const currentState = store.getState();
+  const { fetch } = currentState.externalConfig;
+  let obj = {};
+
+  if (fetch && fetch.options) {
+    Object.assign(obj, fetch.options);
+  }
+
+  return obj;
 }
