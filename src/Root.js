@@ -5,14 +5,12 @@ import thunk from 'redux-thunk';
 import rootReducer from './reducers';
 import App from './App';
 
-const store = createStore(
-  rootReducer,
-  applyMiddleware(thunk)
-);
+const store = createStore(rootReducer, applyMiddleware(thunk));
+export { store };
 
-const Root = () => (
+const Root = (props) => (
   <Provider store={store}>
-    <App />
+    <App config={props.config} />
   </Provider>
 );
 

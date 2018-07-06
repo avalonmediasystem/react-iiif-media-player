@@ -11,7 +11,8 @@ class App extends Component {
     if (manifestUrl === '') {
       return;
     }
-    this.props.getRemoteManifest(manifestUrl)
+    this.props.updateExternalConfig(this.props.config);
+    this.props.getRemoteManifest(manifestUrl);
   }
 
   getManifestUrl() {
@@ -45,7 +46,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  getRemoteManifest: url => dispatch(actions.getRemoteManifest(url))
+  getRemoteManifest: url => dispatch(actions.getRemoteManifest(url)),
+  updateExternalConfig: config => dispatch(actions.updateExternalConfig(config))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -23,4 +23,20 @@ describe('actions', () => {
     };
     expect(actions.navItemClick(url)).toEqual(expectedAction);
   });
+
+  it('should create an action for passed in external component configuration', () => {
+    const mockExternalConfig = {
+      fetch: {
+        credentials: 'omit'
+      },
+      resizable: true
+    };
+    const expectedAction = {
+      type: types.UPDATE_EXTERNAL_CONFIG,
+      payload: mockExternalConfig
+    };
+    expect(actions.updateExternalConfig(mockExternalConfig)).toEqual(
+      expectedAction
+    );
+  });
 });
