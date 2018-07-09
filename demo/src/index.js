@@ -20,7 +20,7 @@ class Demo extends Component {
       <div>
         <h1>react-iiif-media-player Demo</h1>
         <div
-          id="avln-iiif-player-root"
+          id="iiif-manifest-url"
           data-manifest-url="https://mallorn.dlib.indiana.edu/lunchroom_manners.manifest.json"
         />
         <IIIFPlayer config={config} />
