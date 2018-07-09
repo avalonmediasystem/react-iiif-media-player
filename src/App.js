@@ -16,7 +16,7 @@ class App extends Component {
   }
 
   getManifestUrl() {
-    const el = document.getElementById('avln-iiif-player-root');
+    const el = document.getElementById('iiif-manifest-url');
     if (!el) {
       return '';
     }
