@@ -1,4 +1,4 @@
-import mockManifest from '../json/lunchroom-manners';
+import mockManifest from '../json/wgbh-manifest';
 // Import the redux store, which is holding external configuration we might need
 import { store } from '../Root';
 

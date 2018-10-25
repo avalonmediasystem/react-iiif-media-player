@@ -4,8 +4,7 @@ A ReactJS component which renders both a MediaelementJS player (http://www.media
 ## General Usage:
 Add the `react-iiif-media-player` component into your ReactJS application via `yarn` or `npm`.
 
-`yarn add react-iiif-media-player`  or,
-`npm install --save react-iiif-media-player`
+`yarn add react-iiif-media-player`
 
 The component will look for an element of `id="iiif-manifest-url"` and read the manifest url from a data attribute  `data-manifest-url="http://your-manifest-url-here"`
 
@@ -42,13 +41,10 @@ http://iiif.io/api/presentation/3.0/
 https://mallorn.dlib.indiana.edu/lunchroom_manners.manifest.json
 
 ### Configuration
-The vision is to support various configurations on the player itself, and network requests when retrieving a manifest.  For now, the only supported configuration is `credentials` under `fetch`'s `init` configuration object (https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch).  Here's an example configuration:
+In the future we'll support configurations on the player itself and network requests when retrieving a manifest.  For now, the only supported network configuration is `credentials` under `fetch`'s `init` configuration object (https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch).  Here's an example configuration:
 
 ```
-import React, { Component } from 'react';
-import { render } from 'react-dom';
-import IIIFPlayer from 'react-iiif-media-player';
-
+...
 // Configuration for the IIIF Media Player
 const config = {
   fetch: {
@@ -62,21 +58,13 @@ class Demo extends Component {
   render() {
     return (
       <div>
-        <div id="avln-iiif-player-root" data-manifest-url="https://mallorn.dlib.indiana.edu/lunchroom_manners.manifest.json"></div>
-
+        ...
         <IIIFPlayer config={config} />
-
       </div>
     );
   }
 }
-
-render(<Demo />, document.querySelector('#demo'));
 ```
-
-### IIIF Manifest Testing
-To live test IIIF 3.0 spec manifests, the following Github branch is set up for testing:
-https://avalonmediasystem.github.io/avalon-iiif-player/
 
 ## Developing
 
@@ -91,7 +79,7 @@ Install dependencies:
 
 Run the demo application:
 
-`yarn start`  or  `npm run start`
+`yarn start`
 
 View the application in a web browser.  Visit:
 
@@ -103,7 +91,7 @@ Work on all files located in `/src`, and in development mode you can test your w
 ## Building the package
 When you're ready to build the package, run:
 
-`yarn run build`  or   `npm run build`
+`yarn run build`
 
 This will create NPM/Yarn package files which can be pushed to the NPM registry.  
 
@@ -111,9 +99,7 @@ This will create NPM/Yarn package files which can be pushed to the NPM registry.
 ## Tests
 In process of transitioning all tests to Jest. For now, run:
 
-`yarn test:jest`  or  `npm run test:jest`
-
-
+`yarn test:jest`
 
 
 [build-badge]: https://img.shields.io/travis/user/repo/master.png?style=flat-square

@@ -374,6 +374,7 @@ export default class IIIFParser {
     return thumbnailUri;
   }
 
+  // TODO: Clean up any above 'old' code and see if it's being used or not
   // NEW
 
   getChildCanvases(item) {
@@ -384,22 +385,33 @@ export default class IIIFParser {
     return canvases;
   }
 
+  /**
+   * Get contents of 'items[]' contained within the child 'body' property
+   * Assuming these are choices of file type (ie. .mp4 / .webm)
+   * // TODO: Should validate extra on 'body.type' === 'Choice'?
+   * @param {Object} manifest IIIF Manifest
+   * @returns {Array.<Object>} array of file choice objects
+   */
   getChoiceItems(manifest) {
-    let itemWithBody;
-
     const searchItems = items => {
       for (const item of items) {
         if (item.body) {
-          return item.body.items;
+          if (item.body.type === 'Choice') {
+            // Return array of file choices
+            return item.body.items;
+          }
+          if (['Video', 'Audio'].indexOf(item.body.type) > -1) {
+            // Return the 'body' object, as an array
+            return [item.body];
+          }
         } else if (item.items) {
           return searchItems(item.items);
         }
       }
     };
+    let choiceItems = searchItems(manifest.items);
 
-    itemWithBody = searchItems(manifest.items);
-
-    return itemWithBody;
+    return choiceItems || [];
   }
 
   filterVisibleRangeItem(item) {
