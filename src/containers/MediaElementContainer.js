@@ -25,8 +25,8 @@ class MediaElementContainer extends Component {
     const sources = choiceItems.map(item => {
       return {
         src: item.id,
-        // TODO: Fix this assumption
-        type: 'video/mp4'
+        // TODO: make type more generic, possibly use mime-db 
+        type: 'application/x-mpegURL'
       };
     });
     return sources;

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
+import hlsjs from 'hls.js';
 import 'mediaelement';
 import PropTypes from 'prop-types';
 
@@ -39,6 +40,7 @@ class MediaElement extends Component {
       error: (media, node) => this.error(media, node)
     });
 
+    window.Hls = hlsjs;
     this.setState({ player: new MediaElementPlayer(this.props.id, options) });
   }
 
