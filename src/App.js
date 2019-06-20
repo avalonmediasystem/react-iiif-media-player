@@ -7,8 +7,13 @@ import * as actions from './actions';
 
 class App extends Component {
   componentDidMount() {
-    const iiifManifestUrl = this.props.iiifManifestUrl || '';
-    if (iiifManifestUrl === '') {
+    const { iiifManifest, iiifManifestUrl } = this.props;
+
+    if (iiifManifest) {
+      return this.props.fetchManifestSuccess(iiifManifest);
+    }
+
+    if (!iiifManifestUrl) {
       return;
     }
     this.props.updateExternalConfig(this.props.config);
@@ -38,6 +43,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  fetchManifestSuccess: manifest =>
+    dispatch(actions.fetchManifestSuccess(manifest)),
   getRemoteManifest: url => dispatch(actions.getRemoteManifest(url)),
   updateExternalConfig: config => dispatch(actions.updateExternalConfig(config))
 });
