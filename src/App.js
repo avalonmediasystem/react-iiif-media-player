@@ -7,20 +7,12 @@ import * as actions from './actions';
 
 class App extends Component {
   componentDidMount() {
-    const manifestUrl = this.getManifestUrl();
-    if (manifestUrl === '') {
+    const iiifManifestUrl = this.props.iiifManifestUrl || '';
+    if (iiifManifestUrl === '') {
       return;
     }
     this.props.updateExternalConfig(this.props.config);
-    this.props.getRemoteManifest(manifestUrl);
-  }
-
-  getManifestUrl() {
-    const el = document.getElementById('iiif-manifest-url');
-    if (!el) {
-      return '';
-    }
-    return el.getAttribute('data-manifest-url');
+    this.props.getRemoteManifest(iiifManifestUrl);
   }
 
   render() {
@@ -50,4 +42,7 @@ const mapDispatchToProps = dispatch => ({
   updateExternalConfig: config => dispatch(actions.updateExternalConfig(config))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);
