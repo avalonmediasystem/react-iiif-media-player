@@ -10,6 +10,7 @@ const List = props => {
     <ul>
       {props.items.map(item => {
         const filteredItem = iiifParser.filterVisibleRangeItem(item);
+
         if (!filteredItem) {
           return null;
         }

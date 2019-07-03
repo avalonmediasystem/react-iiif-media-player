@@ -22,7 +22,7 @@ const ListItem = props => {
   };
 
   const renderListItem = () => {
-    const label = item.label || 'Canvas item with no label';
+    const label = iiifParser.getLabelValue(item.label);
 
     if (childCanvases.length > 0) {
       return childCanvases.map(canvasItem => (
@@ -52,4 +52,7 @@ const mapDispatchToProps = dispatch => ({
   navItemClick: url => dispatch(actions.navItemClick(url))
 });
 
-export default connect(null, mapDispatchToProps)(ListItem);
+export default connect(
+  null,
+  mapDispatchToProps
+)(ListItem);

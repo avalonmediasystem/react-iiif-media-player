@@ -25,7 +25,7 @@ class MediaElementContainer extends Component {
     const sources = choiceItems.map(item => {
       return {
         src: item.id,
-        // TODO: make type more generic, possibly use mime-db 
+        // TODO: make type more generic, possibly use mime-db
         type: 'application/x-mpegURL'
       };
     });
@@ -61,6 +61,7 @@ class MediaElementContainer extends Component {
           width={manifest.width || 480}
           height={manifest.height || 360}
           poster=""
+          crossorigin="anonymous"
           sources={JSON.stringify(sources)}
           options={JSON.stringify(options)}
         />

@@ -91,7 +91,7 @@ MediaElement.propTypes = {
   poster: PropTypes.string,
   sources: PropTypes.string,
   options: PropTypes.string
-}
+};
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -99,4 +99,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(MediaElement);
+export default connect(
+  null,
+  mapDispatchToProps
+)(MediaElement);
