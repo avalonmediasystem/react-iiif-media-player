@@ -13,9 +13,6 @@ class App extends Component {
       return this.props.fetchManifestSuccess(iiifManifest);
     }
 
-    if (!iiifManifestUrl) {
-      return;
-    }
     this.props.updateExternalConfig(this.props.config);
     this.props.getRemoteManifest(iiifManifestUrl);
   }
