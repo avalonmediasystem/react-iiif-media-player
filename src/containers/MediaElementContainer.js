@@ -3,6 +3,7 @@ import MediaElement from '../components/MediaElement';
 import PropTypes from 'prop-types';
 import IIIFParser from '../services/iiif-parser';
 import ErrorMessage from '../components/ErrorMessage';
+import manifesto from 'manifesto.js';
 
 const iiifParser = new IIIFParser();
 
@@ -17,7 +18,20 @@ class MediaElementContainer extends Component {
 
   componentDidMount() {
     const { manifest } = this.state;
-    const choiceItems = iiifParser.getChoiceItems(manifest);
+    let choiceItems = [];
+
+    /**
+     * Test out using manifesto.js for parsing
+     */
+    try {
+      choiceItems = manifesto
+        .create(manifest)
+        .getSequences()[0]
+        .getCanvases()[0]
+        .getContent()[0]
+        .getBody();
+    } catch (e) {}
+
     this.prepSources(manifest, choiceItems);
   }
 
