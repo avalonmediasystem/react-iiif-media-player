@@ -56,6 +56,7 @@
     "@fortawesome/react-fontawesome": "^0.1.2",
     "axios": "^0.18.0",
     "hls.js": "^0.12.4",
+    "manifesto.js": "^3.0.11",
     "mediaelement": "^4.2.10",
     "prop-types": "^15.6.2",
     "react-redux": "^6.0.0",
