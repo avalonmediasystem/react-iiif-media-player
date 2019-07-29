@@ -8,45 +8,50 @@ Add the `react-iiif-media-player` component into your ReactJS application via `y
 
 `yarn add react-iiif-media-player`
 
-### Example usage reading a local IIIF Manifest file:
+### Example usage
 
 ```
-import React from 'react';
-import { render } from 'react-dom';
-import Root from '../../src';
-/**
- * Import a local manifest here.
- * If included in the 'props' below, it will take precedence over the URI
- */
-//import iiifManifest from '../../src/json/manifest-pawpaw-mahler';
+import React, { Component } from "react";
+import IIIFMediaPlayer from "react-iiif-media-player";
 
-// A valid, Cors ready, IIIF Manifest URI endpoint
-// If this variable has a value, it will take precedence over 'iiifManifest' local manifest file imported above
-const iiifManifestUrl =
-  'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest.json';
+// Import a local manifest here.
+// If included in the 'props' below, it will take precedence over the URI
+import iiifManifest from '../../src/json/manifest-pawpaw-mahler';
 
-const props = {
-  config: {
-    // If you'd like to include any fetch API configuration in the
-    // network request for a IIIF Manifest URI, place here
-    fetch: {
-      options: {
-        credentials: 'omit'
+class App extends Component {
+  // A valid IIIF Manifest URI endpoint
+  iiifManifestUrl =
+    "https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest.json";
+
+  configProps = {
+    config: {
+      // If you'd like to include any fetch API configuration in the
+      // network request for a IIIF Manifest URI, place here
+      fetch: {
+        options: {
+          credentials: "omit"
+        }
       }
-    }
-  },
-  /* Local manifest goes here */
-  //iiifManifest,
-  iiifManifestUrl
-};
+    },
+    iiifManifestUrl: this.iiifManifestUrl
+    iiifManifest
+  };
+  render() {
+    return (
+      <div>
+        <IIIFMediaPlayer {...this.configProps} />
+      </div>
+    );
+  }
+}
 
-render(<Root {...props} />, document.getElementById('root'));
+export default App;
 
 ```
 
-`iiifManifestUrl` if present will be used over `iiifManifest`. `iiifManifestUrl` should be a uri for a public IIIF manifest 3.0 json file.
+Including a local manifest for testing, `iiifManifest` will take precedence over a supplied manifest url `iiifManifestUrl`.
 
-_Note:_ you may experience CORS or CORB errors if running this application locally in development mode when trying to hit an external manifest uri. Make sure your server is configured properly to allow for testing.
+_Note:_ you may experience CORS or CORB errors if running this application locally in development mode when trying to hit an external manifest uri. Make sure your server is configured properly to support CORS if neeeded or necessary.
 
 #### IIIF 3.0 spec
 
@@ -82,7 +87,7 @@ When you're ready to build the package, run:
 
 `yarn run transpile`
 
-This will create NPM/Yarn package files which can be pushed to the NPM registry.
+This will create NPM/Yarn package files in the `/dist` folder, which can be pushed to the NPM registry.
 
 ## Tests
 
@@ -120,7 +125,7 @@ If you prefer to keep an open `watch` on your tests during development, run this
 yarn transpile
 ```
 
-This command prepares the SME React component for packaging and distribution. It moves packaged, transpiled files into the `/dist` directory. Run this command when you're happy with your development changes, before committing a branch which you wish to push to Github or import locally.
+Prepares the React component for packaging and distribution. It moves files into the `/dist` directory.
 
 ## Running the tests
 
@@ -150,29 +155,7 @@ To create a new build package which can be imported by a consuming application, 
 yarn transpile
 ```
 
-This will create a component package in the `/dist` folder which is ready to be imported by another application.
-
-Currently we're installing the component through a GitHub repo instead of the NPM repository, so to import the default package into your application, run:
-
-```
-yarn add https://github.com/avalonmediasystem/react-iiif-media-player
-```
-
-If you'd like to import a feature branch you're working on, maybe called `my-new-feature`, do the following:
-
-```
-yarn remove react-iiif-media-player
-```
-
-(to make sure old files aren't hanging around)
-
-Then,
-
-```
-yarn add https://github.com/avalonmediasystem/react-iiif-media-player#my-new-feature
-```
-
-See the yarn docs (https://yarnpkg.com/lang/en/docs/cli/add/) for more info on alternative ways of importing packages.
+This will create a component build package in the `/dist` folder.
 
 ## Built With
 
