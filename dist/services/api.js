@@ -1,14 +1,9 @@
 "use strict";
 
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.fetchManifest = fetchManifest;
-exports.fetchLocalManifest = fetchLocalManifest;
-
-var _wgbhManifest = _interopRequireDefault(require("../json/wgbh-manifest"));
 
 var _Root = require("../Root");
 
@@ -28,15 +23,6 @@ function fetchManifest(url) {
     return {
       error: 'Network failure fetching the manifest'
     };
-  });
-} // Mock API call
-
-
-function fetchLocalManifest() {
-  return new Promise(function (resolve) {
-    setTimeout(function () {
-      resolve(_wgbhManifest["default"]);
-    }, 500);
   });
 }
 
