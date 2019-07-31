@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import List from './List';
-import IIIFParser from '../services/iiif-parser';
+import { getMediaFragment } from '../services/iiif-parser';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-
-const iiifParser = new IIIFParser();
 
 class StructuredNav extends Component {
   constructor(props) {
@@ -20,9 +18,12 @@ class StructuredNav extends Component {
 
   handleItemClick(id) {
     const { player } = this.props;
-    const timeFragment = iiifParser.getMediaFragment(id);
+    const timeFragment = getMediaFragment(id);
+
     if (!timeFragment) {
-      console.error("Error retrieving time fragment object from Canvas url in StructuredNav.js");
+      console.error(
+        'Error retrieving time fragment object from Canvas url in StructuredNav.js'
+      );
       return;
     }
     // Pause player (if not)
@@ -37,11 +38,7 @@ class StructuredNav extends Component {
 
   render() {
     if (this.manifest.structures) {
-      return (
-        <List
-          items={this.manifest.structures}
-        />
-      );
+      return <List items={this.manifest.structures} />;
     }
     return <p>There are no structures in the manifest.</p>;
   }
@@ -49,7 +46,7 @@ class StructuredNav extends Component {
 
 StructuredNav.propTypes = {
   manifest: PropTypes.object.isRequired
-}
+};
 
 const mapStateToProps = state => ({
   clickedUrl: state.nav.clickedUrl,

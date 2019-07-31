@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import MediaElement from '../components/MediaElement';
 import PropTypes from 'prop-types';
-import IIIFParser from '../services/iiif-parser';
 import ErrorMessage from '../components/ErrorMessage';
 import manifesto from 'manifesto.js';
-
-const iiifParser = new IIIFParser();
 
 class MediaElementContainer extends Component {
   state = {
@@ -20,9 +17,6 @@ class MediaElementContainer extends Component {
     const { manifest } = this.state;
     let choiceItems = [];
 
-    /**
-     * Test out using manifesto.js for parsing
-     */
     try {
       choiceItems = manifesto
         .create(manifest)
