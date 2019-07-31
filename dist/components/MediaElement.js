@@ -60,7 +60,7 @@ function (_Component) {
     key: "error",
     value: function error(media) {
       // Your action when media had an error loading
-      console.log('Error loading');
+      console.log('Error loading', media);
     }
   }, {
     key: "componentDidMount",

@@ -24,7 +24,7 @@ class MediaElement extends Component {
 
   error(media) {
     // Your action when media had an error loading
-    console.log('Error loading');
+    console.log('Error loading', media);
   }
 
   componentDidMount() {

@@ -20,7 +20,7 @@ const props = {
       }
     }
   },
-  iiifManifest,
+  //iiifManifest,
   iiifManifestUrl
 };
 
