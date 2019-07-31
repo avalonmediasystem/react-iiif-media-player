@@ -1,17 +1,12 @@
-import manifest from '../json/lunchroom-manners';
-import IIIFParser from './iiif-parser';
+import manifest from '../json/manifest-pawpaw-mahler';
+import * as iiifParser from './iiif-parser';
 
-const iiifParser = new IIIFParser();
+jest.mock('./get-redux-manifest');
 
-// TODO: Do we still need this?
-it('should build a manifest map object', () => {
-  const obj = iiifParser.buildManifestMap(manifest);
-
-  expect(obj).toHaveProperty('hasCanvases');
-  expect(obj).toHaveProperty('hasMultipleCanvases');
-  expect(obj).toHaveProperty('hasSequences');
-  expect(obj).toHaveProperty('isAudio');
-  expect(obj).toHaveProperty('isVideo');
+it('Determines whether canvases exist in the manifest', () => {
+  expect(iiifParser.canvasesInManifest(manifest)).toBeTruthy();
+  //manifest.items = [];
+  //expect(iiifParser.canvasesInManifest(manifest)).not.toBeTruthy();
 });
 
 it('should contain a structures[] array which represents structured metadata', () => {
@@ -19,76 +14,31 @@ it('should contain a structures[] array which represents structured metadata', (
   expect(Array.isArray(manifest.structures)).toBeTruthy();
 });
 
-// TODO: extend these tests to cover recursive calls
-// TODO: createStructure is deprecated, clean this up by removing
-it('should create a nestable HTML unordered list structure from a manifest', () => {
-  const html = iiifParser.createStructure(manifest.structures, undefined, true);
-  const htmlArray = html.split('<ul>');
+it('should return an array of existing child "Canvas" items if they exist for a Range', () => {
+  const rangeIdWithChildCanvases =
+    'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/range/r77825655-e324-46b1-b07b-83eee627d9bc';
+  const rangeIdWithoutChildCanvases =
+    'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/range/r18328b5a-a801-433a-aa61-47042b4670af';
 
-  expect(htmlArray[1]).toEqual('<li>Getting Ready for Lunch');
-  expect(htmlArray[2]).toEqual('<li>Washing Hands');
-  expect(htmlArray[3]).toContain('<li><a');
+  expect(iiifParser.getChildCanvases(rangeIdWithChildCanvases)).toHaveLength(1);
+  expect(iiifParser.getChildCanvases(rangeIdWithoutChildCanvases)).toHaveLength(
+    0
+  );
 });
 
-it('should build a structure link from an item object', () => {
-  const item = {
-    "id": "http://dlib.indiana.edu/iiif_av/lunchroom_manners/range/5",
-    "type": "Range",
-    "label": "Rinsing Well",
-    "items": [
-      {
-        "id": "http://fluorine.dlib.indiana.edu/concern/generic_works/2n49t1699/manifest/canvas/08612n52b#t=165,178",
-        "type": "Canvas"
-      }
-    ]
-  };
-  const expected = '<a href="http://fluorine.dlib.indiana.edu/concern/generic_works/2n49t1699/manifest/canvas/08612n52b#t=165,178">Rinsing Well</a>';
+describe('getMediaFragment()', () => {
+  it('returns a start/stop helper object from a uri', () => {
+    const expectedObject = { start: '711.0', stop: '1188.0' };
+    expect(
+      iiifParser.getMediaFragment(
+        'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/canvas/ww72bb48n#t=711.0,1188.0'
+      )
+    ).toEqual(expectedObject);
 
-  expect(iiifParser.buildStructureLink(item)).toEqual(expected);
+    const noTime = iiifParser.getMediaFragment(
+      'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/range/r820f4aba-4134-4284-af6b-e3f2b46db48f'
+    );
+
+    expect(noTime).toBeUndefined();
+  });
 });
-
-it('should return an array of existing child "Canvas" items if they exist', () => {
-  const itemWithChild = {
-    "id": "http://dlib.indiana.edu/iiif_av/lunchroom_manners/range/5",
-    "type": "Range",
-    "label": "Rinsing Well",
-    "items": [
-      {
-        "id": "http://fluorine.dlib.indiana.edu/concern/generic_works/2n49t1699/manifest/canvas/08612n52b#t=165,178",
-        "type": "Canvas"
-      }
-    ]
-  };
-  const itemWithNoDirectChild = {
-    "id": "http://dlib.indiana.edu/iiif_av/lunchroom_manners/range/2",
-    "type": "Range",
-    "label": "Washing Hands",
-    "items": [
-      {
-        "id": "http://dlib.indiana.edu/iiif_av/lunchroom_manners/range/3",
-        "type": "Range",
-        "label": "Using Soap",
-        "items": [
-          {
-            "id": "http://fluorine.dlib.indiana.edu/concern/generic_works/2n49t1699/manifest/canvas/08612n52b#t=157,160",
-            "type": "Canvas"
-          }
-        ]
-      },
-      {
-        "id": "http://dlib.indiana.edu/iiif_av/lunchroom_manners/range/5",
-        "type": "Range",
-        "label": "Rinsing Well",
-        "items": [
-          {
-            "id": "http://fluorine.dlib.indiana.edu/concern/generic_works/2n49t1699/manifest/canvas/08612n52b#t=165,178",
-            "type": "Canvas"
-          }
-        ]
-      }
-    ]
-  };
-
-  expect(iiifParser.getChildCanvases(itemWithChild)).toHaveLength(1);
-  expect(iiifParser.getChildCanvases(itemWithNoDirectChild)).toHaveLength(0);
-})

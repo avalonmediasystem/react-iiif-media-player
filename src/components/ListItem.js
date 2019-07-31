@@ -1,15 +1,13 @@
 import React from 'react';
 import List from './List';
-import IIIFParser from '../services/iiif-parser';
+import { getChildCanvases, getLabelValue } from '../services/iiif-parser';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import PropTypes from 'prop-types';
 
-const iiifParser = new IIIFParser();
-
 const ListItem = props => {
   const { item } = props;
-  const childCanvases = iiifParser.getChildCanvases(item);
+  const childCanvases = getChildCanvases(item.id);
   const subMenu =
     item.items && item.items.length > 0 && childCanvases.length === 0 ? (
       <List items={item.items} />
@@ -22,11 +20,11 @@ const ListItem = props => {
   };
 
   const renderListItem = () => {
-    const label = iiifParser.getLabelValue(item.label);
+    const label = getLabelValue(item.label);
 
     if (childCanvases.length > 0) {
-      return childCanvases.map(canvasItem => (
-        <a key={canvasItem.id} href={canvasItem.id} onClick={handleClick}>
+      return childCanvases.map(canvasId => (
+        <a key={canvasId} href={canvasId} onClick={handleClick}>
           {label}
         </a>
       ));

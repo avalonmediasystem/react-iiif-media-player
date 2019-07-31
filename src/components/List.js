@@ -1,15 +1,13 @@
 import React from 'react';
 import ListItem from './ListItem';
 import PropTypes from 'prop-types';
-import IIIFParser from '../services/iiif-parser';
-
-const iiifParser = new IIIFParser();
+import { filterVisibleRangeItem } from '../services/iiif-parser';
 
 const List = props => {
   return (
     <ul>
       {props.items.map(item => {
-        const filteredItem = iiifParser.filterVisibleRangeItem(item);
+        const filteredItem = filterVisibleRangeItem(item);
 
         if (!filteredItem) {
           return null;

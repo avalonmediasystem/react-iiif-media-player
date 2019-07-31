@@ -4,9 +4,11 @@ import nav from './nav';
 import player from './player';
 import externalConfig from './external-config';
 
-export default combineReducers({
+const rootReducer = combineReducers({
   externalConfig,
   getManifest,
   nav,
-  player,
+  player
 });
+
+export default rootReducer;
