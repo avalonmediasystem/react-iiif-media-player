@@ -13,7 +13,7 @@ var _react = _interopRequireDefault(require("react"));
 
 var _List = _interopRequireDefault(require("./List"));
 
-var _iiifParser = _interopRequireDefault(require("../services/iiif-parser"));
+var _iiifParser = require("../services/iiif-parser");
 
 var _reactRedux = require("react-redux");
 
@@ -21,11 +21,9 @@ var actions = _interopRequireWildcard(require("../actions"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
-var iiifParser = new _iiifParser["default"]();
-
 var ListItem = function ListItem(props) {
   var item = props.item;
-  var childCanvases = iiifParser.getChildCanvases(item);
+  var childCanvases = (0, _iiifParser.getChildCanvases)(item.id);
   var subMenu = item.items && item.items.length > 0 && childCanvases.length === 0 ? _react["default"].createElement(_List["default"], {
     items: item.items
   }) : null;
@@ -37,13 +35,13 @@ var ListItem = function ListItem(props) {
   };
 
   var renderListItem = function renderListItem() {
-    var label = iiifParser.getLabelValue(item.label);
+    var label = (0, _iiifParser.getLabelValue)(item.label);
 
     if (childCanvases.length > 0) {
-      return childCanvases.map(function (canvasItem) {
+      return childCanvases.map(function (canvasId) {
         return _react["default"].createElement("a", {
-          key: canvasItem.id,
-          href: canvasItem.id,
+          key: canvasId,
+          href: canvasId,
           onClick: handleClick
         }, label);
       });

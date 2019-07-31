@@ -29,11 +29,9 @@ var _MediaElement = _interopRequireDefault(require("../components/MediaElement")
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
-var _iiifParser = _interopRequireDefault(require("../services/iiif-parser"));
-
 var _ErrorMessage = _interopRequireDefault(require("../components/ErrorMessage"));
 
-var iiifParser = new _iiifParser["default"]();
+var _manifesto = _interopRequireDefault(require("manifesto.js"));
 
 var MediaElementContainer =
 /*#__PURE__*/
@@ -66,7 +64,12 @@ function (_Component) {
     key: "componentDidMount",
     value: function componentDidMount() {
       var manifest = this.state.manifest;
-      var choiceItems = iiifParser.getChoiceItems(manifest);
+      var choiceItems = [];
+
+      try {
+        choiceItems = _manifesto["default"].create(manifest).getSequences()[0].getCanvases()[0].getContent()[0].getBody();
+      } catch (e) {}
+
       this.prepSources(manifest, choiceItems);
     }
   }, {

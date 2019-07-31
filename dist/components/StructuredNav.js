@@ -23,13 +23,11 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _List = _interopRequireDefault(require("./List"));
 
-var _iiifParser = _interopRequireDefault(require("../services/iiif-parser"));
+var _iiifParser = require("../services/iiif-parser");
 
 var _reactRedux = require("react-redux");
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
-
-var iiifParser = new _iiifParser["default"]();
 
 var StructuredNav =
 /*#__PURE__*/
@@ -56,10 +54,10 @@ function (_Component) {
     key: "handleItemClick",
     value: function handleItemClick(id) {
       var player = this.props.player;
-      var timeFragment = iiifParser.getMediaFragment(id);
+      var timeFragment = (0, _iiifParser.getMediaFragment)(id);
 
       if (!timeFragment) {
-        console.error("Error retrieving time fragment object from Canvas url in StructuredNav.js");
+        console.error('Error retrieving time fragment object from Canvas url in StructuredNav.js');
         return;
       } // Pause player (if not)
 

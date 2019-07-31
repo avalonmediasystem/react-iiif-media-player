@@ -13,13 +13,11 @@ var _ListItem = _interopRequireDefault(require("./ListItem"));
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
-var _iiifParser = _interopRequireDefault(require("../services/iiif-parser"));
-
-var iiifParser = new _iiifParser["default"]();
+var _iiifParser = require("../services/iiif-parser");
 
 var List = function List(props) {
   return _react["default"].createElement("ul", null, props.items.map(function (item) {
-    var filteredItem = iiifParser.filterVisibleRangeItem(item);
+    var filteredItem = (0, _iiifParser.filterVisibleRangeItem)(item);
 
     if (!filteredItem) {
       return null;

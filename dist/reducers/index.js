@@ -17,11 +17,11 @@ var _player = _interopRequireDefault(require("./player"));
 
 var _externalConfig = _interopRequireDefault(require("./external-config"));
 
-var _default = (0, _redux.combineReducers)({
+var rootReducer = (0, _redux.combineReducers)({
   externalConfig: _externalConfig["default"],
   getManifest: _getManifest["default"],
   nav: _nav["default"],
   player: _player["default"]
 });
-
+var _default = rootReducer;
 exports["default"] = _default;

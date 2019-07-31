@@ -7,7 +7,7 @@
     "test": "jest --coverage --colors",
     "test:watch": "jest --watch",
     "start": "webpack-dev-server --mode development",
-    "transpile": "rimraf dist & babel src --out-dir dist --ignore src/**/*.spec.js,src/**/*.test.js --copy-files",
+    "transpile": "rimraf dist & babel src --out-dir dist --ignore 'src/**/*.test.js','src/**/*.spec.js','src/**/__mocks__'",
     "prepublishOnly": "npm run transpile"
   },
   "contributors": [
