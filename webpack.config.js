@@ -36,5 +36,14 @@ module.exports = {
     port: 3001,
     open: true
   },
-  devtool: 'source-map'
+  devtool: 'source-map',
+  output: {
+    filename: '[name].[contenthash].js',
+    path: path.resolve(__dirname, 'build')
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all'
+    }
+  }
 };
