@@ -12,8 +12,6 @@ export function renderWithRedux(
   ui,
   { initialState, store = createStore(rootReducer, initialState) } = {}
 ) {
-  console.log('initialState', initialState);
-  console.log('store', store);
   return {
     ...render(<Provider store={store}>{ui}</Provider>),
     // adding `store` to the returned utilities to allow us
