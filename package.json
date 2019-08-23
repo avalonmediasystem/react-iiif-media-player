@@ -7,7 +7,7 @@
     "test": "jest --coverage --colors",
     "test:watch": "jest --watch",
     "start": "webpack-dev-server --mode development",
-    "transpile": "rimraf dist & babel src --out-dir dist --ignore 'src/**/*.test.js','src/**/*.spec.js','src/**/__mocks__'",
+    "transpile": "rimraf dist & babel src --out-dir dist --ignore 'src/**/*.test.js','src/**/*.spec.js','src/**/__mocks__','src/services/testing-helpers.js'",
     "build": "rimraf build & webpack --mode=production",
     "predeploy": "yarn run build",
     "deploy": "gh-pages -d build"

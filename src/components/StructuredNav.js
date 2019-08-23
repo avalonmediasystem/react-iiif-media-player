@@ -11,14 +11,12 @@ class StructuredNav extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    console.log('componentDiDUpdate');
     if (this.props.clickedUrl) {
       this.handleItemClick(this.props.clickedUrl);
     }
   }
 
   handleItemClick(id) {
-    console.log('handleItemClick');
     const { player } = this.props;
     const timeFragment = getMediaFragment(id);
 

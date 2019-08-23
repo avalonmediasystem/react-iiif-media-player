@@ -11,7 +11,6 @@ exports.getChildCanvases = getChildCanvases;
 exports.getChoiceItems = getChoiceItems;
 exports.getLabelValue = getLabelValue;
 exports.getMediaFragment = getMediaFragment;
-exports.getStoreManifest = void 0;
 
 var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 
@@ -21,25 +20,11 @@ var _manifesto = _interopRequireDefault(require("manifesto.js"));
 
 var _getReduxManifest = require("./get-redux-manifest");
 
-// Allow local access to the Redux data store within this module
-var reduxManifest = null;
-
-var getStoreManifest = function getStoreManifest() {
-  if (!reduxManifest) {
-    reduxManifest = (0, _getReduxManifest.getReduxManifest)();
-  }
-
-  return reduxManifest;
-};
 /**
  * Does the manifest have a canvases array?
  * @function IIIFParser#canvasesInManifest
  * @return {boolean} - Does manifest have a canvases array
  **/
-
-
-exports.getStoreManifest = getStoreManifest;
-
 function canvasesInManifest(manifest) {
   return _manifesto["default"].create(manifest).getSequences()[0].getCanvases().length > 0;
 }
@@ -50,7 +35,7 @@ function canvasesInManifest(manifest) {
 
 
 function filterVisibleRangeItem(item) {
-  var behavior = _manifesto["default"].create(getStoreManifest()).getRangeById(item.id).getBehavior();
+  var behavior = _manifesto["default"].create((0, _getReduxManifest.getReduxManifest)()).getRangeById(item.id).getBehavior();
 
   if (behavior && behavior.value === 'no-nav') {
     return null;
@@ -63,7 +48,7 @@ function getChildCanvases(rangeId) {
   var rangeCanvases = [];
 
   try {
-    rangeCanvases = _manifesto["default"].create(getStoreManifest()).getRangeById(rangeId).getCanvasIds();
+    rangeCanvases = _manifesto["default"].create((0, _getReduxManifest.getReduxManifest)()).getRangeById(rangeId).getCanvasIds();
   } catch (e) {
     console.log('error fetching range canvases', e);
   }
