@@ -4,9 +4,6 @@ import List from './List';
 import manifest from '../json/manifest-pawpaw-mahler';
 import { renderWithRedux } from '../services/testing-helpers';
 
-// Mock the manifest in redux store the app uses
-jest.mock('../services/get-redux-manifest');
-
 test('ListItem component renders successfully', () => {
   const { container, debug } = renderWithRedux(
     <List items={manifest.structures} />
@@ -49,7 +46,7 @@ test('Displays the correct ListItems', () => {
   ];
 
   const { getByText, getByTestId } = renderWithRedux(<List items={items} />);
-  expect(getByTestId(/list/)).toBeInTheDocument();
+  expect(getByTestId('list')).toBeInTheDocument();
   expect(getByText('Track 1. I. Kraftig')).toBeInTheDocument();
   expect(getByText('Topanga')).toBeInTheDocument();
 });
