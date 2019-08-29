@@ -66,15 +66,19 @@ class MediaElement extends Component {
 				${tracksTags.join('\n')}`,
       mediaHtml =
         props.mediaType === 'video'
-          ? `<video id="${props.id}" width="${props.width}" height="${
-              props.height
-            }"${props.poster ? ` poster=${props.poster}` : ''}
+          ? `<video data-testid="video-element" id="${props.id}" width="${
+              props.width
+            }" height="${props.height}"${
+              props.poster ? ` poster=${props.poster}` : ''
+            }
 					${props.controls ? ' controls' : ''}${
               props.preload ? ` preload="${props.preload}"` : ''
             }>
 					${mediaBody}
 				</video>`
-          : `<audio id="${props.id}" width="${props.width}" controls>
+          : `<audio data-testid="audio-element" id="${props.id}" width="${
+              props.width
+            }" controls>
 					${mediaBody}
 				</audio>`;
 

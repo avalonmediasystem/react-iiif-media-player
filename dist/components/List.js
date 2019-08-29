@@ -16,7 +16,9 @@ var _propTypes = _interopRequireDefault(require("prop-types"));
 var _iiifParser = require("../services/iiif-parser");
 
 var List = function List(props) {
-  return _react["default"].createElement("ul", null, props.items.map(function (item) {
+  return _react["default"].createElement("ul", {
+    "data-testid": "list"
+  }, props.items.map(function (item) {
     var filteredItem = (0, _iiifParser.filterVisibleRangeItem)(item);
 
     if (!filteredItem) {

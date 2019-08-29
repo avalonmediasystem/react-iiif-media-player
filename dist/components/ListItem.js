@@ -50,11 +50,12 @@ var ListItem = function ListItem(props) {
     }
   };
 
-  return _react["default"].createElement("li", null, renderListItem(), subMenu);
+  return _react["default"].createElement("li", {
+    "data-testid": "list-item"
+  }, renderListItem(), subMenu);
 };
 
 ListItem.propTypes = {
-  key: _propTypes["default"].string,
   item: _propTypes["default"].object.isRequired
 };
 

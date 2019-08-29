@@ -34,7 +34,7 @@ const ListItem = props => {
   };
 
   return (
-    <li>
+    <li data-testid="list-item">
       {renderListItem()}
       {subMenu}
     </li>
@@ -42,7 +42,6 @@ const ListItem = props => {
 };
 
 ListItem.propTypes = {
-  key: PropTypes.string,
   item: PropTypes.object.isRequired
 };
 

@@ -2,15 +2,6 @@ import UtilityHelpers from './utility-helpers';
 import manifesto from 'manifesto.js';
 import { getReduxManifest } from './get-redux-manifest';
 
-// Allow local access to the Redux data store within this module
-let reduxManifest = null;
-export const getStoreManifest = () => {
-  if (!reduxManifest) {
-    reduxManifest = getReduxManifest();
-  }
-  return reduxManifest;
-};
-
 /**
  * Does the manifest have a canvases array?
  * @function IIIFParser#canvasesInManifest
@@ -31,7 +22,7 @@ export function canvasesInManifest(manifest) {
  */
 export function filterVisibleRangeItem(item) {
   const behavior = manifesto
-    .create(getStoreManifest())
+    .create(getReduxManifest())
     .getRangeById(item.id)
     .getBehavior();
 
@@ -46,7 +37,7 @@ export function getChildCanvases(rangeId) {
 
   try {
     rangeCanvases = manifesto
-      .create(getStoreManifest())
+      .create(getReduxManifest())
       .getRangeById(rangeId)
       .getCanvasIds();
   } catch (e) {

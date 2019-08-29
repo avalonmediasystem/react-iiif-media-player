@@ -5,7 +5,7 @@ import { filterVisibleRangeItem } from '../services/iiif-parser';
 
 const List = props => {
   return (
-    <ul>
+    <ul data-testid="list">
       {props.items.map(item => {
         const filteredItem = filterVisibleRangeItem(item);
 
