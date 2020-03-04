@@ -53,7 +53,6 @@ function (_Component) {
   }, {
     key: "handleItemClick",
     value: function handleItemClick(id) {
-      console.log('handleItemClick');
       var player = this.props.player;
       var timeFragment = (0, _iiifParser.getMediaFragment)(id);
 

@@ -8,7 +8,7 @@ import iiifManifest from '../../src/json/manifest-pawpaw-mahler';
 
 // A valid IIIF Manifest URI endpoint
 const iiifManifestUrl =
-  'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest.json';
+  'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/mahler-symphony-3.json';
 
 const props = {
   config: {
@@ -20,7 +20,7 @@ const props = {
       }
     }
   },
-  iiifManifest,
+  // iiifManifest,
   iiifManifestUrl
 };
 

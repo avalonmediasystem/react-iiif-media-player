@@ -79,7 +79,7 @@ function (_Component) {
         return {
           src: item.id,
           // TODO: make type more generic, possibly use mime-db
-          type: 'application/x-mpegURL'
+          type: 'audio/mp4'
         };
       });
       return sources;
