@@ -118,13 +118,13 @@ function getChoiceItems(manifest) {
 function getLabelValue(label) {
   if (label && (0, _typeof2["default"])(label) === 'object') {
     // English
-    if (label.hasOwnProperty('@en')) {
-      return label['@en'].length > 0 ? label['@en'][0] : '';
+    if (label.hasOwnProperty('en')) {
+      return label['en'].length > 0 ? label['en'][0] : '';
     } // None
 
 
-    if (label.hasOwnProperty('@none')) {
-      return label['@none'].length > 0 ? label['@none'][0] : '';
+    if (label.hasOwnProperty('none')) {
+      return label['none'].length > 0 ? label['none'][0] : '';
     }
   } else if (typeof label === 'string') {
     return label;
