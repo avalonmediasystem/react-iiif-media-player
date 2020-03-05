@@ -10,6 +10,7 @@ class MediaElementContainer extends Component {
     manifest: this.props.manifest,
     ready: false,
     sources: [],
+    mediaType: null,
     error: null
   };
 
@@ -26,7 +27,7 @@ class MediaElementContainer extends Component {
         .getBody();
     } catch (e) {}
 
-    this.prepSources(manifest, choiceItems);
+    this.prepSources(choiceItems);
   }
 
   getSources(choiceItems) {
@@ -34,13 +35,25 @@ class MediaElementContainer extends Component {
       return {
         src: item.id,
         // TODO: make type more generic, possibly use mime-db
-        type: 'audio/mp4'
+        type: item.getFormat().value
       };
     });
     return sources;
   }
 
-  prepSources(manifest, choiceItems) {
+  getMediaType(choiceItems) {
+    let allTypes = choiceItems.map(item => item.getType().value);
+    let uniqueTypes = allTypes.filter((t, index) => {
+      return allTypes.indexOf(t) === index;
+    });
+    if (uniqueTypes.length === 1) {
+      return uniqueTypes[0];
+    }
+    // Default type if there are different types
+    return 'audio';
+  }
+
+  prepSources(choiceItems) {
     if (choiceItems.length === 0) {
       this.setState({
         error: 'No media choice items found in manifest'
@@ -49,21 +62,23 @@ class MediaElementContainer extends Component {
     }
 
     const sources = this.getSources(choiceItems);
+    const mediaType = this.getMediaType(choiceItems);
     this.setState({
       ready: true,
-      sources
+      sources,
+      mediaType
     });
   }
 
   render() {
-    const { manifest, ready, sources, error } = this.state;
+    const { manifest, ready, sources, mediaType, error } = this.state;
     const options = {};
 
     if (ready) {
       return (
         <MediaElement
           id="avln-mediaelement-component"
-          mediaType="video"
+          mediaType={mediaType}
           preload="auto"
           controls
           width={manifest.width || 480}

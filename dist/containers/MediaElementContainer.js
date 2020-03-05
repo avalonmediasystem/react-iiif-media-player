@@ -55,6 +55,7 @@ function (_Component) {
       manifest: _this.props.manifest,
       ready: false,
       sources: [],
+      mediaType: null,
       error: null
     });
     return _this;
@@ -70,7 +71,7 @@ function (_Component) {
         choiceItems = _manifesto["default"].create(manifest).getSequences()[0].getCanvases()[0].getContent()[0].getBody();
       } catch (e) {}
 
-      this.prepSources(manifest, choiceItems);
+      this.prepSources(choiceItems);
     }
   }, {
     key: "getSources",
@@ -79,14 +80,31 @@ function (_Component) {
         return {
           src: item.id,
           // TODO: make type more generic, possibly use mime-db
-          type: 'audio/mp4'
+          type: item.getFormat().value
         };
       });
       return sources;
     }
   }, {
+    key: "getMediaType",
+    value: function getMediaType(choiceItems) {
+      var allTypes = choiceItems.map(function (item) {
+        return item.getType().value;
+      });
+      var uniqueTypes = allTypes.filter(function (t, index) {
+        return allTypes.indexOf(t) === index;
+      });
+
+      if (uniqueTypes.length === 1) {
+        return uniqueTypes[0];
+      } // Default type if there are different types
+
+
+      return 'audio';
+    }
+  }, {
     key: "prepSources",
-    value: function prepSources(manifest, choiceItems) {
+    value: function prepSources(choiceItems) {
       if (choiceItems.length === 0) {
         this.setState({
           error: 'No media choice items found in manifest'
@@ -95,9 +113,11 @@ function (_Component) {
       }
 
       var sources = this.getSources(choiceItems);
+      var mediaType = this.getMediaType(choiceItems);
       this.setState({
         ready: true,
-        sources: sources
+        sources: sources,
+        mediaType: mediaType
       });
     }
   }, {
@@ -107,13 +127,14 @@ function (_Component) {
           manifest = _this$state.manifest,
           ready = _this$state.ready,
           sources = _this$state.sources,
+          mediaType = _this$state.mediaType,
           error = _this$state.error;
       var options = {};
 
       if (ready) {
         return _react["default"].createElement(_MediaElement["default"], {
           id: "avln-mediaelement-component",
-          mediaType: "video",
+          mediaType: mediaType,
           preload: "auto",
           controls: true,
           width: manifest.width || 480,

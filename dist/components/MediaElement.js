@@ -112,7 +112,7 @@ function (_Component) {
       }
 
       var mediaBody = "".concat(sourceTags.join('\n'), "\n\t\t\t\t").concat(tracksTags.join('\n')),
-          mediaHtml = props.mediaType === 'video' ? "<video data-testid=\"video-element\" id=\"".concat(props.id, "\" width=\"").concat(props.width, "\" height=\"").concat(props.height, "\"").concat(props.poster ? " poster=".concat(props.poster) : '', "\n\t\t\t\t\t").concat(props.controls ? ' controls' : '').concat(props.preload ? " preload=\"".concat(props.preload, "\"") : '', ">\n\t\t\t\t\t").concat(mediaBody, "\n\t\t\t\t</video>") : "<audio data-testid=\"audio-element\" id=\"".concat(props.id, "\" width=\"").concat(props.width, "\" controls>\n\t\t\t\t\t").concat(mediaBody, "\n\t\t\t\t</audio>");
+          mediaHtml = props.mediaType === 'video' ? "<video data-testid=\"video-element\" id=\"".concat(props.id, "\" width=\"").concat(props.width, "\" height=\"").concat(props.height, "\"").concat(props.poster ? " poster=".concat(props.poster) : '', "\n\t\t\t\t\t  ").concat(props.controls ? ' controls' : '').concat(props.preload ? " preload=\"".concat(props.preload, "\"") : '', ">\n\t\t\t\t\t").concat(mediaBody, "\n\t\t\t\t</video>") : "<audio data-testid=\"audio-element\" id=\"".concat(props.id, "\" width=\"").concat(props.width, "\" ").concat(props.controls ? ' controls' : '').concat(props.preload ? " preload=\"".concat(props.preload, "\"") : '', ">\n\t\t\t\t\t").concat(mediaBody, "\n\t\t\t\t</audio>");
       return _react["default"].createElement("div", {
         dangerouslySetInnerHTML: {
           __html: mediaHtml
