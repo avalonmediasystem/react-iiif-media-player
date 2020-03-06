@@ -59,7 +59,7 @@ class MediaElement extends Component {
 
     for (let i = 0, total = sources.length; i < total; i++) {
       const source = sources[i];
-      sourceTags.push(`<source src="${source.src}" type="${source.type}">`);
+      sourceTags.push(`<source src="${source.src}" type="${source.format}">`);
     }
 
     const mediaBody = `${sourceTags.join('\n')}

@@ -6,7 +6,6 @@ import manifesto from 'manifesto.js';
 
 class MediaElementContainer extends Component {
   state = {
-    manifestUrl: this.props.manifestUrl,
     manifest: this.props.manifest,
     ready: false,
     sources: [],
@@ -35,7 +34,7 @@ class MediaElementContainer extends Component {
       return {
         src: item.id,
         // TODO: make type more generic, possibly use mime-db
-        type: item.getFormat().value
+        format: item.getFormat().value
       };
     });
     return sources;
@@ -76,18 +75,20 @@ class MediaElementContainer extends Component {
 
     if (ready) {
       return (
-        <MediaElement
-          id="avln-mediaelement-component"
-          mediaType={mediaType}
-          preload="auto"
-          controls
-          width={manifest.width || 480}
-          height={manifest.height || 360}
-          poster=""
-          crossorigin="anonymous"
-          sources={JSON.stringify(sources)}
-          options={JSON.stringify(options)}
-        />
+        <div data-testid="mediaelement">
+          <MediaElement
+            id="avln-mediaelement-component"
+            mediaType={mediaType}
+            preload="auto"
+            controls
+            width={manifest.width || 480}
+            height={manifest.height || 360}
+            poster=""
+            crossorigin="anonymous"
+            sources={JSON.stringify(sources)}
+            options={JSON.stringify(options)}
+          />
+        </div>
       );
     } else if (error) {
       return <ErrorMessage message={error} />;

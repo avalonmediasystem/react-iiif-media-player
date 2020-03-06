@@ -51,7 +51,6 @@ function (_Component) {
 
     _this = (0, _possibleConstructorReturn2["default"])(this, (_getPrototypeOf2 = (0, _getPrototypeOf3["default"])(MediaElementContainer)).call.apply(_getPrototypeOf2, [this].concat(args)));
     (0, _defineProperty2["default"])((0, _assertThisInitialized2["default"])(_this), "state", {
-      manifestUrl: _this.props.manifestUrl,
       manifest: _this.props.manifest,
       ready: false,
       sources: [],
@@ -80,7 +79,7 @@ function (_Component) {
         return {
           src: item.id,
           // TODO: make type more generic, possibly use mime-db
-          type: item.getFormat().value
+          format: item.getFormat().value
         };
       });
       return sources;
@@ -132,7 +131,9 @@ function (_Component) {
       var options = {};
 
       if (ready) {
-        return _react["default"].createElement(_MediaElement["default"], {
+        return _react["default"].createElement("div", {
+          "data-testid": "mediaelement"
+        }, _react["default"].createElement(_MediaElement["default"], {
           id: "avln-mediaelement-component",
           mediaType: mediaType,
           preload: "auto",
@@ -143,7 +144,7 @@ function (_Component) {
           crossorigin: "anonymous",
           sources: JSON.stringify(sources),
           options: JSON.stringify(options)
-        });
+        }));
       } else if (error) {
         return _react["default"].createElement(_ErrorMessage["default"], {
           message: error

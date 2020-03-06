@@ -108,7 +108,7 @@ function (_Component) {
 
       for (var i = 0, total = sources.length; i < total; i++) {
         var source = sources[i];
-        sourceTags.push("<source src=\"".concat(source.src, "\" type=\"").concat(source.type, "\">"));
+        sourceTags.push("<source src=\"".concat(source.src, "\" type=\"").concat(source.format, "\">"));
       }
 
       var mediaBody = "".concat(sourceTags.join('\n'), "\n\t\t\t\t").concat(tracksTags.join('\n')),
