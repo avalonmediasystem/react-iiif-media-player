@@ -18,7 +18,7 @@ test('Displays the correct ListItems', () => {
       id:
         'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/range/r77825655-e324-46b1-b07b-83eee627d9bc',
       label: {
-        '@none': ['Track 1. I. Kraftig']
+        none: ['Track 1. I. Kraftig']
       },
       items: [
         {
@@ -33,7 +33,7 @@ test('Displays the correct ListItems', () => {
       id:
         'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/range/ra62f9a38-8a34-4aea-9c87-ab48de98d0a7',
       label: {
-        '@none': ['Topanga']
+        none: ['Topanga']
       },
       items: [
         {

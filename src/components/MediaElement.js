@@ -59,7 +59,7 @@ class MediaElement extends Component {
 
     for (let i = 0, total = sources.length; i < total; i++) {
       const source = sources[i];
-      sourceTags.push(`<source src="${source.src}" type="${source.type}">`);
+      sourceTags.push(`<source src="${source.src}" type="${source.format}">`);
     }
 
     const mediaBody = `${sourceTags.join('\n')}
@@ -71,14 +71,16 @@ class MediaElement extends Component {
             }" height="${props.height}"${
               props.poster ? ` poster=${props.poster}` : ''
             }
-					${props.controls ? ' controls' : ''}${
+					  ${props.controls ? ' controls' : ''}${
               props.preload ? ` preload="${props.preload}"` : ''
             }>
 					${mediaBody}
 				</video>`
           : `<audio data-testid="audio-element" id="${props.id}" width="${
               props.width
-            }" controls>
+            }" ${props.controls ? ' controls' : ''}${
+              props.preload ? ` preload="${props.preload}"` : ''
+            }>
 					${mediaBody}
 				</audio>`;
 
@@ -103,7 +105,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(MediaElement);
+export default connect(null, mapDispatchToProps)(MediaElement);
