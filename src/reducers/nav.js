@@ -6,6 +6,12 @@ const nav = (state = {}, action) => {
       return Object.assign({}, state, {
         clickedUrl: action.payload
       });
+
+    case types.MEJS_RELOAD:
+      return Object.assign({}, state, {
+        reload: true,
+        nextCanvas: action.payload
+      });
     default:
       return state;
   }

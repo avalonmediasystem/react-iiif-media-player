@@ -8,12 +8,21 @@ import { getReduxManifest } from './get-redux-manifest';
  * @return {boolean} - Does manifest have a canvases array
  **/
 export function canvasesInManifest(manifest) {
-  return (
-    manifesto
-      .create(manifest)
-      .getSequences()[0]
-      .getCanvases().length > 0
-  );
+  const canvases = manifesto
+    .create(manifest)
+    .getSequences()[0]
+    .getCanvases()
+    .map(canvas => {
+      let sources = canvas
+        .getContent()[0]
+        .getBody()
+        .map(source => source.id);
+      return {
+        canvasId: canvas.id,
+        canvasSources: sources
+      };
+    });
+  return canvases;
 }
 
 /**
@@ -50,32 +59,22 @@ export function getChildCanvases(rangeId) {
 /**
  * Get contents of 'items[]' contained within the child 'body' property
  * Assuming these are choices of file type (ie. .mp4 / .webm)
- * // TODO: Should validate extra on 'body.type' === 'Choice'?
  * @param {Object} manifest IIIF Manifest
+ * @param {Number} canvasIndex Index of the current canvas in manifest
  * @returns {Array.<Object>} array of file choice objects
  */
+export function getChoiceItems(manifest, canvasIndex) {
+  let choiceItems = [];
+  try {
+    choiceItems = manifesto
+      .create(manifest)
+      .getSequences()[0]
+      .getCanvases()
+      [canvasIndex].getContent()[0]
+      .getBody();
+  } catch (e) {}
 
-// TODO: Not currently being used... skipping the manifestojs parsing
-export function getChoiceItems(manifest) {
-  const searchItems = items => {
-    for (const item of items) {
-      if (item.body) {
-        if (item.body.type === 'Choice') {
-          // Return array of file choices
-          return item.body.items;
-        }
-        if (['Video', 'Audio'].indexOf(item.body.type) > -1) {
-          // Return the 'body' object, as an array
-          return [item.body];
-        }
-      } else if (item.items) {
-        return searchItems(item.items);
-      }
-    }
-  };
-  let choiceItems = searchItems(manifest.items);
-
-  return choiceItems || [];
+  return choiceItems;
 }
 
 /**
@@ -121,4 +120,33 @@ export function getMediaFragment(uri) {
   } else {
     return undefined;
   }
+}
+
+export function getCanvas(uri) {
+  if (uri !== undefined) {
+    return uri.split('#t=')[0];
+  }
+}
+
+export function getSources(choiceItems) {
+  const sources = choiceItems.map(item => {
+    return {
+      src: item.id,
+      // TODO: make type more generic, possibly use mime-db
+      format: item.getFormat().value
+    };
+  });
+  return sources;
+}
+
+export function getMediaType(choiceItems) {
+  let allTypes = choiceItems.map(item => item.getType().value);
+  let uniqueTypes = allTypes.filter((t, index) => {
+    return allTypes.indexOf(t) === index;
+  });
+  if (uniqueTypes.length === 1) {
+    return uniqueTypes[0];
+  }
+  // Default type if there are different types
+  return 'audio';
 }

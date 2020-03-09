@@ -2,7 +2,13 @@ import React, { Component } from 'react';
 import MediaElement from '../components/MediaElement';
 import PropTypes from 'prop-types';
 import ErrorMessage from '../components/ErrorMessage';
+import {
+  getChoiceItems,
+  getSources,
+  getMediaType
+} from '../services/iiif-parser';
 import manifesto from 'manifesto.js';
+import { connect } from 'react-redux';
 
 class MediaElementContainer extends Component {
   state = {
@@ -10,49 +16,13 @@ class MediaElementContainer extends Component {
     ready: false,
     sources: [],
     mediaType: null,
+    canvasIndex: 0,
     error: null
   };
 
   componentDidMount() {
     const { manifest } = this.state;
-    let choiceItems = [];
-
-    try {
-      choiceItems = manifesto
-        .create(manifest)
-        .getSequences()[0]
-        .getCanvases()[0]
-        .getContent()[0]
-        .getBody();
-    } catch (e) {}
-
-    this.prepSources(choiceItems);
-  }
-
-  getSources(choiceItems) {
-    const sources = choiceItems.map(item => {
-      return {
-        src: item.id,
-        // TODO: make type more generic, possibly use mime-db
-        format: item.getFormat().value
-      };
-    });
-    return sources;
-  }
-
-  getMediaType(choiceItems) {
-    let allTypes = choiceItems.map(item => item.getType().value);
-    let uniqueTypes = allTypes.filter((t, index) => {
-      return allTypes.indexOf(t) === index;
-    });
-    if (uniqueTypes.length === 1) {
-      return uniqueTypes[0];
-    }
-    // Default type if there are different types
-    return 'audio';
-  }
-
-  prepSources(choiceItems) {
+    let choiceItems = getChoiceItems(manifest, 0);
     if (choiceItems.length === 0) {
       this.setState({
         error: 'No media choice items found in manifest'
@@ -60,8 +30,8 @@ class MediaElementContainer extends Component {
       return;
     }
 
-    const sources = this.getSources(choiceItems);
-    const mediaType = this.getMediaType(choiceItems);
+    const sources = getSources(choiceItems);
+    const mediaType = getMediaType(choiceItems);
     this.setState({
       ready: true,
       sources,
@@ -69,14 +39,50 @@ class MediaElementContainer extends Component {
     });
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { reload, nextCanvas } = nextProps;
+    const { manifest } = prevState;
+    if (reload) {
+      const canvasIndex = manifesto
+        .create(manifest)
+        .getSequences()[0]
+        .getCanvases()
+        .map(c => c.id)
+        .indexOf(nextCanvas);
+      const choiceItems = getChoiceItems(manifest, canvasIndex);
+      if (choiceItems.length === 0) {
+        return {
+          error: 'No media choice items found in manifest'
+        };
+      }
+      const sources = getSources(choiceItems);
+      const mediaType = getMediaType(choiceItems);
+      return {
+        sources,
+        mediaType,
+        canvasIndex,
+        ready: true
+      };
+    }
+    return null;
+  }
+
   render() {
-    const { manifest, ready, sources, mediaType, error } = this.state;
+    const {
+      manifest,
+      ready,
+      sources,
+      mediaType,
+      canvasIndex,
+      error
+    } = this.state;
     const options = {};
 
     if (ready) {
       return (
         <div data-testid="mediaelement">
           <MediaElement
+            key={`mediaelement-${canvasIndex}`}
             id="avln-mediaelement-component"
             mediaType={mediaType}
             preload="auto"
@@ -101,4 +107,9 @@ MediaElementContainer.propTypes = {
   manifest: PropTypes.object
 };
 
-export default MediaElementContainer;
+const mapStateToProps = state => ({
+  reload: state.nav.reload,
+  nextCanvas: state.nav.nextCanvas
+});
+
+export default connect(mapStateToProps)(MediaElementContainer);

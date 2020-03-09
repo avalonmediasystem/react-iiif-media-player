@@ -19,6 +19,12 @@ var nav = function nav() {
         clickedUrl: action.payload
       });
 
+    case types.MEJS_RELOAD:
+      return Object.assign({}, state, {
+        reload: true,
+        nextCanvas: action.payload
+      });
+
     default:
       return state;
   }

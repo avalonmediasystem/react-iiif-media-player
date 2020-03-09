@@ -9,6 +9,8 @@ exports["default"] = void 0;
 
 var types = _interopRequireWildcard(require("../actions/types"));
 
+var _iiifParser = require("../services/iiif-parser");
+
 var initialState = {
   error: false,
   loading: false
@@ -31,7 +33,8 @@ var getManifest = function getManifest() {
       return Object.assign({}, state, {
         error: false,
         loading: false,
-        manifest: action.payload
+        manifest: action.payload,
+        canvases: (0, _iiifParser.canvasesInManifest)(action.payload)
       });
 
     case types.FETCH_MANIFEST_FAILURE:

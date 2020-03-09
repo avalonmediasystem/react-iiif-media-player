@@ -43,6 +43,13 @@ export function updateExternalConfig(config) {
   };
 }
 
+export function reloadMediaElement(canvasId) {
+  return {
+    type: types.MEJS_RELOAD,
+    payload: canvasId
+  };
+}
+
 export function getRemoteManifest(url) {
   return dispatch => {
     dispatch(fetchManifestRequest(url));

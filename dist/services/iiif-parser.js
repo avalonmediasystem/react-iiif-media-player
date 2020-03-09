@@ -11,6 +11,9 @@ exports.getChildCanvases = getChildCanvases;
 exports.getChoiceItems = getChoiceItems;
 exports.getLabelValue = getLabelValue;
 exports.getMediaFragment = getMediaFragment;
+exports.getCanvas = getCanvas;
+exports.getSources = getSources;
+exports.getMediaType = getMediaType;
 
 var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 
@@ -26,7 +29,17 @@ var _getReduxManifest = require("./get-redux-manifest");
  * @return {boolean} - Does manifest have a canvases array
  **/
 function canvasesInManifest(manifest) {
-  return _manifesto["default"].create(manifest).getSequences()[0].getCanvases().length > 0;
+  var canvases = _manifesto["default"].create(manifest).getSequences()[0].getCanvases().map(function (canvas) {
+    var sources = canvas.getContent()[0].getBody().map(function (source) {
+      return source.id;
+    });
+    return {
+      canvasId: canvas.id,
+      canvasSources: sources
+    };
+  });
+
+  return canvases;
 }
 /**
  * Check if item's behavior is set to a value which should hide it
@@ -58,55 +71,20 @@ function getChildCanvases(rangeId) {
 /**
  * Get contents of 'items[]' contained within the child 'body' property
  * Assuming these are choices of file type (ie. .mp4 / .webm)
- * // TODO: Should validate extra on 'body.type' === 'Choice'?
  * @param {Object} manifest IIIF Manifest
+ * @param {Number} canvasIndex Index of the current canvas in manifest
  * @returns {Array.<Object>} array of file choice objects
  */
-// TODO: Not currently being used... skipping the manifestojs parsing
 
 
-function getChoiceItems(manifest) {
-  var searchItems = function searchItems(items) {
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
+function getChoiceItems(manifest, canvasIndex) {
+  var choiceItems = [];
 
-    try {
-      for (var _iterator = items[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        var item = _step.value;
+  try {
+    choiceItems = _manifesto["default"].create(manifest).getSequences()[0].getCanvases()[canvasIndex].getContent()[0].getBody();
+  } catch (e) {}
 
-        if (item.body) {
-          if (item.body.type === 'Choice') {
-            // Return array of file choices
-            return item.body.items;
-          }
-
-          if (['Video', 'Audio'].indexOf(item.body.type) > -1) {
-            // Return the 'body' object, as an array
-            return [item.body];
-          }
-        } else if (item.items) {
-          return searchItems(item.items);
-        }
-      }
-    } catch (err) {
-      _didIteratorError = true;
-      _iteratorError = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-          _iterator["return"]();
-        }
-      } finally {
-        if (_didIteratorError) {
-          throw _iteratorError;
-        }
-      }
-    }
-  };
-
-  var choiceItems = searchItems(manifest.items);
-  return choiceItems || [];
+  return choiceItems;
 }
 /**
  * Parse the label value from a manifest item
@@ -157,4 +135,37 @@ function getMediaFragment(uri) {
   } else {
     return undefined;
   }
+}
+
+function getCanvas(uri) {
+  if (uri !== undefined) {
+    return uri.split('#t=')[0];
+  }
+}
+
+function getSources(choiceItems) {
+  var sources = choiceItems.map(function (item) {
+    return {
+      src: item.id,
+      // TODO: make type more generic, possibly use mime-db
+      format: item.getFormat().value
+    };
+  });
+  return sources;
+}
+
+function getMediaType(choiceItems) {
+  var allTypes = choiceItems.map(function (item) {
+    return item.getType().value;
+  });
+  var uniqueTypes = allTypes.filter(function (t, index) {
+    return allTypes.indexOf(t) === index;
+  });
+
+  if (uniqueTypes.length === 1) {
+    return uniqueTypes[0];
+  } // Default type if there are different types
+
+
+  return 'audio';
 }

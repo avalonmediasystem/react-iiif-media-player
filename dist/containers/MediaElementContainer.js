@@ -31,7 +31,11 @@ var _propTypes = _interopRequireDefault(require("prop-types"));
 
 var _ErrorMessage = _interopRequireDefault(require("../components/ErrorMessage"));
 
+var _iiifParser = require("../services/iiif-parser");
+
 var _manifesto = _interopRequireDefault(require("manifesto.js"));
+
+var _reactRedux = require("react-redux");
 
 var MediaElementContainer =
 /*#__PURE__*/
@@ -55,6 +59,7 @@ function (_Component) {
       ready: false,
       sources: [],
       mediaType: null,
+      canvasIndex: 0,
       error: null
     });
     return _this;
@@ -64,46 +69,8 @@ function (_Component) {
     key: "componentDidMount",
     value: function componentDidMount() {
       var manifest = this.state.manifest;
-      var choiceItems = [];
+      var choiceItems = (0, _iiifParser.getChoiceItems)(manifest, 0);
 
-      try {
-        choiceItems = _manifesto["default"].create(manifest).getSequences()[0].getCanvases()[0].getContent()[0].getBody();
-      } catch (e) {}
-
-      this.prepSources(choiceItems);
-    }
-  }, {
-    key: "getSources",
-    value: function getSources(choiceItems) {
-      var sources = choiceItems.map(function (item) {
-        return {
-          src: item.id,
-          // TODO: make type more generic, possibly use mime-db
-          format: item.getFormat().value
-        };
-      });
-      return sources;
-    }
-  }, {
-    key: "getMediaType",
-    value: function getMediaType(choiceItems) {
-      var allTypes = choiceItems.map(function (item) {
-        return item.getType().value;
-      });
-      var uniqueTypes = allTypes.filter(function (t, index) {
-        return allTypes.indexOf(t) === index;
-      });
-
-      if (uniqueTypes.length === 1) {
-        return uniqueTypes[0];
-      } // Default type if there are different types
-
-
-      return 'audio';
-    }
-  }, {
-    key: "prepSources",
-    value: function prepSources(choiceItems) {
       if (choiceItems.length === 0) {
         this.setState({
           error: 'No media choice items found in manifest'
@@ -111,8 +78,8 @@ function (_Component) {
         return;
       }
 
-      var sources = this.getSources(choiceItems);
-      var mediaType = this.getMediaType(choiceItems);
+      var sources = (0, _iiifParser.getSources)(choiceItems);
+      var mediaType = (0, _iiifParser.getMediaType)(choiceItems);
       this.setState({
         ready: true,
         sources: sources,
@@ -127,6 +94,7 @@ function (_Component) {
           ready = _this$state.ready,
           sources = _this$state.sources,
           mediaType = _this$state.mediaType,
+          canvasIndex = _this$state.canvasIndex,
           error = _this$state.error;
       var options = {};
 
@@ -134,6 +102,7 @@ function (_Component) {
         return _react["default"].createElement("div", {
           "data-testid": "mediaelement"
         }, _react["default"].createElement(_MediaElement["default"], {
+          key: "mediaelement-".concat(canvasIndex),
           id: "avln-mediaelement-component",
           mediaType: mediaType,
           preload: "auto",
@@ -153,6 +122,38 @@ function (_Component) {
 
       return null;
     }
+  }], [{
+    key: "getDerivedStateFromProps",
+    value: function getDerivedStateFromProps(nextProps, prevState) {
+      var reload = nextProps.reload,
+          nextCanvas = nextProps.nextCanvas;
+      var manifest = prevState.manifest;
+
+      if (reload) {
+        var canvasIndex = _manifesto["default"].create(manifest).getSequences()[0].getCanvases().map(function (c) {
+          return c.id;
+        }).indexOf(nextCanvas);
+
+        var choiceItems = (0, _iiifParser.getChoiceItems)(manifest, canvasIndex);
+
+        if (choiceItems.length === 0) {
+          return {
+            error: 'No media choice items found in manifest'
+          };
+        }
+
+        var sources = (0, _iiifParser.getSources)(choiceItems);
+        var mediaType = (0, _iiifParser.getMediaType)(choiceItems);
+        return {
+          sources: sources,
+          mediaType: mediaType,
+          canvasIndex: canvasIndex,
+          ready: true
+        };
+      }
+
+      return null;
+    }
   }]);
   return MediaElementContainer;
 }(_react.Component);
@@ -160,5 +161,14 @@ function (_Component) {
 MediaElementContainer.propTypes = {
   manifest: _propTypes["default"].object
 };
-var _default = MediaElementContainer;
+
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    reload: state.nav.reload,
+    nextCanvas: state.nav.nextCanvas
+  };
+};
+
+var _default = (0, _reactRedux.connect)(mapStateToProps)(MediaElementContainer);
+
 exports["default"] = _default;

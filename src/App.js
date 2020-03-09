@@ -46,7 +46,4 @@ const mapDispatchToProps = dispatch => ({
   updateExternalConfig: config => dispatch(actions.updateExternalConfig(config))
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);
