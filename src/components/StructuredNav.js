@@ -1,34 +1,32 @@
 import React, { Component } from 'react';
 import List from './List';
 import { getMediaFragment, getCanvas } from '../services/iiif-parser';
-import { reloadMediaElement } from '../actions/index';
+import { swapMediaElement } from '../actions';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Accordion } from 'react-bootstrap';
 
 class StructuredNav extends Component {
   constructor(props) {
     super(props);
     this.manifest = this.props.manifest;
-    this.state = {
-      sections: []
-    };
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.clickedUrl) {
+    if (this.props.clickedUrl != prevProps.clickedUrl) {
       this.handleItemClick(this.props.clickedUrl);
     }
   }
 
   handleItemClick(id) {
-    const { player } = this.props;
+    const { player, canvases } = this.props;
     const timeFragment = getMediaFragment(id);
 
-    const canvasId = getCanvas(id);
-    const canvasInManifest = this.props.canvases.filter(
-      c => canvasId == c.canvasId
-    );
+    const canvasInManifest = canvases.filter(c => getCanvas(id) == c.canvasId);
+
+    const canvasIndex = this.props.canvases
+      .map(c => c.canvasId)
+      .indexOf(getCanvas(id));
+
     let canvasSources = null;
     if (canvasInManifest.length > 0) {
       canvasSources = canvasInManifest[0].canvasSources;
@@ -41,9 +39,10 @@ class StructuredNav extends Component {
       );
       return;
     }
+
     // Go to next section
     if (!canvasSources.includes(player.getSrc())) {
-      this.props.reloadMediaElement(canvasId);
+      this.props.swapMediaElement(canvasIndex);
     }
 
     // Set the start time
@@ -53,9 +52,9 @@ class StructuredNav extends Component {
   render() {
     if (this.manifest.structures) {
       return (
-        <Accordion>
-          <List items={this.manifest.structures} />;
-        </Accordion>
+        <div data-testid="structured-nav">
+          <List items={this.manifest.structures} />
+        </div>
       );
     }
     return <p>There are no structures in the manifest.</p>;
@@ -67,7 +66,7 @@ StructuredNav.propTypes = {
 };
 
 const mapDispatchToProps = {
-  reloadMediaElement: reloadMediaElement
+  swapMediaElement: swapMediaElement
 };
 
 const mapStateToProps = state => ({

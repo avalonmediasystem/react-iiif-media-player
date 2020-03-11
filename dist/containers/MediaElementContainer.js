@@ -33,8 +33,6 @@ var _ErrorMessage = _interopRequireDefault(require("../components/ErrorMessage")
 
 var _iiifParser = require("../services/iiif-parser");
 
-var _manifesto = _interopRequireDefault(require("manifesto.js"));
-
 var _reactRedux = require("react-redux");
 
 var MediaElementContainer =
@@ -68,7 +66,8 @@ function (_Component) {
   (0, _createClass2["default"])(MediaElementContainer, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      var manifest = this.state.manifest;
+      var manifest = this.state.manifest; // Get the first canvas in manifest
+
       var choiceItems = (0, _iiifParser.getChoiceItems)(manifest, 0);
 
       if (choiceItems.length === 0) {
@@ -100,7 +99,7 @@ function (_Component) {
 
       if (ready) {
         return _react["default"].createElement("div", {
-          "data-testid": "mediaelement"
+          "data-testid": "mediaelement-".concat(canvasIndex)
         }, _react["default"].createElement(_MediaElement["default"], {
           key: "mediaelement-".concat(canvasIndex),
           id: "avln-mediaelement-component",
@@ -126,14 +125,10 @@ function (_Component) {
     key: "getDerivedStateFromProps",
     value: function getDerivedStateFromProps(nextProps, prevState) {
       var reload = nextProps.reload,
-          nextCanvas = nextProps.nextCanvas;
+          canvasIndex = nextProps.canvasIndex;
       var manifest = prevState.manifest;
 
       if (reload) {
-        var canvasIndex = _manifesto["default"].create(manifest).getSequences()[0].getCanvases().map(function (c) {
-          return c.id;
-        }).indexOf(nextCanvas);
-
         var choiceItems = (0, _iiifParser.getChoiceItems)(manifest, canvasIndex);
 
         if (choiceItems.length === 0) {
@@ -165,7 +160,7 @@ MediaElementContainer.propTypes = {
 var mapStateToProps = function mapStateToProps(state) {
   return {
     reload: state.nav.reload,
-    nextCanvas: state.nav.nextCanvas
+    canvasIndex: state.nav.canvasIndex
   };
 };
 

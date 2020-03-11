@@ -7,7 +7,6 @@ import {
   getSources,
   getMediaType
 } from '../services/iiif-parser';
-import manifesto from 'manifesto.js';
 import { connect } from 'react-redux';
 
 class MediaElementContainer extends Component {
@@ -22,6 +21,7 @@ class MediaElementContainer extends Component {
 
   componentDidMount() {
     const { manifest } = this.state;
+    // Get the first canvas in manifest
     let choiceItems = getChoiceItems(manifest, 0);
     if (choiceItems.length === 0) {
       this.setState({
@@ -40,15 +40,9 @@ class MediaElementContainer extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    const { reload, nextCanvas } = nextProps;
+    const { reload, canvasIndex } = nextProps;
     const { manifest } = prevState;
     if (reload) {
-      const canvasIndex = manifesto
-        .create(manifest)
-        .getSequences()[0]
-        .getCanvases()
-        .map(c => c.id)
-        .indexOf(nextCanvas);
       const choiceItems = getChoiceItems(manifest, canvasIndex);
       if (choiceItems.length === 0) {
         return {
@@ -80,7 +74,7 @@ class MediaElementContainer extends Component {
 
     if (ready) {
       return (
-        <div data-testid="mediaelement">
+        <div data-testid={`mediaelement-${canvasIndex}`}>
           <MediaElement
             key={`mediaelement-${canvasIndex}`}
             id="avln-mediaelement-component"
@@ -109,7 +103,7 @@ MediaElementContainer.propTypes = {
 
 const mapStateToProps = state => ({
   reload: state.nav.reload,
-  nextCanvas: state.nav.nextCanvas
+  canvasIndex: state.nav.canvasIndex
 });
 
 export default connect(mapStateToProps)(MediaElementContainer);

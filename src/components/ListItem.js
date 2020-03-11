@@ -20,8 +20,7 @@ const ListItem = props => {
   };
 
   const renderListItem = () => {
-    let label = null;
-    label = getLabelValue(item.label);
+    let label = getLabelValue(item.label);
     if (childCanvases.length > 0) {
       return childCanvases.map(canvasId => (
         <a key={canvasId} href={canvasId} onClick={handleClick}>

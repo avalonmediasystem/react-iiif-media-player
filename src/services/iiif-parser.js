@@ -33,7 +33,7 @@ export function filterVisibleRangeItem(item) {
   const behavior = manifesto
     .create(getReduxManifest())
     .getRangeById(item.id)
-    .getBehavior();
+    .getViewingHint();
 
   if (behavior && behavior.value === 'no-nav') {
     return null;
@@ -149,4 +149,13 @@ export function getMediaType(choiceItems) {
   }
   // Default type if there are different types
   return 'audio';
+}
+
+export function hasNextSection(index) {
+  let canvasIDs = manifesto
+    .create(getReduxManifest())
+    .getSequences()[0]
+    .getCanvases()
+    .map(canvas => canvas.id);
+  return canvasIDs.length - 1 > index ? true : false;
 }

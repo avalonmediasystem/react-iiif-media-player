@@ -14,6 +14,7 @@ exports.getMediaFragment = getMediaFragment;
 exports.getCanvas = getCanvas;
 exports.getSources = getSources;
 exports.getMediaType = getMediaType;
+exports.hasNextSection = hasNextSection;
 
 var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 
@@ -48,7 +49,7 @@ function canvasesInManifest(manifest) {
 
 
 function filterVisibleRangeItem(item) {
-  var behavior = _manifesto["default"].create((0, _getReduxManifest.getReduxManifest)()).getRangeById(item.id).getBehavior();
+  var behavior = _manifesto["default"].create((0, _getReduxManifest.getReduxManifest)()).getRangeById(item.id).getViewingHint();
 
   if (behavior && behavior.value === 'no-nav') {
     return null;
@@ -168,4 +169,12 @@ function getMediaType(choiceItems) {
 
 
   return 'audio';
+}
+
+function hasNextSection(index) {
+  var canvasIDs = _manifesto["default"].create((0, _getReduxManifest.getReduxManifest)()).getSequences()[0].getCanvases().map(function (canvas) {
+    return canvas.id;
+  });
+
+  return canvasIDs.length - 1 > index ? true : false;
 }

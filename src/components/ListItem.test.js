@@ -3,71 +3,65 @@ import { renderWithRedux } from '../services/testing-helpers';
 import ListItem from './ListItem';
 
 const singleItem = {
+  id: 'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/range/1-1',
   type: 'Range',
-  id:
-    'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/range/r77825655-e324-46b1-b07b-83eee627d9bc',
   label: {
-    none: ['Track 1. I. Kraftig']
+    en: ['Track 1. I. Kraftig']
   },
   items: [
     {
-      type: 'Canvas',
-      id:
-        'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/canvas/ww72bb48n#t=0.0,374.0'
+      id: 'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/canvas/1#t=0,374',
+      type: 'Canvas'
     }
   ]
 };
 
 const multiItem = {
+  id: 'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/range/2',
   type: 'Range',
-  id:
-    'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/range/rc4e652a6-a56e-43fa-9509-9c4e25bb024f',
   label: {
-    none: ['Mahler, Symphony No.3 (cont.)']
+    en: ['CD2 - Mahler, Symphony No.3 (cont.)']
   },
   items: [
     {
+      id: 'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/range/2-1',
       type: 'Range',
-      id:
-        'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/range/r8fa7b5ba-32cf-40f6-8530-86cdf8cd6d94',
       label: {
-        none: ['Track 1. II. Tempo di Menuetto']
+        en: ['Track 1. II. Tempo di Menuetto']
       },
       items: [
         {
-          type: 'Canvas',
           id:
-            'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/canvas/bg257f046#t=0.0,566.0'
+            'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/canvas/2#t=0,566',
+          type: 'Canvas'
         }
       ]
     },
     {
+      id: 'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/range/2-2',
       type: 'Range',
-      id:
-        'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/range/rdb1f5c54-57d1-4e62-8512-51da85ea47ee',
       label: {
-        none: ['Track 3. Tempo I']
+        en: ['Track 2. III. Comodo']
       },
       items: [
         {
-          type: 'Canvas',
           id:
-            'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/canvas/bg257f046#t=1183.0,1635.0'
+            'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/canvas/2#t=566,1183',
+          type: 'Canvas'
         }
       ]
     },
     {
+      id: 'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/range/2-3',
       type: 'Range',
-      id:
-        'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/range/r0d6fd74a-517a-40aa-b763-3ac8b7853485',
       label: {
-        none: ['Track 9. Tempo I']
+        en: ['Track 3. Tempo I']
       },
       items: [
         {
-          type: 'Canvas',
           id:
-            'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/canvas/bg257f046#t=3451.0,3829.0'
+            'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/canvas/2#t=1183,1635',
+          type: 'Canvas'
         }
       ]
     }
@@ -92,7 +86,7 @@ describe('ListItem component', () => {
     expect(anchorElement.tagName).toEqual('A');
     expect(anchorElement).toHaveAttribute(
       'href',
-      'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/canvas/ww72bb48n#t=0.0,374.0'
+      'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/canvas/1#t=0,374'
     );
 
     expect(queryByTestId('list')).not.toBeInTheDocument();

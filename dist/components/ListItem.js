@@ -35,8 +35,7 @@ var ListItem = function ListItem(props) {
   };
 
   var renderListItem = function renderListItem() {
-    var label = null;
-    label = (0, _iiifParser.getLabelValue)(item.label);
+    var label = (0, _iiifParser.getLabelValue)(item.label);
 
     if (childCanvases.length > 0) {
       return childCanvases.map(function (canvasId) {

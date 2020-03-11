@@ -1,3 +1,3 @@
-import manifest from '../../json/manifest-pawpaw-mahler';
+import manifest from '../../json/mahler-symphony-audio';
 
 export const getReduxManifest = () => manifest;

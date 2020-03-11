@@ -4,6 +4,7 @@ import StructuredNav from './components/StructuredNav';
 import ErrorMessage from './components/ErrorMessage';
 import { connect } from 'react-redux';
 import * as actions from './actions';
+import './App.css';
 
 class App extends Component {
   componentDidMount() {
@@ -22,10 +23,10 @@ class App extends Component {
 
     if (manifest) {
       return (
-        <section>
+        <div className="container">
           <MediaElementContainer manifest={manifest} />
           <StructuredNav manifest={manifest} />
-        </section>
+        </div>
       );
     }
     if (error) {

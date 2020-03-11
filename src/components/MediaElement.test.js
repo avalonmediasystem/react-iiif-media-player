@@ -6,15 +6,15 @@ describe('MediaElement component', () => {
   const sources = [
     {
       src: 'https://pawpaw.dlib.indiana.edu/master_files/ww72bb48n/auto.m3u8',
-      type: 'application/x-mpegURL'
+      format: 'application/x-mpegURL'
     },
     {
       src: 'https://pawpaw.dlib.indiana.edu/master_files/ww72bb48n/high.m3u8',
-      type: 'application/x-mpegURL'
+      format: 'application/x-mpegURL'
     },
     {
       src: 'https://pawpaw.dlib.indiana.edu/master_files/ww72bb48n/medium.m3u8',
-      type: 'application/x-mpegURL'
+      format: 'application/x-mpegURL'
     }
   ];
 

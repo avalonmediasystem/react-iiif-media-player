@@ -16,9 +16,9 @@ it('should contain a structures[] array which represents structured metadata', (
 
 it('should return an array of existing child "Canvas" items if they exist for a Range', () => {
   const rangeIdWithChildCanvases =
-    'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/range/r77825655-e324-46b1-b07b-83eee627d9bc';
+    'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/range/1-1';
   const rangeIdWithoutChildCanvases =
-    'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/range/r18328b5a-a801-433a-aa61-47042b4670af';
+    'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/range/1';
 
   expect(iiifParser.getChildCanvases(rangeIdWithChildCanvases)).toHaveLength(1);
   expect(iiifParser.getChildCanvases(rangeIdWithoutChildCanvases)).toHaveLength(
@@ -28,15 +28,15 @@ it('should return an array of existing child "Canvas" items if they exist for a 
 
 describe('getMediaFragment()', () => {
   it('returns a start/stop helper object from a uri', () => {
-    const expectedObject = { start: '711.0', stop: '1188.0' };
+    const expectedObject = { start: '374', stop: '525' };
     expect(
       iiifParser.getMediaFragment(
-        'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/canvas/ww72bb48n#t=711.0,1188.0'
+        'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/canvas/1#t=374,525'
       )
     ).toEqual(expectedObject);
 
     const noTime = iiifParser.getMediaFragment(
-      'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/range/r820f4aba-4134-4284-af6b-e3f2b46db48f'
+      'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/range/1-4'
     );
 
     expect(noTime).toBeUndefined();

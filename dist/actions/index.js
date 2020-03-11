@@ -11,7 +11,7 @@ exports.fetchManifestFailure = fetchManifestFailure;
 exports.playerInitialized = playerInitialized;
 exports.navItemClick = navItemClick;
 exports.updateExternalConfig = updateExternalConfig;
-exports.reloadMediaElement = reloadMediaElement;
+exports.swapMediaElement = swapMediaElement;
 exports.getRemoteManifest = getRemoteManifest;
 
 var types = _interopRequireWildcard(require("./types"));
@@ -60,9 +60,9 @@ function updateExternalConfig(config) {
   };
 }
 
-function reloadMediaElement(canvasId) {
+function swapMediaElement(canvasId) {
   return {
-    type: types.MEJS_RELOAD,
+    type: types.MEJS_SWAP,
     payload: canvasId
   };
 }

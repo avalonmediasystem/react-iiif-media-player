@@ -2,9 +2,13 @@ import reducer from './nav';
 import * as types from '../actions/types';
 
 describe('reducer', () => {
+  const initialState = {
+    reload: false,
+    canvasIndex: 0
+  };
   it('should return the initial state', () => {
     const reducerResults = reducer(undefined, { type: 'YYY' });
-    expect(reducer(undefined, {})).toEqual({});
+    expect(reducer(undefined, {})).toEqual(initialState);
   });
 
   it('should handle NAV_ITEM_CLICK', () => {
@@ -16,6 +20,7 @@ describe('reducer', () => {
         payload: url
       })
     ).toEqual({
+      ...initialState,
       clickedUrl: url
     });
   });

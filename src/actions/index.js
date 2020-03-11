@@ -43,9 +43,9 @@ export function updateExternalConfig(config) {
   };
 }
 
-export function reloadMediaElement(canvasId) {
+export function swapMediaElement(canvasId) {
   return {
-    type: types.MEJS_RELOAD,
+    type: types.MEJS_SWAP,
     payload: canvasId
   };
 }
