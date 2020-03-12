@@ -4,6 +4,7 @@ import * as actions from '../actions';
 import hlsjs from 'hls.js';
 import 'mediaelement';
 import PropTypes from 'prop-types';
+import { hasNextSection } from '../services/iiif-parser';
 
 // Import stylesheet and shims
 import 'mediaelement/build/mediaelementplayer.min.css';
@@ -20,11 +21,23 @@ class MediaElement extends Component {
 
     // Action reducer
     this.props.playerInitialized(instance);
+
+    media.addEventListener('ended', ended => {
+      if (ended) {
+        this.handleEnded();
+      }
+    });
   }
 
   error(media) {
     // Your action when media had an error loading
     console.log('Error loading');
+  }
+
+  handleEnded() {
+    if (hasNextSection(this.props.canvasIndex)) {
+      this.props.swapMediaElement(this.props.canvasIndex + 1);
+    }
   }
 
   componentDidMount() {
@@ -99,10 +112,14 @@ MediaElement.propTypes = {
   options: PropTypes.string
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    playerInitialized: player => dispatch(actions.playerInitialized(player))
-  };
+const mapDispatchToProps = {
+  playerInitialized: player => actions.playerInitialized(player),
+  swapMediaElement: actions.swapMediaElement
 };
 
-export default connect(null, mapDispatchToProps)(MediaElement);
+const mapStateToProps = state => ({
+  player: state.player,
+  canvasIndex: state.nav.canvasIndex
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MediaElement);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent, waitForElement } from '@testing-library/react';
 import List from './List';
-import manifest from '../json/manifest-pawpaw-mahler';
+import manifest from '../json/mahler-symphony-audio';
 import { renderWithRedux } from '../services/testing-helpers';
 
 test('ListItem component renders successfully', () => {
@@ -14,32 +14,30 @@ test('ListItem component renders successfully', () => {
 test('Displays the correct ListItems', () => {
   const items = [
     {
+      id: 'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/range/1-1',
       type: 'Range',
-      id:
-        'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/range/r77825655-e324-46b1-b07b-83eee627d9bc',
       label: {
-        none: ['Track 1. I. Kraftig']
+        en: ['Track 1. I. Kraftig']
       },
       items: [
         {
-          type: 'Canvas',
           id:
-            'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/canvas/ww72bb48n#t=0.0,374.0'
+            'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/canvas/1#t=0,374',
+          type: 'Canvas'
         }
       ]
     },
     {
+      id: 'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/range/1-2',
       type: 'Range',
-      id:
-        'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/range/ra62f9a38-8a34-4aea-9c87-ab48de98d0a7',
       label: {
-        none: ['Topanga']
+        en: ['Track 2. Langsam. Schwer']
       },
       items: [
         {
-          type: 'Canvas',
           id:
-            'https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest/canvas/ww72bb48n#t=374.0,525.0'
+            'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/canvas/1#t=374,525',
+          type: 'Canvas'
         }
       ]
     }
@@ -48,5 +46,5 @@ test('Displays the correct ListItems', () => {
   const { getByText, getByTestId } = renderWithRedux(<List items={items} />);
   expect(getByTestId('list')).toBeInTheDocument();
   expect(getByText('Track 1. I. Kraftig')).toBeInTheDocument();
-  expect(getByText('Topanga')).toBeInTheDocument();
+  expect(getByText('Track 2. Langsam. Schwer')).toBeInTheDocument();
 });

@@ -10,7 +10,7 @@ describe('MediaElementContainer component', () => {
     const { getByTestId, queryByTestId } = renderWithRedux(
       <MediaElementContainer manifest={manifestAudio} />
     );
-    expect(getByTestId('mediaelement')).toBeInTheDocument();
+    expect(getByTestId('mediaelement-0')).toBeInTheDocument();
     expect(queryByTestId('audio-element')).toBeInTheDocument();
   });
 
@@ -19,7 +19,7 @@ describe('MediaElementContainer component', () => {
     const { getByTestId, queryByTestId } = renderWithRedux(
       <MediaElementContainer manifest={manifestVideo} />
     );
-    expect(getByTestId('mediaelement')).toBeInTheDocument();
+    expect(getByTestId('mediaelement-0')).toBeInTheDocument();
     expect(queryByTestId('video-element')).toBeInTheDocument();
   });
 });

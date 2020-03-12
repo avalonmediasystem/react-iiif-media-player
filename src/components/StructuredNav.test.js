@@ -1,8 +1,7 @@
 import React from 'react';
 import { renderWithRedux } from '../services/testing-helpers';
 import StructuredNav from './StructuredNav';
-import manifest from '../json/manifest-pawpaw-mahler';
-import { fireEvent } from '@testing-library/react';
+import manifest from '../json/mahler-symphony-audio';
 
 describe('StructuredNav component', () => {
   test('renders successfully', () => {

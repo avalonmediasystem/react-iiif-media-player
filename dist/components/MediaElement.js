@@ -31,6 +31,8 @@ require("mediaelement");
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
+var _iiifParser = require("../services/iiif-parser");
+
 require("mediaelement/build/mediaelementplayer.min.css");
 
 // Import stylesheet and shims
@@ -51,10 +53,17 @@ function (_Component) {
   (0, _createClass2["default"])(MediaElement, [{
     key: "success",
     value: function success(media, node, instance) {
+      var _this2 = this;
+
       // Your action when media was successfully loaded
       console.log('Loaded successfully'); // Action reducer
 
       this.props.playerInitialized(instance);
+      media.addEventListener('ended', function (ended) {
+        if (ended) {
+          _this2.handleEnded();
+        }
+      });
     }
   }, {
     key: "error",
@@ -63,9 +72,16 @@ function (_Component) {
       console.log('Error loading');
     }
   }, {
+    key: "handleEnded",
+    value: function handleEnded() {
+      if ((0, _iiifParser.hasNextSection)(this.props.canvasIndex)) {
+        this.props.swapMediaElement(this.props.canvasIndex + 1);
+      }
+    }
+  }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      var _this2 = this;
+      var _this3 = this;
 
       var _global = global,
           MediaElementPlayer = _global.MediaElementPlayer;
@@ -77,10 +93,10 @@ function (_Component) {
       var options = Object.assign({}, JSON.parse(this.props.options), {
         pluginPath: './static/media/',
         success: function success(media, node, instance) {
-          return _this2.success(media, node, instance);
+          return _this3.success(media, node, instance);
         },
         error: function error(media, node) {
-          return _this2.error(media, node);
+          return _this3.error(media, node);
         }
       });
       window.Hls = _hls["default"];
@@ -133,15 +149,20 @@ MediaElement.propTypes = {
   sources: _propTypes["default"].string,
   options: _propTypes["default"].string
 };
+var mapDispatchToProps = {
+  playerInitialized: function playerInitialized(player) {
+    return actions.playerInitialized(player);
+  },
+  swapMediaElement: actions.swapMediaElement
+};
 
-var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+var mapStateToProps = function mapStateToProps(state) {
   return {
-    playerInitialized: function playerInitialized(player) {
-      return dispatch(actions.playerInitialized(player));
-    }
+    player: state.player,
+    canvasIndex: state.nav.canvasIndex
   };
 };
 
-var _default = (0, _reactRedux.connect)(null, mapDispatchToProps)(MediaElement);
+var _default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(MediaElement);
 
 exports["default"] = _default;

@@ -8,25 +8,35 @@ Object.defineProperty(exports, "__esModule", {
 exports.canvasesInManifest = canvasesInManifest;
 exports.filterVisibleRangeItem = filterVisibleRangeItem;
 exports.getChildCanvases = getChildCanvases;
-exports.getChoiceItems = getChoiceItems;
+exports.getMediaInfo = getMediaInfo;
 exports.getLabelValue = getLabelValue;
 exports.getMediaFragment = getMediaFragment;
+exports.getCanvasId = getCanvasId;
+exports.hasNextSection = hasNextSection;
 
 var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
-
-var _utilityHelpers = _interopRequireDefault(require("./utility-helpers"));
 
 var _manifesto = _interopRequireDefault(require("manifesto.js"));
 
 var _getReduxManifest = require("./get-redux-manifest");
 
 /**
- * Does the manifest have a canvases array?
+ * Get all the canvases in manifest
  * @function IIIFParser#canvasesInManifest
- * @return {boolean} - Does manifest have a canvases array
+ * @return {Object} array of canvases in manifest
  **/
 function canvasesInManifest(manifest) {
-  return _manifesto["default"].create(manifest).getSequences()[0].getCanvases().length > 0;
+  var canvases = _manifesto["default"].create(manifest).getSequences()[0].getCanvases().map(function (canvas) {
+    var sources = canvas.getContent()[0].getBody().map(function (source) {
+      return source.id;
+    });
+    return {
+      canvasId: canvas.id,
+      canvasSources: sources
+    };
+  });
+
+  return canvases;
 }
 /**
  * Check if item's behavior is set to a value which should hide it
@@ -35,7 +45,7 @@ function canvasesInManifest(manifest) {
 
 
 function filterVisibleRangeItem(item) {
-  var behavior = _manifesto["default"].create((0, _getReduxManifest.getReduxManifest)()).getRangeById(item.id).getBehavior();
+  var behavior = (0, _getReduxManifest.getReduxManifest)().getRangeById(item.id).getBehavior();
 
   if (behavior && behavior.value === 'no-nav') {
     return null;
@@ -48,7 +58,7 @@ function getChildCanvases(rangeId) {
   var rangeCanvases = [];
 
   try {
-    rangeCanvases = _manifesto["default"].create((0, _getReduxManifest.getReduxManifest)()).getRangeById(rangeId).getCanvasIds();
+    rangeCanvases = (0, _getReduxManifest.getReduxManifest)().getRangeById(rangeId).getCanvasIds();
   } catch (e) {
     console.log('error fetching range canvases', e);
   }
@@ -56,57 +66,47 @@ function getChildCanvases(rangeId) {
   return rangeCanvases;
 }
 /**
- * Get contents of 'items[]' contained within the child 'body' property
- * Assuming these are choices of file type (ie. .mp4 / .webm)
- * // TODO: Should validate extra on 'body.type' === 'Choice'?
+ * Get sources and media type for a given canvas
+ * If there are no items, an error is returned (user facing error)
  * @param {Object} manifest IIIF Manifest
+ * @param {Number} canvasIndex Index of the current canvas in manifest
  * @returns {Array.<Object>} array of file choice objects
  */
-// TODO: Not currently being used... skipping the manifestojs parsing
 
 
-function getChoiceItems(manifest) {
-  var searchItems = function searchItems(items) {
-    var _iteratorNormalCompletion = true;
-    var _didIteratorError = false;
-    var _iteratorError = undefined;
+function getMediaInfo(manifest, canvasIndex) {
+  var choiceItems = [];
 
-    try {
-      for (var _iterator = items[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-        var item = _step.value;
+  try {
+    choiceItems = _manifesto["default"].create(manifest).getSequences()[0].getCanvases()[canvasIndex].getContent()[0].getBody();
+  } catch (e) {}
 
-        if (item.body) {
-          if (item.body.type === 'Choice') {
-            // Return array of file choices
-            return item.body.items;
-          }
+  if (choiceItems.length === 0) {
+    return {
+      error: 'No media sources found'
+    };
+  } else {
+    var sources = choiceItems.map(function (item) {
+      return {
+        src: item.id,
+        // TODO: make type more generic, possibly use mime-db
+        format: item.getFormat().value
+      };
+    });
+    var allTypes = choiceItems.map(function (item) {
+      return item.getType().value;
+    });
+    var uniqueTypes = allTypes.filter(function (t, index) {
+      return allTypes.indexOf(t) === index;
+    }); // Default type if there are different types
 
-          if (['Video', 'Audio'].indexOf(item.body.type) > -1) {
-            // Return the 'body' object, as an array
-            return [item.body];
-          }
-        } else if (item.items) {
-          return searchItems(item.items);
-        }
-      }
-    } catch (err) {
-      _didIteratorError = true;
-      _iteratorError = err;
-    } finally {
-      try {
-        if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-          _iterator["return"]();
-        }
-      } finally {
-        if (_didIteratorError) {
-          throw _iteratorError;
-        }
-      }
-    }
-  };
-
-  var choiceItems = searchItems(manifest.items);
-  return choiceItems || [];
+    var mediaType = uniqueTypes.length === 1 ? uniqueTypes[0] : 'video';
+    return {
+      sources: sources,
+      mediaType: mediaType,
+      error: null
+    };
+  }
 }
 /**
  * Parse the label value from a manifest item
@@ -157,4 +157,27 @@ function getMediaFragment(uri) {
   } else {
     return undefined;
   }
+}
+/**
+ * Get the canvas ID from the URI of the clicked structure item
+ * @param {String} uri URI of the item clicked in structure
+ */
+
+
+function getCanvasId(uri) {
+  if (uri !== undefined) {
+    return uri.split('#t=')[0];
+  }
+}
+/**
+ * Determine there is a next section to play when the current section ends
+ * @param {Number} index index of the canvas in manifest
+ */
+
+
+function hasNextSection(index) {
+  var canvasIDs = (0, _getReduxManifest.getReduxManifest)().getSequences()[0].getCanvases().map(function (canvas) {
+    return canvas.id;
+  });
+  return canvasIDs.length - 1 > index ? true : false;
 }

@@ -20,8 +20,8 @@ const ListItem = props => {
   };
 
   const renderListItem = () => {
-    const label = getLabelValue(item.label);
-
+    let label = null;
+    label = getLabelValue(item.label);
     if (childCanvases.length > 0) {
       return childCanvases.map(canvasId => (
         <a key={canvasId} href={canvasId} onClick={handleClick}>
@@ -49,7 +49,4 @@ const mapDispatchToProps = dispatch => ({
   navItemClick: url => dispatch(actions.navItemClick(url))
 });
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(ListItem);
+export default connect(null, mapDispatchToProps)(ListItem);

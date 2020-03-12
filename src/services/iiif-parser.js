@@ -1,19 +1,27 @@
-import UtilityHelpers from './utility-helpers';
 import manifesto from 'manifesto.js';
 import { getReduxManifest } from './get-redux-manifest';
 
 /**
- * Does the manifest have a canvases array?
+ * Get all the canvases in manifest
  * @function IIIFParser#canvasesInManifest
- * @return {boolean} - Does manifest have a canvases array
+ * @return {Object} array of canvases in manifest
  **/
 export function canvasesInManifest(manifest) {
-  return (
-    manifesto
-      .create(manifest)
-      .getSequences()[0]
-      .getCanvases().length > 0
-  );
+  const canvases = manifesto
+    .create(manifest)
+    .getSequences()[0]
+    .getCanvases()
+    .map(canvas => {
+      let sources = canvas
+        .getContent()[0]
+        .getBody()
+        .map(source => source.id);
+      return {
+        canvasId: canvas.id,
+        canvasSources: sources
+      };
+    });
+  return canvases;
 }
 
 /**
@@ -21,8 +29,7 @@ export function canvasesInManifest(manifest) {
  * @param {Object} item
  */
 export function filterVisibleRangeItem(item) {
-  const behavior = manifesto
-    .create(getReduxManifest())
+  const behavior = getReduxManifest()
     .getRangeById(item.id)
     .getBehavior();
 
@@ -36,8 +43,7 @@ export function getChildCanvases(rangeId) {
   let rangeCanvases = [];
 
   try {
-    rangeCanvases = manifesto
-      .create(getReduxManifest())
+    rangeCanvases = getReduxManifest()
       .getRangeById(rangeId)
       .getCanvasIds();
   } catch (e) {
@@ -48,34 +54,45 @@ export function getChildCanvases(rangeId) {
 }
 
 /**
- * Get contents of 'items[]' contained within the child 'body' property
- * Assuming these are choices of file type (ie. .mp4 / .webm)
- * // TODO: Should validate extra on 'body.type' === 'Choice'?
+ * Get sources and media type for a given canvas
+ * If there are no items, an error is returned (user facing error)
  * @param {Object} manifest IIIF Manifest
+ * @param {Number} canvasIndex Index of the current canvas in manifest
  * @returns {Array.<Object>} array of file choice objects
  */
+export function getMediaInfo(manifest, canvasIndex) {
+  let choiceItems = [];
+  try {
+    choiceItems = manifesto
+      .create(manifest)
+      .getSequences()[0]
+      .getCanvases()
+      [canvasIndex].getContent()[0]
+      .getBody();
+  } catch (e) {}
 
-// TODO: Not currently being used... skipping the manifestojs parsing
-export function getChoiceItems(manifest) {
-  const searchItems = items => {
-    for (const item of items) {
-      if (item.body) {
-        if (item.body.type === 'Choice') {
-          // Return array of file choices
-          return item.body.items;
-        }
-        if (['Video', 'Audio'].indexOf(item.body.type) > -1) {
-          // Return the 'body' object, as an array
-          return [item.body];
-        }
-      } else if (item.items) {
-        return searchItems(item.items);
-      }
-    }
-  };
-  let choiceItems = searchItems(manifest.items);
+  if (choiceItems.length === 0) {
+    return {
+      error: 'No media sources found'
+    };
+  } else {
+    const sources = choiceItems.map(item => {
+      return {
+        src: item.id,
+        // TODO: make type more generic, possibly use mime-db
+        format: item.getFormat().value
+      };
+    });
 
-  return choiceItems || [];
+    let allTypes = choiceItems.map(item => item.getType().value);
+    let uniqueTypes = allTypes.filter((t, index) => {
+      return allTypes.indexOf(t) === index;
+    });
+    // Default type if there are different types
+    const mediaType = uniqueTypes.length === 1 ? uniqueTypes[0] : 'video';
+
+    return { sources, mediaType, error: null };
+  }
 }
 
 /**
@@ -121,4 +138,26 @@ export function getMediaFragment(uri) {
   } else {
     return undefined;
   }
+}
+
+/**
+ * Get the canvas ID from the URI of the clicked structure item
+ * @param {String} uri URI of the item clicked in structure
+ */
+export function getCanvasId(uri) {
+  if (uri !== undefined) {
+    return uri.split('#t=')[0];
+  }
+}
+
+/**
+ * Determine there is a next section to play when the current section ends
+ * @param {Number} index index of the canvas in manifest
+ */
+export function hasNextSection(index) {
+  let canvasIDs = getReduxManifest()
+    .getSequences()[0]
+    .getCanvases()
+    .map(canvas => canvas.id);
+  return canvasIDs.length - 1 > index ? true : false;
 }

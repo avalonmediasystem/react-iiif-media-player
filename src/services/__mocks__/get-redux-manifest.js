@@ -1,3 +1,4 @@
-import manifest from '../../json/manifest-pawpaw-mahler';
+import manifest from '../../json/mahler-symphony-audio';
+import manifesto from 'manifesto.js';
 
-export const getReduxManifest = () => manifest;
+export const getReduxManifest = () => manifesto.create(manifest);

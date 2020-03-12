@@ -31,6 +31,8 @@ var _reactRedux = require("react-redux");
 
 var actions = _interopRequireWildcard(require("./actions"));
 
+require("./App.css");
+
 var App =
 /*#__PURE__*/
 function (_Component) {
@@ -63,11 +65,15 @@ function (_Component) {
           error = _this$props$getManife.error;
 
       if (manifest) {
-        return _react["default"].createElement("section", null, _react["default"].createElement(_MediaElementContainer["default"], {
+        return _react["default"].createElement("section", {
+          className: "iiif-player"
+        }, _react["default"].createElement("div", {
+          className: "container"
+        }, _react["default"].createElement(_MediaElementContainer["default"], {
           manifest: manifest
         }), _react["default"].createElement(_StructuredNav["default"], {
           manifest: manifest
-        }));
+        })));
       }
 
       if (error) {

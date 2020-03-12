@@ -43,6 +43,13 @@ export function updateExternalConfig(config) {
   };
 }
 
+export function swapMediaElement(canvasId) {
+  return {
+    type: types.MEJS_SWAP,
+    payload: canvasId
+  };
+}
+
 export function getRemoteManifest(url) {
   return dispatch => {
     dispatch(fetchManifestRequest(url));

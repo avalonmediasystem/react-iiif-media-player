@@ -31,7 +31,9 @@ var _propTypes = _interopRequireDefault(require("prop-types"));
 
 var _ErrorMessage = _interopRequireDefault(require("../components/ErrorMessage"));
 
-var _manifesto = _interopRequireDefault(require("manifesto.js"));
+var _iiifParser = require("../services/iiif-parser");
+
+var _reactRedux = require("react-redux");
 
 var MediaElementContainer =
 /*#__PURE__*/
@@ -55,71 +57,13 @@ function (_Component) {
       ready: false,
       sources: [],
       mediaType: null,
+      canvasIndex: _this.props.canvasIndex,
       error: null
     });
     return _this;
   }
 
   (0, _createClass2["default"])(MediaElementContainer, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var manifest = this.state.manifest;
-      var choiceItems = [];
-
-      try {
-        choiceItems = _manifesto["default"].create(manifest).getSequences()[0].getCanvases()[0].getContent()[0].getBody();
-      } catch (e) {}
-
-      this.prepSources(choiceItems);
-    }
-  }, {
-    key: "getSources",
-    value: function getSources(choiceItems) {
-      var sources = choiceItems.map(function (item) {
-        return {
-          src: item.id,
-          // TODO: make type more generic, possibly use mime-db
-          format: item.getFormat().value
-        };
-      });
-      return sources;
-    }
-  }, {
-    key: "getMediaType",
-    value: function getMediaType(choiceItems) {
-      var allTypes = choiceItems.map(function (item) {
-        return item.getType().value;
-      });
-      var uniqueTypes = allTypes.filter(function (t, index) {
-        return allTypes.indexOf(t) === index;
-      });
-
-      if (uniqueTypes.length === 1) {
-        return uniqueTypes[0];
-      } // Default type if there are different types
-
-
-      return 'audio';
-    }
-  }, {
-    key: "prepSources",
-    value: function prepSources(choiceItems) {
-      if (choiceItems.length === 0) {
-        this.setState({
-          error: 'No media choice items found in manifest'
-        });
-        return;
-      }
-
-      var sources = this.getSources(choiceItems);
-      var mediaType = this.getMediaType(choiceItems);
-      this.setState({
-        ready: true,
-        sources: sources,
-        mediaType: mediaType
-      });
-    }
-  }, {
     key: "render",
     value: function render() {
       var _this$state = this.state,
@@ -127,13 +71,15 @@ function (_Component) {
           ready = _this$state.ready,
           sources = _this$state.sources,
           mediaType = _this$state.mediaType,
+          canvasIndex = _this$state.canvasIndex,
           error = _this$state.error;
       var options = {};
 
       if (ready) {
         return _react["default"].createElement("div", {
-          "data-testid": "mediaelement"
+          "data-testid": "mediaelement-".concat(canvasIndex)
         }, _react["default"].createElement(_MediaElement["default"], {
+          key: "mediaelement-".concat(canvasIndex),
           id: "avln-mediaelement-component",
           mediaType: mediaType,
           preload: "auto",
@@ -153,6 +99,25 @@ function (_Component) {
 
       return null;
     }
+  }], [{
+    key: "getDerivedStateFromProps",
+    value: function getDerivedStateFromProps(nextProps) {
+      var manifest = nextProps.manifest,
+          canvasIndex = nextProps.canvasIndex;
+
+      var _getMediaInfo = (0, _iiifParser.getMediaInfo)(manifest, canvasIndex),
+          sources = _getMediaInfo.sources,
+          mediaType = _getMediaInfo.mediaType,
+          error = _getMediaInfo.error;
+
+      return {
+        sources: sources,
+        mediaType: mediaType,
+        canvasIndex: canvasIndex,
+        ready: error ? false : true,
+        error: error
+      };
+    }
   }]);
   return MediaElementContainer;
 }(_react.Component);
@@ -160,5 +125,14 @@ function (_Component) {
 MediaElementContainer.propTypes = {
   manifest: _propTypes["default"].object
 };
-var _default = MediaElementContainer;
+
+var mapStateToProps = function mapStateToProps(state) {
+  return {
+    reload: state.nav.reload,
+    canvasIndex: state.nav.canvasIndex
+  };
+};
+
+var _default = (0, _reactRedux.connect)(mapStateToProps)(MediaElementContainer);
+
 exports["default"] = _default;
