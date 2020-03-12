@@ -23,9 +23,7 @@ class StructuredNav extends Component {
 
     const canvasInManifest = canvases.filter(c => getCanvas(id) == c.canvasId);
 
-    const canvasIndex = this.props.canvases
-      .map(c => c.canvasId)
-      .indexOf(getCanvas(id));
+    const canvasIndex = canvases.indexOf(canvasInManifest);
 
     let canvasSources = null;
     if (canvasInManifest.length > 0) {
