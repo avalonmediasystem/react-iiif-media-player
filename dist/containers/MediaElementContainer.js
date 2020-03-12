@@ -57,35 +57,13 @@ function (_Component) {
       ready: false,
       sources: [],
       mediaType: null,
-      canvasIndex: 0,
+      canvasIndex: _this.props.canvasIndex,
       error: null
     });
     return _this;
   }
 
   (0, _createClass2["default"])(MediaElementContainer, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var manifest = this.state.manifest; // Get the first canvas in manifest
-
-      var choiceItems = (0, _iiifParser.getChoiceItems)(manifest, 0);
-
-      if (choiceItems.length === 0) {
-        this.setState({
-          error: 'No media choice items found in manifest'
-        });
-        return;
-      }
-
-      var sources = (0, _iiifParser.getSources)(choiceItems);
-      var mediaType = (0, _iiifParser.getMediaType)(choiceItems);
-      this.setState({
-        ready: true,
-        sources: sources,
-        mediaType: mediaType
-      });
-    }
-  }, {
     key: "render",
     value: function render() {
       var _this$state = this.state,
@@ -123,31 +101,22 @@ function (_Component) {
     }
   }], [{
     key: "getDerivedStateFromProps",
-    value: function getDerivedStateFromProps(nextProps, prevState) {
-      var reload = nextProps.reload,
+    value: function getDerivedStateFromProps(nextProps) {
+      var manifest = nextProps.manifest,
           canvasIndex = nextProps.canvasIndex;
-      var manifest = prevState.manifest;
 
-      if (reload) {
-        var choiceItems = (0, _iiifParser.getChoiceItems)(manifest, canvasIndex);
+      var _getMediaInfo = (0, _iiifParser.getMediaInfo)(manifest, canvasIndex),
+          sources = _getMediaInfo.sources,
+          mediaType = _getMediaInfo.mediaType,
+          error = _getMediaInfo.error;
 
-        if (choiceItems.length === 0) {
-          return {
-            error: 'No media choice items found in manifest'
-          };
-        }
-
-        var sources = (0, _iiifParser.getSources)(choiceItems);
-        var mediaType = (0, _iiifParser.getMediaType)(choiceItems);
-        return {
-          sources: sources,
-          mediaType: mediaType,
-          canvasIndex: canvasIndex,
-          ready: true
-        };
-      }
-
-      return null;
+      return {
+        sources: sources,
+        mediaType: mediaType,
+        canvasIndex: canvasIndex,
+        ready: error ? false : true,
+        error: error
+      };
     }
   }]);
   return MediaElementContainer;

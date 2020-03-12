@@ -65,13 +65,15 @@ function (_Component) {
           error = _this$props$getManife.error;
 
       if (manifest) {
-        return _react["default"].createElement("div", {
+        return _react["default"].createElement("section", {
+          className: "iiif-player"
+        }, _react["default"].createElement("div", {
           className: "container"
         }, _react["default"].createElement(_MediaElementContainer["default"], {
           manifest: manifest
         }), _react["default"].createElement(_StructuredNav["default"], {
           manifest: manifest
-        }));
+        })));
       }
 
       if (error) {

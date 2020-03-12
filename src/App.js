@@ -23,10 +23,12 @@ class App extends Component {
 
     if (manifest) {
       return (
-        <div className="container">
-          <MediaElementContainer manifest={manifest} />
-          <StructuredNav manifest={manifest} />
-        </div>
+        <section className="iiif-player">
+          <div className="container">
+            <MediaElementContainer manifest={manifest} />
+            <StructuredNav manifest={manifest} />
+          </div>
+        </section>
       );
     }
     if (error) {

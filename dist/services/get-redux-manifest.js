@@ -9,7 +9,7 @@ var _Root = require("../Root");
 
 // Necessary so we can more easily mock in tests
 var getReduxManifest = function getReduxManifest() {
-  return _Root.store.getState().getManifest.manifest;
+  return _Root.store.getState().getManifest.parsedManifest;
 };
 
 exports.getReduxManifest = getReduxManifest;

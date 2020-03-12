@@ -1,5 +1,6 @@
 import * as types from '../actions/types';
 import { canvasesInManifest } from '../services/iiif-parser';
+import manifesto from 'manifesto.js';
 
 const initialState = {
   error: false,
@@ -20,6 +21,7 @@ const getManifest = (state = initialState, action) => {
         error: false,
         loading: false,
         manifest: action.payload,
+        parsedManifest: manifesto.create(action.payload),
         canvases: canvasesInManifest(action.payload)
       });
     case types.FETCH_MANIFEST_FAILURE:

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import List from './List';
-import { getMediaFragment, getCanvas } from '../services/iiif-parser';
+import { getMediaFragment, getCanvasId } from '../services/iiif-parser';
 import { swapMediaElement } from '../actions';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -9,26 +9,42 @@ class StructuredNav extends Component {
   constructor(props) {
     super(props);
     this.manifest = this.props.manifest;
+    this.state = {
+      startTime: null
+    };
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.clickedUrl != prevProps.clickedUrl) {
-      this.handleItemClick(this.props.clickedUrl);
+    const { clickedUrl, player } = this.props;
+    if (clickedUrl != prevProps.clickedUrl) {
+      this.handleItemClick(clickedUrl);
+    }
+
+    const { startTime } = this.state;
+    if (startTime) {
+      // Set the start time
+      player.setCurrentTime(startTime);
     }
   }
 
   handleItemClick(id) {
     const { player, canvases } = this.props;
-    const timeFragment = getMediaFragment(id);
 
-    const canvasInManifest = canvases.filter(c => getCanvas(id) == c.canvasId);
+    const canvasInManifest = canvases.find(c => getCanvasId(id) === c.canvasId);
 
     const canvasIndex = canvases.indexOf(canvasInManifest);
 
     let canvasSources = null;
-    if (canvasInManifest.length > 0) {
-      canvasSources = canvasInManifest[0].canvasSources;
+    if (canvasInManifest) {
+      canvasSources = canvasInManifest.canvasSources;
     }
+
+    // Go to next section
+    if (!canvasSources.includes(player.getSrc())) {
+      this.props.swapMediaElement(canvasIndex);
+    }
+
+    const timeFragment = getMediaFragment(id);
 
     // Invalid time fragment
     if (!timeFragment) {
@@ -38,13 +54,9 @@ class StructuredNav extends Component {
       return;
     }
 
-    // Go to next section
-    if (!canvasSources.includes(player.getSrc())) {
-      this.props.swapMediaElement(canvasIndex);
-    }
-
-    // Set the start time
-    player.setCurrentTime(timeFragment.start);
+    this.setState({
+      startTime: timeFragment.start
+    });
   }
 
   render() {
