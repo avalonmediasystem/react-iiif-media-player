@@ -25,17 +25,23 @@ var _reactRedux = require("react-redux");
 
 var actions = _interopRequireWildcard(require("../actions"));
 
-var _hls = _interopRequireDefault(require("hls.js"));
-
-require("mediaelement");
-
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
 var _iiifParser = require("../services/iiif-parser");
 
-require("mediaelement/build/mediaelementplayer.min.css");
+var _hls = _interopRequireDefault(require("hls.js"));
 
-// Import stylesheet and shims
+require("mediaelement");
+
+require("../mediaelement/javascript/plugins/mejs-quality.js");
+
+require("../mediaelement/stylesheets/mediaelementplayer.css");
+
+require("../mediaelement/stylesheets/plugins/mejs-quality.scss");
+
+require("../mediaelement/stylesheets/mejs-iiif-player-styles.scss");
+
+// Import stylesheets
 var MediaElement =
 /*#__PURE__*/
 function (_Component) {
@@ -97,7 +103,9 @@ function (_Component) {
         },
         error: function error(media, node) {
           return _this3.error(media, node);
-        }
+        },
+        features: ['playpause', 'current', 'progress', 'duration', 'volume', 'quality', 'fullscreen'],
+        qualityText: 'Stream Quality'
       });
       window.Hls = _hls["default"];
       this.setState({
@@ -124,7 +132,7 @@ function (_Component) {
 
       for (var i = 0, total = sources.length; i < total; i++) {
         var source = sources[i];
-        sourceTags.push("<source src=\"".concat(source.src, "\" type=\"").concat(source.format, "\">"));
+        sourceTags.push("<source src=\"".concat(source.src, "\" type=\"").concat(source.format, "\" data-quality=\"").concat(source.quality, "\">"));
       }
 
       var mediaBody = "".concat(sourceTags.join('\n'), "\n\t\t\t\t").concat(tracksTags.join('\n')),

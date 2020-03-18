@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import hlsjs from 'hls.js';
-import 'mediaelement';
 import PropTypes from 'prop-types';
 import { hasNextSection } from '../services/iiif-parser';
+import hlsjs from 'hls.js';
+import 'mediaelement';
+import '../mediaelement/javascript/plugins/mejs-quality.js';
 
-// Import stylesheet and shims
-import 'mediaelement/build/mediaelementplayer.min.css';
+// Import stylesheets
+import '../mediaelement/stylesheets/mediaelementplayer.css';
+import '../mediaelement/stylesheets/plugins/mejs-quality.scss';
+import '../mediaelement/stylesheets/mejs-iiif-player-styles.scss';
 
 class MediaElement extends Component {
   constructor(props) {
@@ -50,7 +53,17 @@ class MediaElement extends Component {
     const options = Object.assign({}, JSON.parse(this.props.options), {
       pluginPath: './static/media/',
       success: (media, node, instance) => this.success(media, node, instance),
-      error: (media, node) => this.error(media, node)
+      error: (media, node) => this.error(media, node),
+      features: [
+        'playpause',
+        'current',
+        'progress',
+        'duration',
+        'volume',
+        'quality',
+        'fullscreen'
+      ],
+      qualityText: 'Stream Quality'
     });
 
     window.Hls = hlsjs;
@@ -72,7 +85,9 @@ class MediaElement extends Component {
 
     for (let i = 0, total = sources.length; i < total; i++) {
       const source = sources[i];
-      sourceTags.push(`<source src="${source.src}" type="${source.format}">`);
+      sourceTags.push(
+        `<source src="${source.src}" type="${source.format}" data-quality="${source.quality}">`
+      );
     }
 
     const mediaBody = `${sourceTags.join('\n')}

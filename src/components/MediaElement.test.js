@@ -1,20 +1,27 @@
 import React from 'react';
 import { renderWithRedux } from '../services/testing-helpers';
 import MediaElement from './MediaElement';
+import { fireEvent } from '@testing-library/react';
 
 describe('MediaElement component', () => {
   const sources = [
     {
-      src: 'https://pawpaw.dlib.indiana.edu/master_files/ww72bb48n/auto.m3u8',
-      format: 'application/x-mpegURL'
+      src:
+        'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/CD1/medium/480Kbps.mp4',
+      format: 'audio/mp4',
+      quality: 'medium'
     },
     {
-      src: 'https://pawpaw.dlib.indiana.edu/master_files/ww72bb48n/high.m3u8',
-      format: 'application/x-mpegURL'
+      src:
+        'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/CD1/auto/128Kbps.mp4',
+      format: 'audio/mp4',
+      quality: 'auto'
     },
     {
-      src: 'https://pawpaw.dlib.indiana.edu/master_files/ww72bb48n/medium.m3u8',
-      format: 'application/x-mpegURL'
+      src:
+        'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/CD1/high/720Kbps.mp4',
+      format: 'audio/mp4',
+      quality: 'high'
     }
   ];
 
@@ -69,5 +76,30 @@ describe('MediaElement component', () => {
     const { queryByTestId } = renderWithRedux(<MediaElement {...videoProps} />);
     const videoElement = queryByTestId('video-element');
     expect(videoElement.querySelectorAll('source').length).toEqual(3);
+  });
+
+  test('renders auto quality by default', () => {
+    const { queryByTestId } = renderWithRedux(<MediaElement {...audioProps} />);
+    expect(queryByTestId('audio-element').src).toEqual(
+      'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/CD1/auto/128Kbps.mp4'
+    );
+  });
+
+  test('renders source for the selected quality', () => {
+    const { getByTestId } = renderWithRedux(<MediaElement {...audioProps} />);
+
+    // auto quality by default
+    expect(getByTestId('audio-element').src).toEqual(
+      'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/CD1/auto/128Kbps.mp4'
+    );
+
+    // simulate quality selection
+    fireEvent.click(getByTestId('quality-btn'));
+    fireEvent.click(getByTestId('quality-mep_5-qualities-high'));
+
+    // selected medium quality
+    expect(getByTestId('audio-element').src).toEqual(
+      'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/CD1/high/720Kbps.mp4'
+    );
   });
 });

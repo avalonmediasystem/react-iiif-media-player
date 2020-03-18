@@ -80,7 +80,8 @@ export function getMediaInfo(manifest, canvasIndex) {
       return {
         src: item.id,
         // TODO: make type more generic, possibly use mime-db
-        format: item.getFormat().value
+        format: item.getFormat().value,
+        quality: item.getLabel()[0].value
       };
     });
 
