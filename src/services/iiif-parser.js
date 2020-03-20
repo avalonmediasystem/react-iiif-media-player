@@ -69,7 +69,9 @@ export function getMediaInfo(manifest, canvasIndex) {
       .getCanvases()
       [canvasIndex].getContent()[0]
       .getBody();
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
 
   if (choiceItems.length === 0) {
     return {
@@ -94,6 +96,10 @@ export function getMediaInfo(manifest, canvasIndex) {
 
     return { sources, mediaType, error: null };
   }
+}
+
+export function getTracks() {
+  return getReduxManifest().getSeeAlso();
 }
 
 /**

@@ -56,6 +56,7 @@ function (_Component) {
       manifest: _this.props.manifest,
       ready: false,
       sources: [],
+      tracks: [],
       mediaType: null,
       canvasIndex: _this.props.canvasIndex,
       error: null
@@ -70,6 +71,7 @@ function (_Component) {
           manifest = _this$state.manifest,
           ready = _this$state.ready,
           sources = _this$state.sources,
+          tracks = _this$state.tracks,
           mediaType = _this$state.mediaType,
           canvasIndex = _this$state.canvasIndex,
           error = _this$state.error;
@@ -89,6 +91,7 @@ function (_Component) {
           poster: "",
           crossorigin: "anonymous",
           sources: JSON.stringify(sources),
+          tracks: JSON.stringify(tracks),
           options: JSON.stringify(options)
         }));
       } else if (error) {
@@ -110,10 +113,12 @@ function (_Component) {
           mediaType = _getMediaInfo.mediaType,
           error = _getMediaInfo.error;
 
+      var tracks = (0, _iiifParser.getTracks)();
       return {
         sources: sources,
         mediaType: mediaType,
         canvasIndex: canvasIndex,
+        tracks: tracks,
         ready: error ? false : true,
         error: error
       };
@@ -129,7 +134,7 @@ MediaElementContainer.propTypes = {
 var mapStateToProps = function mapStateToProps(state) {
   return {
     reload: state.nav.reload,
-    canvasIndex: state.nav.canvasIndex
+    canvasIndex: state.player.canvasIndex
   };
 };
 

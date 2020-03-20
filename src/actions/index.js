@@ -22,13 +22,6 @@ export function fetchManifestFailure(error) {
   };
 }
 
-export function playerInitialized(player) {
-  return {
-    type: types.MEJS_PLAYER_INITIALIZED,
-    payload: player
-  };
-}
-
 export function navItemClick(url) {
   return {
     type: types.NAV_ITEM_CLICK,
@@ -43,13 +36,6 @@ export function updateExternalConfig(config) {
   };
 }
 
-export function swapMediaElement(canvasId) {
-  return {
-    type: types.MEJS_SWAP,
-    payload: canvasId
-  };
-}
-
 export function getRemoteManifest(url) {
   return dispatch => {
     dispatch(fetchManifestRequest(url));
@@ -60,5 +46,27 @@ export function getRemoteManifest(url) {
       }
       return dispatch(fetchManifestSuccess(response));
     });
+  };
+}
+
+// Player related
+export function playerInitialized(player) {
+  return {
+    type: types.MEJS_PLAYER_INITIALIZED,
+    payload: player
+  };
+}
+
+export function swapMediaElement(canvasId) {
+  return {
+    type: types.MEJS_SWAP,
+    payload: canvasId
+  };
+}
+
+export function registerCaptionChange(captionOn) {
+  return {
+    type: types.MEJS_CAPTIONS,
+    payload: captionOn
   };
 }

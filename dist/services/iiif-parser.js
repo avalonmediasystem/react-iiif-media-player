@@ -9,6 +9,7 @@ exports.canvasesInManifest = canvasesInManifest;
 exports.filterVisibleRangeItem = filterVisibleRangeItem;
 exports.getChildCanvases = getChildCanvases;
 exports.getMediaInfo = getMediaInfo;
+exports.getTracks = getTracks;
 exports.getLabelValue = getLabelValue;
 exports.getMediaFragment = getMediaFragment;
 exports.getCanvasId = getCanvasId;
@@ -79,7 +80,9 @@ function getMediaInfo(manifest, canvasIndex) {
 
   try {
     choiceItems = _manifesto["default"].create(manifest).getSequences()[0].getCanvases()[canvasIndex].getContent()[0].getBody();
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
 
   if (choiceItems.length === 0) {
     return {
@@ -108,6 +111,10 @@ function getMediaInfo(manifest, canvasIndex) {
       error: null
     };
   }
+}
+
+function getTracks() {
+  return (0, _getReduxManifest.getReduxManifest)().getSeeAlso();
 }
 /**
  * Parse the label value from a manifest item

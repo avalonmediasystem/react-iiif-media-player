@@ -25,6 +25,16 @@ describe('MediaElement component', () => {
     }
   ];
 
+  const tracks = [
+    {
+      id:
+        'https://www.iandevlin.com/html5test/webvtt/upc-video-subtitles-en.vtt',
+      type: 'Text',
+      format: 'application/webvtt',
+      label: 'subtitles'
+    }
+  ];
+
   const videoProps = {
     id: 'avln-mediaelement-component',
     mediaType: 'video',
@@ -34,6 +44,7 @@ describe('MediaElement component', () => {
     poster: '',
     crossorigin: 'anonymous',
     sources: JSON.stringify(sources),
+    tracks: JSON.stringify(tracks),
     options: JSON.stringify({})
   };
 
@@ -46,6 +57,7 @@ describe('MediaElement component', () => {
     poster: '',
     crossorigin: 'anonymous',
     sources: JSON.stringify(sources),
+    tracks: JSON.stringify([]),
     options: JSON.stringify({})
   };
 
@@ -101,5 +113,40 @@ describe('MediaElement component', () => {
     expect(getByTestId('audio-element').src).toEqual(
       'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/CD1/high/720Kbps.mp4'
     );
+  });
+
+  test('do not render captions for audio player', () => {
+    const { queryByTestId } = renderWithRedux(<MediaElement {...audioProps} />);
+
+    expect(queryByTestId('audio-element')).toBeInTheDocument();
+    expect(queryByTestId('captions-btn')).not.toBeInTheDocument();
+  });
+
+  test('renders captions by default for video player', () => {
+    const { container, getByTestId } = renderWithRedux(
+      <MediaElement {...videoProps} />
+    );
+
+    expect(getByTestId('video-element')).toBeInTheDocument();
+
+    const captionBtn = container.querySelector('.mejs__captions-button');
+    expect(captionBtn).toBeInTheDocument();
+    expect(
+      captionBtn.classList.contains('mejs__captions-enabled')
+    ).toBeTruthy();
+  });
+
+  test('turns on/off captions', () => {
+    const { container, getByTestId } = renderWithRedux(
+      <MediaElement {...videoProps} />
+    );
+
+    expect(getByTestId('video-element')).toBeInTheDocument();
+
+    const captionBtn = container.querySelector('.mejs__captions-button');
+    expect(captionBtn).toBeInTheDocument();
+    // simulates captions button click
+    fireEvent.click(captionBtn);
+    expect(captionBtn.classList.contains('mejs__captions-enabled')).toBeFalsy();
   });
 });

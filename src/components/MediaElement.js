@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../actions';
+import {
+  playerInitialized,
+  swapMediaElement,
+  registerCaptionChange
+} from '../actions';
 import PropTypes from 'prop-types';
 import { hasNextSection } from '../services/iiif-parser';
 import hlsjs from 'hls.js';
@@ -19,17 +23,37 @@ class MediaElement extends Component {
   }
 
   success(media, node, instance) {
+    const { mediaType, captionOn } = this.props;
     // Your action when media was successfully loaded
     console.log('Loaded successfully');
 
     // Action reducer
     this.props.playerInitialized(instance);
 
+    // Register ended event
     media.addEventListener('ended', ended => {
       if (ended) {
         this.handleEnded();
       }
     });
+
+    // Register caption change event
+    media.addEventListener('captionschange', captions => {
+      this.handleCaptionChange(captions.detail.caption);
+    });
+
+    // Set captions for video player
+    if (
+      mediaType === 'video' &&
+      media.options.toggleCaptionsButtonWhenOnlyOne
+    ) {
+      if (captionOn && instance.tracks && instance.tracks.length == 1) {
+        instance.setTrack(
+          instance.tracks[0].trackId,
+          typeof keyboard !== 'undefined'
+        );
+      }
+    }
   }
 
   error(media) {
@@ -40,6 +64,14 @@ class MediaElement extends Component {
   handleEnded() {
     if (hasNextSection(this.props.canvasIndex)) {
       this.props.swapMediaElement(this.props.canvasIndex + 1);
+    }
+  }
+
+  handleCaptionChange(caption) {
+    if (caption !== null) {
+      this.props.registerCaptionChange(true);
+    } else {
+      this.props.registerCaptionChange(false);
     }
   }
 
@@ -61,9 +93,11 @@ class MediaElement extends Component {
         'duration',
         'volume',
         'quality',
+        this.props.mediaType === 'video' ? 'tracks' : '',
         'fullscreen'
       ],
-      qualityText: 'Stream Quality'
+      qualityText: 'Stream Quality',
+      toggleCaptionsButtonWhenOnlyOne: true
     });
 
     window.Hls = hlsjs;
@@ -80,13 +114,21 @@ class MediaElement extends Component {
   render() {
     const props = this.props,
       sources = JSON.parse(props.sources),
+      tracks = JSON.parse(props.tracks),
       sourceTags = [],
       tracksTags = [];
 
     for (let i = 0, total = sources.length; i < total; i++) {
       const source = sources[i];
       sourceTags.push(
-        `<source src="${source.src}" type="${source.format}" data-quality="${source.quality}">`
+        `<source src="${source.src}" type="${source.format}" data-quality="${source.quality}" />`
+      );
+    }
+
+    for (let i = 0, total = tracks.length; i < total; i++) {
+      const track = tracks[i];
+      tracksTags.push(
+        `<track srclang="en" kind="subtitles" type="${track.format}" src="${track.id}"></track>`
       );
     }
 
@@ -128,13 +170,15 @@ MediaElement.propTypes = {
 };
 
 const mapDispatchToProps = {
-  playerInitialized: player => actions.playerInitialized(player),
-  swapMediaElement: actions.swapMediaElement
+  playerInitialized: player => playerInitialized(player),
+  swapMediaElement: canvasIndex => swapMediaElement(canvasIndex),
+  registerCaptionChange: captionOn => registerCaptionChange(captionOn)
 };
 
 const mapStateToProps = state => ({
-  player: state.player,
-  canvasIndex: state.nav.canvasIndex
+  player: state.player.instance,
+  captionOn: state.player.captionOn,
+  canvasIndex: state.player.canvasIndex
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MediaElement);

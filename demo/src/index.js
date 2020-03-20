@@ -4,7 +4,7 @@ import Root from '../../src';
 
 // Import a local manifest here.
 // If included in the 'props' below, it will take precedence over the URI
-import iiifManifest from '../../src/json/mahler-symphony-audio';
+import iiifManifest from '../../src/json/mahler-symphony-video';
 
 // A valid IIIF Manifest URI endpoint
 const iiifManifestUrl =

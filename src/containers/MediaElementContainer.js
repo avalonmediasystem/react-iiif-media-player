@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import MediaElement from '../components/MediaElement';
 import PropTypes from 'prop-types';
 import ErrorMessage from '../components/ErrorMessage';
-import { getMediaInfo } from '../services/iiif-parser';
+import { getMediaInfo, getTracks } from '../services/iiif-parser';
 import { connect } from 'react-redux';
 
 class MediaElementContainer extends Component {
@@ -10,6 +10,7 @@ class MediaElementContainer extends Component {
     manifest: this.props.manifest,
     ready: false,
     sources: [],
+    tracks: [],
     mediaType: null,
     canvasIndex: this.props.canvasIndex,
     error: null
@@ -18,10 +19,12 @@ class MediaElementContainer extends Component {
   static getDerivedStateFromProps(nextProps) {
     const { manifest, canvasIndex } = nextProps;
     const { sources, mediaType, error } = getMediaInfo(manifest, canvasIndex);
+    const tracks = getTracks();
     return {
       sources,
       mediaType,
       canvasIndex,
+      tracks,
       ready: error ? false : true,
       error
     };
@@ -32,6 +35,7 @@ class MediaElementContainer extends Component {
       manifest,
       ready,
       sources,
+      tracks,
       mediaType,
       canvasIndex,
       error
@@ -52,6 +56,7 @@ class MediaElementContainer extends Component {
             poster=""
             crossorigin="anonymous"
             sources={JSON.stringify(sources)}
+            tracks={JSON.stringify(tracks)}
             options={JSON.stringify(options)}
           />
         </div>
@@ -69,7 +74,7 @@ MediaElementContainer.propTypes = {
 
 const mapStateToProps = state => ({
   reload: state.nav.reload,
-  canvasIndex: state.nav.canvasIndex
+  canvasIndex: state.player.canvasIndex
 });
 
 export default connect(mapStateToProps)(MediaElementContainer);

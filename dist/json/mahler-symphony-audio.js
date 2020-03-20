@@ -79,6 +79,7 @@ var _default = {
       }]
     }]
   }],
+  seeAlso: [],
   structures: [{
     id: 'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/range/0',
     type: 'Range',

@@ -1,8 +1,8 @@
 import reducer from './index';
-import * as types from '../actions/types';
 
 describe('reducer', () => {
-  const initialState = {
+  const playerInitialState = {
+    captionOn: true,
     reload: false,
     canvasIndex: 0
   };
@@ -14,8 +14,8 @@ describe('reducer', () => {
         error: false,
         loading: false
       },
-      nav: initialState,
-      player: {}
+      nav: {},
+      player: playerInitialState
     });
   });
 });

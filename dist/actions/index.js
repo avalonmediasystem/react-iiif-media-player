@@ -8,11 +8,12 @@ Object.defineProperty(exports, "__esModule", {
 exports.fetchManifestRequest = fetchManifestRequest;
 exports.fetchManifestSuccess = fetchManifestSuccess;
 exports.fetchManifestFailure = fetchManifestFailure;
-exports.playerInitialized = playerInitialized;
 exports.navItemClick = navItemClick;
 exports.updateExternalConfig = updateExternalConfig;
-exports.swapMediaElement = swapMediaElement;
 exports.getRemoteManifest = getRemoteManifest;
+exports.playerInitialized = playerInitialized;
+exports.swapMediaElement = swapMediaElement;
+exports.registerCaptionChange = registerCaptionChange;
 
 var types = _interopRequireWildcard(require("./types"));
 
@@ -39,13 +40,6 @@ function fetchManifestFailure(error) {
   };
 }
 
-function playerInitialized(player) {
-  return {
-    type: types.MEJS_PLAYER_INITIALIZED,
-    payload: player
-  };
-}
-
 function navItemClick(url) {
   return {
     type: types.NAV_ITEM_CLICK,
@@ -60,13 +54,6 @@ function updateExternalConfig(config) {
   };
 }
 
-function swapMediaElement(canvasId) {
-  return {
-    type: types.MEJS_SWAP,
-    payload: canvasId
-  };
-}
-
 function getRemoteManifest(url) {
   return function (dispatch) {
     dispatch(fetchManifestRequest(url));
@@ -77,5 +64,27 @@ function getRemoteManifest(url) {
 
       return dispatch(fetchManifestSuccess(response));
     });
+  };
+} // Player related
+
+
+function playerInitialized(player) {
+  return {
+    type: types.MEJS_PLAYER_INITIALIZED,
+    payload: player
+  };
+}
+
+function swapMediaElement(canvasId) {
+  return {
+    type: types.MEJS_SWAP,
+    payload: canvasId
+  };
+}
+
+function registerCaptionChange(captionOn) {
+  return {
+    type: types.MEJS_CAPTIONS,
+    payload: captionOn
   };
 }
