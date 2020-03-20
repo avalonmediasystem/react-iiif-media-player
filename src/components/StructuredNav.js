@@ -81,7 +81,7 @@ const mapDispatchToProps = {
 
 const mapStateToProps = state => ({
   clickedUrl: state.nav.clickedUrl,
-  player: state.player,
+  player: state.player.instance,
   canvases: state.getManifest.canvases
 });
 

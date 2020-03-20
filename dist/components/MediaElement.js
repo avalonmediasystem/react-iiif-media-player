@@ -23,7 +23,7 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _reactRedux = require("react-redux");
 
-var actions = _interopRequireWildcard(require("../actions"));
+var _actions = require("../actions");
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
@@ -61,15 +61,29 @@ function (_Component) {
     value: function success(media, node, instance) {
       var _this2 = this;
 
-      // Your action when media was successfully loaded
+      var _this$props = this.props,
+          mediaType = _this$props.mediaType,
+          captionOn = _this$props.captionOn; // Your action when media was successfully loaded
+
       console.log('Loaded successfully'); // Action reducer
 
-      this.props.playerInitialized(instance);
+      this.props.playerInitialized(instance); // Register ended event
+
       media.addEventListener('ended', function (ended) {
         if (ended) {
           _this2.handleEnded();
         }
-      });
+      }); // Register caption change event
+
+      media.addEventListener('captionschange', function (captions) {
+        _this2.handleCaptionChange(captions.detail.caption);
+      }); // Set captions for video player
+
+      if (mediaType === 'video' && media.options.toggleCaptionsButtonWhenOnlyOne) {
+        if (captionOn && instance.tracks && instance.tracks.length == 1) {
+          instance.setTrack(instance.tracks[0].trackId, typeof keyboard !== 'undefined');
+        }
+      }
     }
   }, {
     key: "error",
@@ -82,6 +96,15 @@ function (_Component) {
     value: function handleEnded() {
       if ((0, _iiifParser.hasNextSection)(this.props.canvasIndex)) {
         this.props.swapMediaElement(this.props.canvasIndex + 1);
+      }
+    }
+  }, {
+    key: "handleCaptionChange",
+    value: function handleCaptionChange(caption) {
+      if (caption !== null) {
+        this.props.registerCaptionChange(true);
+      } else {
+        this.props.registerCaptionChange(false);
       }
     }
   }, {
@@ -104,8 +127,9 @@ function (_Component) {
         error: function error(media, node) {
           return _this3.error(media, node);
         },
-        features: ['playpause', 'current', 'progress', 'duration', 'volume', 'quality', 'fullscreen'],
-        qualityText: 'Stream Quality'
+        features: ['playpause', 'current', 'progress', 'duration', 'volume', 'quality', this.props.mediaType === 'video' ? 'tracks' : '', 'fullscreen'],
+        qualityText: 'Stream Quality',
+        toggleCaptionsButtonWhenOnlyOne: true
       });
       window.Hls = _hls["default"];
       this.setState({
@@ -127,12 +151,18 @@ function (_Component) {
     value: function render() {
       var props = this.props,
           sources = JSON.parse(props.sources),
+          tracks = JSON.parse(props.tracks),
           sourceTags = [],
           tracksTags = [];
 
       for (var i = 0, total = sources.length; i < total; i++) {
         var source = sources[i];
-        sourceTags.push("<source src=\"".concat(source.src, "\" type=\"").concat(source.format, "\" data-quality=\"").concat(source.quality, "\">"));
+        sourceTags.push("<source src=\"".concat(source.src, "\" type=\"").concat(source.format, "\" data-quality=\"").concat(source.quality, "\" />"));
+      }
+
+      for (var _i = 0, _total = tracks.length; _i < _total; _i++) {
+        var track = tracks[_i];
+        tracksTags.push("<track srclang=\"en\" kind=\"subtitles\" type=\"".concat(track.format, "\" src=\"").concat(track.id, "\"></track>"));
       }
 
       var mediaBody = "".concat(sourceTags.join('\n'), "\n\t\t\t\t").concat(tracksTags.join('\n')),
@@ -159,15 +189,21 @@ MediaElement.propTypes = {
 };
 var mapDispatchToProps = {
   playerInitialized: function playerInitialized(player) {
-    return actions.playerInitialized(player);
+    return (0, _actions.playerInitialized)(player);
   },
-  swapMediaElement: actions.swapMediaElement
+  swapMediaElement: function swapMediaElement(canvasIndex) {
+    return (0, _actions.swapMediaElement)(canvasIndex);
+  },
+  registerCaptionChange: function registerCaptionChange(captionOn) {
+    return (0, _actions.registerCaptionChange)(captionOn);
+  }
 };
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
-    player: state.player,
-    canvasIndex: state.nav.canvasIndex
+    player: state.player.instance,
+    captionOn: state.player.captionOn,
+    canvasIndex: state.player.canvasIndex
   };
 };
 

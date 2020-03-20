@@ -125,7 +125,7 @@ var mapDispatchToProps = {
 var mapStateToProps = function mapStateToProps(state) {
   return {
     clickedUrl: state.nav.clickedUrl,
-    player: state.player,
+    player: state.player.instance,
     canvases: state.getManifest.canvases
   };
 };

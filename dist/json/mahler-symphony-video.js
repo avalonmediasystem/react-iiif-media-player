@@ -62,15 +62,15 @@ var _default = {
           choiceHint: 'user',
           items: [{
             id: 'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/CD2/high/320Kbps.mp4',
-            type: 'Audio',
-            format: 'audio/mp4; codec..xxxxx',
+            type: 'Video',
+            format: 'video/mp4; codec..xxxxx',
             label: {
               en: ['High']
             }
           }, {
             id: 'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/CD2/medium/128Kbps.mp4',
-            type: 'Audio',
-            format: 'audio/mp4; codec..xxxxx',
+            type: 'Video',
+            format: 'video/mp4; codec..xxxxx',
             label: {
               en: ['Medium']
             }
@@ -78,6 +78,12 @@ var _default = {
         }]
       }]
     }]
+  }],
+  seeAlso: [{
+    id: 'http://localhost:3001/src/json/upc-video-subtitles-en.vtt',
+    type: 'Text',
+    format: 'application/webvtt',
+    label: 'subtitles'
   }],
   structures: [{
     id: 'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/range/0',
