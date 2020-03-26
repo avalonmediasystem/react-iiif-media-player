@@ -168,3 +168,20 @@ export function hasNextSection(index) {
     .map(canvas => canvas.id);
   return canvasIDs.length - 1 > index ? true : false;
 }
+
+export function isAtTop(item) {
+  const behavior = getReduxManifest()
+    .getRangeById(item.id)
+    .getBehavior();
+
+  if (behavior && behavior.value === 'top') {
+    return true;
+  }
+  return false;
+}
+
+export function getFirstFragment(item) {
+  if (item.items && item.items.length > 0) {
+    return item.items[0].items;
+  }
+}

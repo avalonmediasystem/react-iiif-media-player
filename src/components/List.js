@@ -8,7 +8,6 @@ const List = props => {
     <ul data-testid="list">
       {props.items.map(item => {
         const filteredItem = filterVisibleRangeItem(item);
-
         if (!filteredItem) {
           return null;
         }

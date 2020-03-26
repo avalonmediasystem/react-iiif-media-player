@@ -2,8 +2,8 @@ import * as types from '../actions/types';
 
 const initialState = {
   captionOn: true,
-  reload: false,
-  canvasIndex: 0
+  canvasIndex: 0,
+  isPlaying: false
 };
 const player = (state = initialState, action) => {
   switch (action.type) {
@@ -14,7 +14,6 @@ const player = (state = initialState, action) => {
 
     case types.MEJS_SWAP:
       return Object.assign({}, state, {
-        reload: true,
         canvasIndex: action.payload
       });
 
@@ -22,6 +21,17 @@ const player = (state = initialState, action) => {
       return Object.assign({}, state, {
         captionOn: action.payload
       });
+
+    case types.MEJS_PLAYING:
+      return Object.assign({}, state, {
+        isPlaying: action.payload
+      });
+
+    case types.MEJS_CANVAS_INDEX:
+      return Object.assign({}, state, {
+        canvasIndex: action.payload
+      });
+
     default:
       return state;
   }

@@ -17,17 +17,20 @@ class MediaElementContainer extends Component {
   };
 
   static getDerivedStateFromProps(nextProps) {
-    const { manifest, canvasIndex } = nextProps;
+    const { manifest, canvasIndex, clicked } = nextProps;
     const { sources, mediaType, error } = getMediaInfo(manifest, canvasIndex);
     const tracks = getTracks();
-    return {
-      sources,
-      mediaType,
-      canvasIndex,
-      tracks,
-      ready: error ? false : true,
-      error
-    };
+    if (clicked === undefined || clicked) {
+      return {
+        sources,
+        mediaType,
+        canvasIndex,
+        tracks,
+        ready: error ? false : true,
+        error
+      };
+    }
+    return null;
   }
 
   render() {
@@ -74,7 +77,8 @@ MediaElementContainer.propTypes = {
 
 const mapStateToProps = state => ({
   reload: state.nav.reload,
-  canvasIndex: state.player.canvasIndex
+  canvasIndex: state.player.canvasIndex,
+  clicked: state.nav.clicked
 });
 
 export default connect(mapStateToProps)(MediaElementContainer);

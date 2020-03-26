@@ -4,8 +4,8 @@ import * as types from '../actions/types';
 describe('player reducer', () => {
   const initialState = {
     captionOn: true,
-    reload: false,
-    canvasIndex: 0
+    canvasIndex: 0,
+    isPlaying: false
   };
 
   it('should return the initial state', () => {
@@ -18,26 +18,28 @@ describe('player reducer', () => {
       mejsProp1: 'foo',
       mejsProp2: 'bar'
     };
+    const canvasIndex = 0;
     expect(
       reducer(undefined, {
         type: types.MEJS_PLAYER_INITIALIZED,
-        payload: player
+        player,
+        canvasIndex
       })
-    ).toEqual({ ...initialState, instance: player });
+    ).toEqual({ ...initialState, instance: player, canvasIndex: canvasIndex });
   });
 
   it('should handle MEJS_SWAP', () => {
-    const canvasIndex = 1;
+    const nextState = {
+      captionOn: true,
+      canvasIndex: 1,
+      isPlaying: false
+    };
     expect(
       reducer(undefined, {
         type: types.MEJS_SWAP,
-        payload: canvasIndex
+        payload: 1
       })
-    ).toEqual({
-      ...initialState,
-      reload: true,
-      canvasIndex: canvasIndex
-    });
+    ).toEqual(nextState);
   });
 
   it('should handle MEJS_CAPTIONS', () => {
@@ -48,5 +50,15 @@ describe('player reducer', () => {
         payload: captionOn
       })
     ).toEqual({ ...initialState, captionOn });
+  });
+
+  it('should handle MEJS_PLAYING', () => {
+    const isPlaying = true;
+    expect(
+      reducer(undefined, {
+        type: types.MEJS_PLAYING,
+        payload: isPlaying
+      })
+    ).toEqual({ ...initialState, isPlaying });
   });
 });

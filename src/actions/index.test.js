@@ -33,11 +33,15 @@ describe('actions', () => {
       mejsProp1: 'bar',
       mejsProp2: 'foo'
     };
+    const canvasIndex = 0;
     const expectedAction = {
       type: types.MEJS_PLAYER_INITIALIZED,
-      payload: player
+      player,
+      canvasIndex
     };
-    expect(actions.playerInitialized(player)).toEqual(expectedAction);
+    expect(actions.playerInitialized(player, canvasIndex)).toEqual(
+      expectedAction
+    );
   });
 
   it('should create an action for Mediaelement player swap', () => {
@@ -46,7 +50,7 @@ describe('actions', () => {
       type: types.MEJS_SWAP,
       payload: canvasId
     };
-    expect(actions.swapMediaElement(canvasId)).toEqual(expectedAction);
+    expect(actions.createMediaElement(canvasId)).toEqual(expectedAction);
   });
 
   it('should create an action for Mediaelement player captions button click', () => {
@@ -56,5 +60,30 @@ describe('actions', () => {
       payload: captionOn
     };
     expect(actions.registerCaptionChange(captionOn)).toEqual(expectedAction);
+  });
+
+  it('should create an action for Mediaelement player play/pause status', () => {
+    const isPlaying = true;
+    const expectedAction = {
+      type: types.MEJS_PLAYING,
+      payload: isPlaying
+    };
+    expect(actions.setPlayerStatus(isPlaying)).toEqual(expectedAction);
+  });
+
+  it('should create an action for setting the playhead start time', () => {
+    const startTime = 234;
+    const expectedAction = {
+      type: types.NAV_STARTTIME,
+      payload: startTime
+    };
+    expect(actions.setStartTime(startTime)).toEqual(expectedAction);
+  });
+
+  it('should create an action for setting clicked flag to false', () => {
+    const expectedAction = {
+      type: types.NAV_UNCLICK
+    };
+    expect(actions.setUnclick()).toEqual(expectedAction);
   });
 });

@@ -3,8 +3,13 @@ import reducer from './index';
 describe('reducer', () => {
   const playerInitialState = {
     captionOn: true,
-    reload: false,
-    canvasIndex: 0
+    canvasIndex: 0,
+    isPlaying: false
+  };
+
+  const navInitialState = {
+    clickedUrl: '',
+    startTime: 0
   };
   it('should return the initial state', () => {
     const reducerResults = reducer(undefined, { type: 'YYY' });
@@ -14,7 +19,7 @@ describe('reducer', () => {
         error: false,
         loading: false
       },
-      nav: {},
+      nav: navInitialState,
       player: playerInitialState
     });
   });
