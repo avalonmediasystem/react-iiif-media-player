@@ -36,21 +36,11 @@ describe('actions', () => {
     const canvasIndex = 0;
     const expectedAction = {
       type: types.MEJS_PLAYER_INITIALIZED,
-      player,
-      canvasIndex
+      payload: player
     };
     expect(actions.playerInitialized(player, canvasIndex)).toEqual(
       expectedAction
     );
-  });
-
-  it('should create an action for Mediaelement player swap', () => {
-    const canvasId = 1;
-    const expectedAction = {
-      type: types.MEJS_SWAP,
-      payload: canvasId
-    };
-    expect(actions.createMediaElement(canvasId)).toEqual(expectedAction);
   });
 
   it('should create an action for Mediaelement player captions button click', () => {

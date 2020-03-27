@@ -18,28 +18,12 @@ describe('player reducer', () => {
       mejsProp1: 'foo',
       mejsProp2: 'bar'
     };
-    const canvasIndex = 0;
     expect(
       reducer(undefined, {
         type: types.MEJS_PLAYER_INITIALIZED,
-        player,
-        canvasIndex
+        payload: player
       })
-    ).toEqual({ ...initialState, instance: player, canvasIndex: canvasIndex });
-  });
-
-  it('should handle MEJS_SWAP', () => {
-    const nextState = {
-      captionOn: true,
-      canvasIndex: 1,
-      isPlaying: false
-    };
-    expect(
-      reducer(undefined, {
-        type: types.MEJS_SWAP,
-        payload: 1
-      })
-    ).toEqual(nextState);
+    ).toEqual({ ...initialState, instance: player });
   });
 
   it('should handle MEJS_CAPTIONS', () => {

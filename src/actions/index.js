@@ -71,17 +71,10 @@ export function playerInitialized(player) {
   };
 }
 
-export function swapMediaElement(canvasId, startTime = 0) {
+export function switchCanvas(canvasId, startTime = 0) {
   return dispatch => {
-    dispatch(createMediaElement(canvasId));
+    dispatch(setCanvasIndex(canvasId));
     dispatch(setStartTime(startTime));
-  };
-}
-
-export function createMediaElement(canvasId) {
-  return {
-    type: types.MEJS_SWAP,
-    payload: canvasId
   };
 }
 
@@ -101,7 +94,7 @@ export function setPlayerStatus(isPlaying) {
 
 export function setCanvasIndex(index) {
   return {
-    type: types.MEJS_CANVAS_INDEX,
+    type: types.MEJS_SWITCH_CANVAS,
     payload: index
   };
 }

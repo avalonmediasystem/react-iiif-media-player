@@ -8,12 +8,16 @@ Object.defineProperty(exports, "__esModule", {
 exports.fetchManifestRequest = fetchManifestRequest;
 exports.fetchManifestSuccess = fetchManifestSuccess;
 exports.fetchManifestFailure = fetchManifestFailure;
-exports.navItemClick = navItemClick;
 exports.updateExternalConfig = updateExternalConfig;
 exports.getRemoteManifest = getRemoteManifest;
+exports.navItemClick = navItemClick;
+exports.setStartTime = setStartTime;
+exports.setUnclick = setUnclick;
 exports.playerInitialized = playerInitialized;
-exports.swapMediaElement = swapMediaElement;
+exports.switchCanvas = switchCanvas;
 exports.registerCaptionChange = registerCaptionChange;
+exports.setPlayerStatus = setPlayerStatus;
+exports.setCanvasIndex = setCanvasIndex;
 
 var types = _interopRequireWildcard(require("./types"));
 
@@ -40,13 +44,6 @@ function fetchManifestFailure(error) {
   };
 }
 
-function navItemClick(url) {
-  return {
-    type: types.NAV_ITEM_CLICK,
-    payload: url
-  };
-}
-
 function updateExternalConfig(config) {
   return {
     type: types.UPDATE_EXTERNAL_CONFIG,
@@ -65,7 +62,28 @@ function getRemoteManifest(url) {
       return dispatch(fetchManifestSuccess(response));
     });
   };
-} // Player related
+} // Nav actions
+
+
+function navItemClick(url) {
+  return {
+    type: types.NAV_ITEM_CLICK,
+    payload: url
+  };
+}
+
+function setStartTime(time) {
+  return {
+    type: types.NAV_STARTTIME,
+    payload: time
+  };
+}
+
+function setUnclick() {
+  return {
+    type: types.NAV_UNCLICK
+  };
+} // Player actions
 
 
 function playerInitialized(player) {
@@ -75,10 +93,11 @@ function playerInitialized(player) {
   };
 }
 
-function swapMediaElement(canvasId) {
-  return {
-    type: types.MEJS_SWAP,
-    payload: canvasId
+function switchCanvas(canvasId) {
+  var startTime = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+  return function (dispatch) {
+    dispatch(setCanvasIndex(canvasId));
+    dispatch(setStartTime(startTime));
   };
 }
 
@@ -86,5 +105,19 @@ function registerCaptionChange(captionOn) {
   return {
     type: types.MEJS_CAPTIONS,
     payload: captionOn
+  };
+}
+
+function setPlayerStatus(isPlaying) {
+  return {
+    type: types.MEJS_PLAYING,
+    payload: isPlaying
+  };
+}
+
+function setCanvasIndex(index) {
+  return {
+    type: types.MEJS_SWITCH_CANVAS,
+    payload: index
   };
 }

@@ -14,6 +14,8 @@ exports.getLabelValue = getLabelValue;
 exports.getMediaFragment = getMediaFragment;
 exports.getCanvasId = getCanvasId;
 exports.hasNextSection = hasNextSection;
+exports.isAtTop = isAtTop;
+exports.getFirstFragment = getFirstFragment;
 
 var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 
@@ -188,4 +190,20 @@ function hasNextSection(index) {
     return canvas.id;
   });
   return canvasIDs.length - 1 > index ? true : false;
+}
+
+function isAtTop(item) {
+  var behavior = (0, _getReduxManifest.getReduxManifest)().getRangeById(item.id).getBehavior();
+
+  if (behavior && behavior.value === 'top') {
+    return true;
+  }
+
+  return false;
+}
+
+function getFirstFragment(item) {
+  if (item.items && item.items.length > 0) {
+    return item.items[0].items;
+  }
 }

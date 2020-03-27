@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import List from './List';
 import { getMediaFragment, getCanvasId } from '../services/iiif-parser';
-import { swapMediaElement, setUnclick } from '../actions';
+import { switchCanvas, setUnclick } from '../actions';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -35,9 +35,9 @@ class StructuredNav extends Component {
         return;
       }
 
-      // Go to next section
+      // Clicked fragment is not in the current canvas => load relevant canvas
       if (!canvasSources.includes(player.getSrc())) {
-        nextProps.swapMediaElement(canvasIndex, timeFragment.start);
+        nextProps.switchCanvas(canvasIndex, timeFragment.start);
       } else {
         // Set the playhead at the start of the time fragment
         player.setCurrentTime(timeFragment.start, nextProps.setUnclick());
@@ -65,7 +65,7 @@ StructuredNav.propTypes = {
 };
 
 const mapDispatchToProps = {
-  swapMediaElement: swapMediaElement,
+  switchCanvas: switchCanvas,
   setUnclick: setUnclick
 };
 
@@ -74,7 +74,6 @@ const mapStateToProps = state => ({
   player: state.player.instance,
   canvases: state.getManifest.canvases,
   clicked: state.nav.clicked,
-  isPlaying: state.player.isPlaying,
   canvasIndex: state.player.canvasIndex
 });
 

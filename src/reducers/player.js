@@ -12,11 +12,6 @@ const player = (state = initialState, action) => {
         instance: action.payload
       });
 
-    case types.MEJS_SWAP:
-      return Object.assign({}, state, {
-        canvasIndex: action.payload
-      });
-
     case types.MEJS_CAPTIONS:
       return Object.assign({}, state, {
         captionOn: action.payload
@@ -27,7 +22,7 @@ const player = (state = initialState, action) => {
         isPlaying: action.payload
       });
 
-    case types.MEJS_CANVAS_INDEX:
+    case types.MEJS_SWITCH_CANVAS:
       return Object.assign({}, state, {
         canvasIndex: action.payload
       });

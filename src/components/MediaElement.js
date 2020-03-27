@@ -7,19 +7,18 @@ import '../mediaelement/javascript/plugins/mejs-quality.js';
 
 import {
   playerInitialized,
-  swapMediaElement,
   registerCaptionChange,
-  navItemClick,
   setUnclick,
   setPlayerStatus,
-  setStartTime,
   setCanvasIndex
 } from '../actions';
+import { hasNextSection } from '../services/iiif-parser';
 import {
-  getMediaInfo,
-  getTracks,
-  hasNextSection
-} from '../services/iiif-parser';
+  switchMedia,
+  createSourceTags,
+  createTrackTags,
+  handleTracks
+} from '../services/mejs-utility-helper';
 
 // Import stylesheets
 import '../mediaelement/stylesheets/mediaelementplayer.css';
@@ -29,11 +28,16 @@ import '../mediaelement/stylesheets/mejs-iiif-player-styles.scss';
 class MediaElement extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      canvasIndex: this.props.canvasIndex,
+      media: null,
+      node: null,
+      instance: null
+    };
   }
 
   success(media, node, instance) {
-    const { startTime, canvasIndex, mediaType, isPlaying } = this.props;
+    const { startTime, mediaType, captionOn } = this.props;
     // Your action when media was successfully loaded
     console.log('Loaded successfully');
 
@@ -66,7 +70,7 @@ class MediaElement extends Component {
     });
 
     // Set tracks
-    this.handleTracks(instance, media, mediaType);
+    handleTracks(instance, media, mediaType, captionOn);
 
     // Set the playhead at the desired start time
     instance.setCurrentTime(startTime, this.props.setUnclick());
@@ -74,6 +78,7 @@ class MediaElement extends Component {
     if (this.props.isPlaying) {
       instance.play();
     }
+    this.setState({ media, node, instance });
   }
 
   error(media) {
@@ -82,78 +87,16 @@ class MediaElement extends Component {
   }
 
   handleEnded(node, instance, media) {
-    const { manifest, canvasIndex } = this.props;
-    const { mediaType, sources, error } = getMediaInfo(
-      manifest,
-      canvasIndex + 1
-    );
-    if (hasNextSection(canvasIndex) && mediaType === 'video') {
-      if (error) {
-        return;
-      }
-      // Clear source and track elements
-      node.innerHTML = '';
-
-      // Build sources and tracks
-      const sourceTags = this.createSourceTags(sources);
-      const tracksTags = this.createTrackTags(getTracks());
-      const newChildren = `${sourceTags.join('\n')}${tracksTags.join('\n')}`;
-
-      // Attach the new sources and tracks to video element
-      node.innerHTML = newChildren;
-
-      instance.setSrc(sources[0].src);
-
-      // Build features from new souces and tracks
-      node.player.buildquality(instance, null, null, media);
-      node.player.buildtracks(instance, null, instance.layers, media);
-
-      // Set tracks
-      this.handleTracks(instance, media, mediaType);
-
-      this.props.playerInitialized(instance);
+    const { canvasIndex } = this.props;
+    if (hasNextSection(canvasIndex)) {
       this.props.setCanvasIndex(canvasIndex + 1);
 
-      instance.load();
-      instance.play();
-    }
-  }
+      let newInstance = switchMedia(media, node, instance, this.props, true);
 
-  handleTracks(instance, media, mediaType) {
-    const { captionOn } = this.props;
-    if (
-      mediaType === 'video' &&
-      media.options.toggleCaptionsButtonWhenOnlyOne
-    ) {
-      if (captionOn && instance.tracks && instance.tracks.length == 1) {
-        instance.setTrack(
-          instance.tracks[0].trackId,
-          typeof keyboard !== 'undefined'
-        );
-      }
-    }
-  }
+      this.props.playerInitialized(newInstance);
 
-  createSourceTags(sources) {
-    const sourceTags = [];
-    for (let i = 0, total = sources.length; i < total; i++) {
-      const source = sources[i];
-      sourceTags.push(
-        `<source src="${source.src}" type="${source.format}" data-quality="${source.quality}" />`
-      );
+      this.setState({ canvasIndex: canvasIndex + 1 });
     }
-    return sourceTags;
-  }
-
-  createTrackTags(tracks) {
-    const tracksTags = [];
-    for (let i = 0, total = tracks.length; i < total; i++) {
-      const track = tracks[i];
-      tracksTags.push(
-        `<track srclang="en" kind="subtitles" type="${track.format}" src="${track.id}"></track>`
-      );
-    }
-    return tracksTags;
   }
 
   componentDidMount() {
@@ -185,6 +128,19 @@ class MediaElement extends Component {
     this.setState({ player: new MediaElementPlayer(this.props.id, options) });
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { clicked, canvasIndex } = nextProps;
+    if (prevState.canvasIndex !== canvasIndex && clicked) {
+      const { media, node, instance } = prevState;
+      let newInstance = switchMedia(media, node, instance, nextProps, false);
+
+      nextProps.playerInitialized(newInstance);
+
+      return { canvasIndex: nextProps.canvasIndex };
+    }
+    return null;
+  }
+
   componentWillUnmount() {
     if (this.state.player) {
       this.state.player.remove();
@@ -196,8 +152,8 @@ class MediaElement extends Component {
     const props = this.props,
       sources = JSON.parse(props.sources),
       tracks = JSON.parse(props.tracks),
-      sourceTags = this.createSourceTags(sources),
-      tracksTags = this.createTrackTags(tracks);
+      sourceTags = createSourceTags(sources),
+      tracksTags = createTrackTags(tracks);
 
     const mediaBody = `${sourceTags.join('\n')}
 				${tracksTags.join('\n')}`,
@@ -239,12 +195,9 @@ MediaElement.propTypes = {
 const mapDispatchToProps = {
   playerInitialized: (player, canvasIndex) =>
     playerInitialized(player, canvasIndex),
-  swapMediaElement: canvasIndex => swapMediaElement(canvasIndex),
   registerCaptionChange: captionOn => registerCaptionChange(captionOn),
-  navItemClick: url => navItemClick(url),
   setUnclick: () => setUnclick(),
   setPlayerStatus: isPlaying => setPlayerStatus(isPlaying),
-  setStartTime: time => setStartTime(time),
   setCanvasIndex: index => setCanvasIndex(index)
 };
 
@@ -254,7 +207,8 @@ const mapStateToProps = state => ({
   captionOn: state.player.captionOn,
   canvasIndex: state.player.canvasIndex,
   startTime: state.nav.startTime,
-  manifest: state.getManifest.manifest
+  manifest: state.getManifest.manifest,
+  clicked: state.nav.clicked
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MediaElement);
