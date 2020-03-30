@@ -98,6 +98,9 @@ export function getMediaInfo(manifest, canvasIndex) {
   }
 }
 
+/**
+ * Get captions in manifest
+ */
 export function getTracks() {
   return getReduxManifest().getSeeAlso();
 }
@@ -169,6 +172,10 @@ export function hasNextSection(index) {
   return canvasIDs.length - 1 > index ? true : false;
 }
 
+/**
+ * Identify the item at the top of the structure
+ * @param {Object} item
+ */
 export function isAtTop(item) {
   const behavior = getReduxManifest()
     .getRangeById(item.id)
@@ -180,8 +187,16 @@ export function isAtTop(item) {
   return false;
 }
 
-export function getFirstFragment(item) {
+/**
+ * Construct url for the starting time of canvas
+ * @param {Object} item
+ */
+export function getSectionURI(item) {
   if (item.items && item.items.length > 0) {
-    return item.items[0].items;
+    let canvas = item.items[0].items;
+    if (canvas[0]) {
+      let canvasUri = getCanvasId(canvas[0].id);
+      return `${canvasUri}#t=0,`;
+    }
   }
 }

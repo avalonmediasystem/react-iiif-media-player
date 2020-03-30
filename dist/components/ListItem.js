@@ -48,14 +48,12 @@ var ListItem = function ListItem(props) {
     }
 
     if (!(0, _iiifParser.isAtTop)(item)) {
-      var firstCanvas = (0, _iiifParser.getFirstFragment)(item);
-      return firstCanvas.map(function (canvas) {
-        return _react["default"].createElement("a", {
-          key: canvas.id,
-          href: canvas.id,
-          onClick: handleClick
-        }, label);
-      });
+      var timeUri = (0, _iiifParser.getSectionURI)(item);
+      return _react["default"].createElement("a", {
+        key: timeUri,
+        href: timeUri,
+        onClick: handleClick
+      }, label);
     }
 
     return label;

@@ -4,7 +4,7 @@ import {
   getChildCanvases,
   getLabelValue,
   isAtTop,
-  getFirstFragment
+  getSectionURI
 } from '../services/iiif-parser';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
@@ -34,12 +34,12 @@ const ListItem = props => {
       ));
     }
     if (!isAtTop(item)) {
-      const firstCanvas = getFirstFragment(item);
-      return firstCanvas.map(canvas => (
-        <a key={canvas.id} href={canvas.id} onClick={handleClick}>
+      const timeUri = getSectionURI(item);
+      return (
+        <a key={timeUri} href={timeUri} onClick={handleClick}>
           {label}
         </a>
-      ));
+      );
     }
     return label;
   };
