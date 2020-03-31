@@ -4,7 +4,7 @@
   "description": "react-iiif-media-player React component for rendering a media player for a IIIF 3.0 spec manifest",
   "main": "dist/index.js",
   "scripts": {
-    "test": "jest --coverage --colors",
+    "test": "jest --coverage --colors --runInBand --reporters=default --reporters=jest-junit",
     "test:watch": "jest --watch",
     "start": "webpack-dev-server --mode development",
     "transpile": "rimraf dist & babel src --out-dir dist --ignore 'src/**/*.test.js','src/**/*.spec.js','src/**/__mocks__','src/services/testing-helpers.js'",
@@ -46,6 +46,7 @@
     "gh-pages": "^2.1.1",
     "html-webpack-plugin": "^3.2.0",
     "jest": "^24.7.1",
+    "jest-junit": "^10.0.0",
     "jest-transform-stub": "^2.0.0",
     "node-sass": "^4.13.1",
     "react": "^16.8.6",

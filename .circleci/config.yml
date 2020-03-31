@@ -3,6 +3,8 @@ orbs:
 version: 2.1
 jobs:
   test:
+    environment:
+      JEST_JUNIT_OUTPUT_DIR: "test-results/jest"
     executor:
       name: node/default
       tag: << parameters.version >>
@@ -20,6 +22,8 @@ jobs:
           cache-key: yarn.lock
       - run:
           command: yarn test
+      - store_test_results:
+          path: test-results
 workflows:
   test-matrix:
     jobs:
