@@ -1,0 +1,38 @@
+orbs:
+  node: circleci/node@2.0
+version: 2.1
+jobs:
+  test:
+    environment:
+      JEST_JUNIT_OUTPUT_DIR: "test-results/jest"
+    executor:
+      name: node/default
+      tag: << parameters.version >>
+    parameters:
+      version:
+        default: 13.12.0
+        description: >
+          A full version tag must be specified. Example: "13.11.0" For a full list
+          of releases, see the following: https://nodejs.org/en/download/releases
+        type: string
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: yarn
+          cache-key: yarn.lock
+      - run:
+          command: yarn test
+      - store_test_results:
+          path: test-results
+workflows:
+  test-matrix:
+    jobs:
+      - test:
+          name: node-13
+          version: 13.12.0
+      - test:
+          name: node-12
+          version: 12.16.1
+      - test:
+          name: node-10
+          version: 10.19.0
