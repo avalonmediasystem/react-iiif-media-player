@@ -1,3 +1,12 @@
 .iiif-player > .container {
-  padding-top: 100px;
+  padding-top: 5px;
+}
+
+.dropdown {
+  float: right;
+}
+
+.dropdown-toggle,
+.dropdown-menu {
+  width: 320px;
 }

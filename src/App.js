@@ -7,6 +7,13 @@ import * as actions from './actions';
 import './App.css';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      manifest: this.props.iiifManifest
+    };
+  }
+
   componentDidMount() {
     const { iiifManifest, iiifManifestUrl } = this.props;
 
@@ -18,6 +25,16 @@ class App extends Component {
     this.props.getRemoteManifest(iiifManifestUrl);
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.iiifManifest !== prevState.manifest) {
+      nextProps.fetchManifestSuccess(nextProps.iiifManifest);
+      return {
+        manifest: nextProps.iiifManifest
+      };
+    }
+    return null;
+  }
+
   render() {
     const { manifest, error } = this.props.getManifest;
 
@@ -25,7 +42,7 @@ class App extends Component {
       return (
         <section className="iiif-player">
           <div className="container">
-            <MediaElementContainer manifest={manifest} />
+            <MediaElementContainer key={Math.random()} manifest={manifest} />
             <StructuredNav manifest={manifest} />
           </div>
         </section>

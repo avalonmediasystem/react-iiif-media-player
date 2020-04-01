@@ -114,21 +114,22 @@ class MediaElement extends Component {
   render() {
     const props = this.props,
       sources = JSON.parse(props.sources),
-      tracks = JSON.parse(props.tracks),
       sourceTags = [],
       tracksTags = [];
 
+    if (props.tracks) {
+      const tracks = JSON.parse(props.tracks);
+      for (let i = 0, total = tracks.length; i < total; i++) {
+        const track = tracks[i];
+        tracksTags.push(
+          `<track srclang="en" kind="subtitles" type="${track.format}" src="${track.id}"></track>`
+        );
+      }
+    }
     for (let i = 0, total = sources.length; i < total; i++) {
       const source = sources[i];
       sourceTags.push(
         `<source src="${source.src}" type="${source.format}" data-quality="${source.quality}" />`
-      );
-    }
-
-    for (let i = 0, total = tracks.length; i < total; i++) {
-      const track = tracks[i];
-      tracksTags.push(
-        `<track srclang="en" kind="subtitles" type="${track.format}" src="${track.id}"></track>`
       );
     }
 

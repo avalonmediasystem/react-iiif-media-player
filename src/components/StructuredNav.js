@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 class StructuredNav extends Component {
   constructor(props) {
     super(props);
-    this.manifest = this.props.manifest;
     this.state = {
       startTime: null
     };
@@ -60,10 +59,11 @@ class StructuredNav extends Component {
   }
 
   render() {
-    if (this.manifest.structures) {
+    const { manifest } = this.props;
+    if (manifest.structures) {
       return (
         <div data-testid="structured-nav">
-          <List items={this.manifest.structures} />
+          <List items={manifest.structures} />
         </div>
       );
     }

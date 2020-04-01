@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
-import Root from '../../src';
+import { Container } from 'react-bootstrap';
+import IIIFPlayerWrapper from './components/IIIFPlayerWrapper';
 
 // Import a local manifest here.
 // If included in the 'props' below, it will take precedence over the URI
@@ -24,4 +25,4 @@ const props = {
   iiifManifestUrl
 };
 
-render(<Root {...props} />, document.getElementById('root'));
+render(<IIIFPlayerWrapper {...props} />, document.getElementById('root'));

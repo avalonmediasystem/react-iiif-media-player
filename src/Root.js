@@ -8,10 +8,12 @@ import App from './App';
 const store = createStore(rootReducer, applyMiddleware(thunk));
 export { store };
 
-const Root = props => (
-  <Provider store={store}>
-    <App {...props} />
-  </Provider>
-);
+const Root = props => {
+  return (
+    <Provider store={store}>
+      <App {...props} />
+    </Provider>
+  );
+};
 
 export default Root;
