@@ -4,8 +4,8 @@ import * as types from '../actions/types';
 describe('player reducer', () => {
   const initialState = {
     captionOn: true,
-    reload: false,
-    canvasIndex: 0
+    canvasIndex: 0,
+    isPlaying: false
   };
 
   it('should return the initial state', () => {
@@ -26,20 +26,6 @@ describe('player reducer', () => {
     ).toEqual({ ...initialState, instance: player });
   });
 
-  it('should handle MEJS_SWAP', () => {
-    const canvasIndex = 1;
-    expect(
-      reducer(undefined, {
-        type: types.MEJS_SWAP,
-        payload: canvasIndex
-      })
-    ).toEqual({
-      ...initialState,
-      reload: true,
-      canvasIndex: canvasIndex
-    });
-  });
-
   it('should handle MEJS_CAPTIONS', () => {
     const captionOn = false;
     expect(
@@ -48,5 +34,15 @@ describe('player reducer', () => {
         payload: captionOn
       })
     ).toEqual({ ...initialState, captionOn });
+  });
+
+  it('should handle MEJS_PLAYING', () => {
+    const isPlaying = true;
+    expect(
+      reducer(undefined, {
+        type: types.MEJS_PLAYING,
+        payload: isPlaying
+      })
+    ).toEqual({ ...initialState, isPlaying });
   });
 });

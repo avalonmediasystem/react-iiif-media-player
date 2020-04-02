@@ -42,63 +42,11 @@ function (_Component) {
     (0, _classCallCheck2["default"])(this, StructuredNav);
     _this = (0, _possibleConstructorReturn2["default"])(this, (0, _getPrototypeOf2["default"])(StructuredNav).call(this, props));
     _this.manifest = _this.props.manifest;
-    _this.state = {
-      startTime: null
-    };
+    _this.state = {};
     return _this;
   }
 
   (0, _createClass2["default"])(StructuredNav, [{
-    key: "componentDidUpdate",
-    value: function componentDidUpdate(prevProps) {
-      var _this$props = this.props,
-          clickedUrl = _this$props.clickedUrl,
-          player = _this$props.player;
-
-      if (clickedUrl != prevProps.clickedUrl) {
-        this.handleItemClick(clickedUrl);
-      }
-
-      var startTime = this.state.startTime;
-
-      if (startTime) {
-        // Set the start time
-        player.setCurrentTime(startTime);
-      }
-    }
-  }, {
-    key: "handleItemClick",
-    value: function handleItemClick(id) {
-      var _this$props2 = this.props,
-          player = _this$props2.player,
-          canvases = _this$props2.canvases;
-      var canvasInManifest = canvases.find(function (c) {
-        return (0, _iiifParser.getCanvasId)(id) === c.canvasId;
-      });
-      var canvasIndex = canvases.indexOf(canvasInManifest);
-      var canvasSources = null;
-
-      if (canvasInManifest) {
-        canvasSources = canvasInManifest.canvasSources;
-      } // Go to next section
-
-
-      if (!canvasSources.includes(player.getSrc())) {
-        this.props.swapMediaElement(canvasIndex);
-      }
-
-      var timeFragment = (0, _iiifParser.getMediaFragment)(id); // Invalid time fragment
-
-      if (!timeFragment) {
-        console.error('Error retrieving time fragment object from Canvas url in StructuredNav.js');
-        return;
-      }
-
-      this.setState({
-        startTime: timeFragment.start
-      });
-    }
-  }, {
     key: "render",
     value: function render() {
       if (this.manifest.structures) {
@@ -111,6 +59,45 @@ function (_Component) {
 
       return _react["default"].createElement("p", null, "There are no structures in the manifest.");
     }
+  }], [{
+    key: "getDerivedStateFromProps",
+    value: function getDerivedStateFromProps(nextProps) {
+      var player = nextProps.player,
+          clickedUrl = nextProps.clickedUrl,
+          canvases = nextProps.canvases,
+          clicked = nextProps.clicked;
+
+      if (clicked) {
+        var canvasInManifest = canvases.find(function (c) {
+          return (0, _iiifParser.getCanvasId)(clickedUrl) === c.canvasId;
+        });
+        var canvasIndex = canvases.indexOf(canvasInManifest);
+        var canvasSources = null;
+
+        if (canvasInManifest) {
+          canvasSources = canvasInManifest.canvasSources;
+        }
+
+        var timeFragment = (0, _iiifParser.getMediaFragment)(clickedUrl); // Invalid time fragment
+
+        if (!timeFragment) {
+          console.error('Error retrieving time fragment object from Canvas url in StructuredNav.js');
+          return;
+        } // Clicked fragment is not in the current canvas => load relevant canvas
+
+
+        if (!canvasSources.includes(player.getSrc())) {
+          nextProps.switchCanvas(canvasIndex, timeFragment.start);
+        } else {
+          // Set the playhead at the start of the time fragment
+          player.setCurrentTime(timeFragment.start, nextProps.resetClick());
+        }
+
+        return null;
+      }
+
+      return null;
+    }
   }]);
   return StructuredNav;
 }(_react.Component);
@@ -119,14 +106,17 @@ StructuredNav.propTypes = {
   manifest: _propTypes["default"].object.isRequired
 };
 var mapDispatchToProps = {
-  swapMediaElement: _actions.swapMediaElement
+  switchCanvas: _actions.switchCanvas,
+  resetClick: _actions.resetClick
 };
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
     clickedUrl: state.nav.clickedUrl,
     player: state.player.instance,
-    canvases: state.getManifest.canvases
+    canvases: state.getManifest.canvases,
+    clicked: state.nav.clicked,
+    canvasIndex: state.player.canvasIndex
   };
 };
 

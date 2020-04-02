@@ -11,8 +11,8 @@ var types = _interopRequireWildcard(require("../actions/types"));
 
 var initialState = {
   captionOn: true,
-  reload: false,
-  canvasIndex: 0
+  canvasIndex: 0,
+  isPlaying: false
 };
 
 var player = function player() {
@@ -25,15 +25,19 @@ var player = function player() {
         instance: action.payload
       });
 
-    case types.MEJS_SWAP:
-      return Object.assign({}, state, {
-        reload: true,
-        canvasIndex: action.payload
-      });
-
     case types.MEJS_CAPTIONS:
       return Object.assign({}, state, {
         captionOn: action.payload
+      });
+
+    case types.MEJS_PLAYING:
+      return Object.assign({}, state, {
+        isPlaying: action.payload
+      });
+
+    case types.MEJS_SWITCH_CANVAS:
+      return Object.assign({}, state, {
+        canvasIndex: action.payload
       });
 
     default:

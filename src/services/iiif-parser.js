@@ -98,6 +98,9 @@ export function getMediaInfo(manifest, canvasIndex) {
   }
 }
 
+/**
+ * Get captions in manifest
+ */
 export function getTracks() {
   return getReduxManifest().getSeeAlso();
 }
@@ -167,4 +170,33 @@ export function hasNextSection(index) {
     .getCanvases()
     .map(canvas => canvas.id);
   return canvasIDs.length - 1 > index ? true : false;
+}
+
+/**
+ * Identify the item at the top of the structure
+ * @param {Object} item
+ */
+export function isAtTop(item) {
+  const behavior = getReduxManifest()
+    .getRangeById(item.id)
+    .getBehavior();
+
+  if (behavior && behavior.value === 'top') {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Construct url for the starting time of canvas
+ * @param {Object} item
+ */
+export function getSectionURI(item) {
+  if (item.items && item.items.length > 0) {
+    let canvas = item.items[0].items;
+    if (canvas[0]) {
+      let canvasUri = getCanvasId(canvas[0].id);
+      return `${canvasUri}#t=0,`;
+    }
+  }
 }
