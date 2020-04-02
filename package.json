@@ -65,6 +65,7 @@
     "@fortawesome/react-fontawesome": "^0.1.2",
     "axios": "^0.18.0",
     "hls.js": "0.12.3-canary.4258",
+    "iiif-explorer": "^1.0.8",
     "manifesto.js": "^3.0.11",
     "mediaelement": "^4.2.16",
     "prop-types": "^15.6.2",

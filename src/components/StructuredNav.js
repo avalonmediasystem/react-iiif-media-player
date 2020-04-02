@@ -62,7 +62,7 @@ class StructuredNav extends Component {
     const { manifest } = this.props;
     if (manifest.structures) {
       return (
-        <div data-testid="structured-nav">
+        <div data-testid="structured-nav" className="structured-nav">
           <List items={manifest.structures} />
         </div>
       );

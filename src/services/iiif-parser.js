@@ -118,13 +118,14 @@ export function getTracks() {
  */
 export function getLabelValue(label) {
   if (label && typeof label === 'object') {
+    const regex = /^@?[a-z]*$/i;
     // English
-    if (label.hasOwnProperty('en')) {
-      return label['en'].length > 0 ? label['en'][0] : '';
+    if (label.hasOwnProperty('@en')) {
+      return label['@en'].length > 0 ? label['@en'][0] : '';
     }
     // None
-    if (label.hasOwnProperty('none')) {
-      return label['none'].length > 0 ? label['none'][0] : '';
+    if (label.hasOwnProperty('@none')) {
+      return label['@none'].length > 0 ? label['@none'][0] : '';
     }
   } else if (typeof label === 'string') {
     return label;
