@@ -58,13 +58,13 @@ describe('actions', () => {
       type: types.MEJS_PLAYING,
       payload: isPlaying
     };
-    expect(actions.setPlayerStatus(isPlaying)).toEqual(expectedAction);
+    expect(actions.setPlayingStatus(isPlaying)).toEqual(expectedAction);
   });
 
   it('should create an action for setting the playhead start time', () => {
     const startTime = 234;
     const expectedAction = {
-      type: types.NAV_STARTTIME,
+      type: types.NAV_START_TIME,
       payload: startTime
     };
     expect(actions.setStartTime(startTime)).toEqual(expectedAction);
@@ -72,8 +72,8 @@ describe('actions', () => {
 
   it('should create an action for setting clicked flag to false', () => {
     const expectedAction = {
-      type: types.NAV_UNCLICK
+      type: types.NAV_RESET_CLICK
     };
-    expect(actions.setUnclick()).toEqual(expectedAction);
+    expect(actions.resetClick()).toEqual(expectedAction);
   });
 });

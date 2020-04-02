@@ -13,12 +13,12 @@ const nav = (state = initialState, action) => {
         clicked: true
       });
 
-    case types.NAV_STARTTIME:
+    case types.NAV_START_TIME:
       return Object.assign({}, state, {
         startTime: action.payload
       });
 
-    case types.NAV_UNCLICK:
+    case types.NAV_RESET_CLICK:
       return Object.assign({}, state, {
         clicked: false,
         startTime: 0,

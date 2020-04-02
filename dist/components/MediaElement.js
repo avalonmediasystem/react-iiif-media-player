@@ -79,7 +79,7 @@ function (_Component) {
 
       media.addEventListener('ended', function (ended) {
         if (ended) {
-          _this2.props.setUnclick();
+          _this2.props.resetClick();
 
           _this2.handleEnded(node, instance, media);
         }
@@ -93,15 +93,15 @@ function (_Component) {
         }
       });
       media.addEventListener('play', function () {
-        _this2.props.setPlayerStatus(true);
+        _this2.props.setPlayingStatus(true);
       });
       media.addEventListener('pause', function () {
-        _this2.props.setPlayerStatus(false);
+        _this2.props.setPlayingStatus(false);
       }); // Set tracks
 
       (0, _mejsUtilityHelper.handleTracks)(instance, media, mediaType, captionOn); // Set the playhead at the desired start time
 
-      instance.setCurrentTime(startTime, this.props.setUnclick());
+      instance.setCurrentTime(startTime, this.props.resetClick());
 
       if (this.props.isPlaying) {
         instance.play();
@@ -228,11 +228,11 @@ var mapDispatchToProps = {
   registerCaptionChange: function registerCaptionChange(captionOn) {
     return (0, _actions.registerCaptionChange)(captionOn);
   },
-  setUnclick: function setUnclick() {
-    return (0, _actions.setUnclick)();
+  resetClick: function resetClick() {
+    return (0, _actions.resetClick)();
   },
-  setPlayerStatus: function setPlayerStatus(isPlaying) {
-    return (0, _actions.setPlayerStatus)(isPlaying);
+  setPlayingStatus: function setPlayingStatus(isPlaying) {
+    return (0, _actions.setPlayingStatus)(isPlaying);
   },
   setCanvasIndex: function setCanvasIndex(index) {
     return (0, _actions.setCanvasIndex)(index);

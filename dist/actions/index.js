@@ -12,11 +12,11 @@ exports.updateExternalConfig = updateExternalConfig;
 exports.getRemoteManifest = getRemoteManifest;
 exports.navItemClick = navItemClick;
 exports.setStartTime = setStartTime;
-exports.setUnclick = setUnclick;
+exports.resetClick = resetClick;
 exports.playerInitialized = playerInitialized;
 exports.switchCanvas = switchCanvas;
 exports.registerCaptionChange = registerCaptionChange;
-exports.setPlayerStatus = setPlayerStatus;
+exports.setPlayingStatus = setPlayingStatus;
 exports.setCanvasIndex = setCanvasIndex;
 
 var types = _interopRequireWildcard(require("./types"));
@@ -74,14 +74,14 @@ function navItemClick(url) {
 
 function setStartTime(time) {
   return {
-    type: types.NAV_STARTTIME,
+    type: types.NAV_START_TIME,
     payload: time
   };
 }
 
-function setUnclick() {
+function resetClick() {
   return {
-    type: types.NAV_UNCLICK
+    type: types.NAV_RESET_CLICK
   };
 } // Player actions
 
@@ -108,7 +108,7 @@ function registerCaptionChange(captionOn) {
   };
 }
 
-function setPlayerStatus(isPlaying) {
+function setPlayingStatus(isPlaying) {
   return {
     type: types.MEJS_PLAYING,
     payload: isPlaying

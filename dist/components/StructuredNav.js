@@ -90,7 +90,7 @@ function (_Component) {
           nextProps.switchCanvas(canvasIndex, timeFragment.start);
         } else {
           // Set the playhead at the start of the time fragment
-          player.setCurrentTime(timeFragment.start, nextProps.setUnclick());
+          player.setCurrentTime(timeFragment.start, nextProps.resetClick());
         }
 
         return null;
@@ -107,7 +107,7 @@ StructuredNav.propTypes = {
 };
 var mapDispatchToProps = {
   switchCanvas: _actions.switchCanvas,
-  setUnclick: _actions.setUnclick
+  resetClick: _actions.resetClick
 };
 
 var mapStateToProps = function mapStateToProps(state) {

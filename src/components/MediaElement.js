@@ -8,8 +8,8 @@ import '../mediaelement/javascript/plugins/mejs-quality.js';
 import {
   playerInitialized,
   registerCaptionChange,
-  setUnclick,
-  setPlayerStatus,
+  resetClick,
+  setPlayingStatus,
   setCanvasIndex
 } from '../actions';
 import { hasNextSection } from '../services/iiif-parser';
@@ -47,7 +47,7 @@ class MediaElement extends Component {
     // Register ended event
     media.addEventListener('ended', ended => {
       if (ended) {
-        this.props.setUnclick();
+        this.props.resetClick();
         this.handleEnded(node, instance, media);
       }
     });
@@ -62,18 +62,18 @@ class MediaElement extends Component {
     });
 
     media.addEventListener('play', () => {
-      this.props.setPlayerStatus(true);
+      this.props.setPlayingStatus(true);
     });
 
     media.addEventListener('pause', () => {
-      this.props.setPlayerStatus(false);
+      this.props.setPlayingStatus(false);
     });
 
     // Set tracks
     handleTracks(instance, media, mediaType, captionOn);
 
     // Set the playhead at the desired start time
-    instance.setCurrentTime(startTime, this.props.setUnclick());
+    instance.setCurrentTime(startTime, this.props.resetClick());
 
     if (this.props.isPlaying) {
       instance.play();
@@ -196,8 +196,8 @@ const mapDispatchToProps = {
   playerInitialized: (player, canvasIndex) =>
     playerInitialized(player, canvasIndex),
   registerCaptionChange: captionOn => registerCaptionChange(captionOn),
-  setUnclick: () => setUnclick(),
-  setPlayerStatus: isPlaying => setPlayerStatus(isPlaying),
+  resetClick: () => resetClick(),
+  setPlayingStatus: isPlaying => setPlayingStatus(isPlaying),
   setCanvasIndex: index => setCanvasIndex(index)
 };
 

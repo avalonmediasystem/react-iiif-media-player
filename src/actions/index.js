@@ -52,14 +52,14 @@ export function navItemClick(url) {
 
 export function setStartTime(time) {
   return {
-    type: types.NAV_STARTTIME,
+    type: types.NAV_START_TIME,
     payload: time
   };
 }
 
-export function setUnclick() {
+export function resetClick() {
   return {
-    type: types.NAV_UNCLICK
+    type: types.NAV_RESET_CLICK
   };
 }
 
@@ -85,7 +85,7 @@ export function registerCaptionChange(captionOn) {
   };
 }
 
-export function setPlayerStatus(isPlaying) {
+export function setPlayingStatus(isPlaying) {
   return {
     type: types.MEJS_PLAYING,
     payload: isPlaying
