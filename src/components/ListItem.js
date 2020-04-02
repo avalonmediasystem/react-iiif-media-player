@@ -1,11 +1,6 @@
 import React from 'react';
 import List from './List';
-import {
-  getChildCanvases,
-  getLabelValue,
-  isAtTop,
-  getSectionURI
-} from '../services/iiif-parser';
+import { getChildCanvases, getLabelValue } from '../services/iiif-parser';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import PropTypes from 'prop-types';
@@ -25,23 +20,17 @@ const ListItem = props => {
   };
 
   const renderListItem = () => {
-    const label = getLabelValue(item.label);
+    let label = null;
+    label = getLabelValue(item.label);
     if (childCanvases.length > 0) {
       return childCanvases.map(canvasId => (
         <a key={canvasId} href={canvasId} onClick={handleClick}>
           {label}
         </a>
       ));
+    } else {
+      return label;
     }
-    if (!isAtTop(item)) {
-      const timeUri = getSectionURI(item);
-      return (
-        <a key={timeUri} href={timeUri} onClick={handleClick}>
-          {label}
-        </a>
-      );
-    }
-    return label;
   };
 
   return (

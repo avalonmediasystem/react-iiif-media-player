@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import List from './List';
 import { getMediaFragment, getCanvasId } from '../services/iiif-parser';
-import { switchCanvas, resetClick } from '../actions';
+import { swapMediaElement } from '../actions';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -9,43 +9,54 @@ class StructuredNav extends Component {
   constructor(props) {
     super(props);
     this.manifest = this.props.manifest;
-    this.state = {};
+    this.state = {
+      startTime: null
+    };
   }
 
-  static getDerivedStateFromProps(nextProps) {
-    const { player, clickedUrl, canvases, clicked } = nextProps;
-    if (clicked) {
-      const canvasInManifest = canvases.find(
-        c => getCanvasId(clickedUrl) === c.canvasId
-      );
-      const canvasIndex = canvases.indexOf(canvasInManifest);
-
-      let canvasSources = null;
-      if (canvasInManifest) {
-        canvasSources = canvasInManifest.canvasSources;
-      }
-
-      const timeFragment = getMediaFragment(clickedUrl);
-
-      // Invalid time fragment
-      if (!timeFragment) {
-        console.error(
-          'Error retrieving time fragment object from Canvas url in StructuredNav.js'
-        );
-        return;
-      }
-
-      // Clicked fragment is not in the current canvas => load relevant canvas
-      if (!canvasSources.includes(player.getSrc())) {
-        nextProps.switchCanvas(canvasIndex, timeFragment.start);
-      } else {
-        // Set the playhead at the start of the time fragment
-        player.setCurrentTime(timeFragment.start, nextProps.resetClick());
-      }
-
-      return null;
+  componentDidUpdate(prevProps) {
+    const { clickedUrl, player } = this.props;
+    if (clickedUrl != prevProps.clickedUrl) {
+      this.handleItemClick(clickedUrl);
     }
-    return null;
+
+    const { startTime } = this.state;
+    if (startTime) {
+      // Set the start time
+      player.setCurrentTime(startTime);
+    }
+  }
+
+  handleItemClick(id) {
+    const { player, canvases } = this.props;
+
+    const canvasInManifest = canvases.find(c => getCanvasId(id) === c.canvasId);
+
+    const canvasIndex = canvases.indexOf(canvasInManifest);
+
+    let canvasSources = null;
+    if (canvasInManifest) {
+      canvasSources = canvasInManifest.canvasSources;
+    }
+
+    // Go to next section
+    if (!canvasSources.includes(player.getSrc())) {
+      this.props.swapMediaElement(canvasIndex);
+    }
+
+    const timeFragment = getMediaFragment(id);
+
+    // Invalid time fragment
+    if (!timeFragment) {
+      console.error(
+        'Error retrieving time fragment object from Canvas url in StructuredNav.js'
+      );
+      return;
+    }
+
+    this.setState({
+      startTime: timeFragment.start
+    });
   }
 
   render() {
@@ -65,16 +76,13 @@ StructuredNav.propTypes = {
 };
 
 const mapDispatchToProps = {
-  switchCanvas: switchCanvas,
-  resetClick: resetClick
+  swapMediaElement: swapMediaElement
 };
 
 const mapStateToProps = state => ({
   clickedUrl: state.nav.clickedUrl,
   player: state.player.instance,
-  canvases: state.getManifest.canvases,
-  clicked: state.nav.clicked,
-  canvasIndex: state.player.canvasIndex
+  canvases: state.getManifest.canvases
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(StructuredNav);

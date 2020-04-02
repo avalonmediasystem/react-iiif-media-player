@@ -164,7 +164,7 @@
 }
 
 .mejs__overlay-button {
-  background: url('mejs-controls.svg') no-repeat;
+  background: url('mejs4-controls.svg') no-repeat;
   background-position: 0 -39px;
   height: 80px;
   width: 80px;
@@ -182,7 +182,7 @@
 .mejs__overlay-loading-bg-img {
   -webkit-animation: mejs__loading-spinner 1s linear infinite;
   animation: mejs__loading-spinner 1s linear infinite;
-  background: transparent url('mejs-controls.svg') -160px -40px no-repeat;
+  background: transparent url('mejs4-controls.svg') -160px -40px no-repeat;
   display: block;
   height: 80px;
   width: 80px;
@@ -239,7 +239,7 @@
 }
 
 .mejs__button > button {
-  background: transparent url('mejs-controls.svg');
+  background: transparent url('mejs4-controls.svg');
   border: 0;
   cursor: pointer;
   display: block;
@@ -735,6 +735,7 @@
   font-size: 16px;
   left: 0;
   line-height: 20px;
+  position: absolute;
   text-align: center;
 }
 

@@ -58,33 +58,13 @@ function (_Component) {
       sources: [],
       tracks: [],
       mediaType: null,
+      canvasIndex: _this.props.canvasIndex,
       error: null
     });
     return _this;
   }
 
   (0, _createClass2["default"])(MediaElementContainer, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var _this$props = this.props,
-          manifest = _this$props.manifest,
-          canvasIndex = _this$props.canvasIndex;
-
-      var _getMediaInfo = (0, _iiifParser.getMediaInfo)(manifest, canvasIndex),
-          sources = _getMediaInfo.sources,
-          mediaType = _getMediaInfo.mediaType,
-          error = _getMediaInfo.error;
-
-      var tracks = (0, _iiifParser.getTracks)();
-      this.setState({
-        sources: sources,
-        mediaType: mediaType,
-        tracks: tracks,
-        ready: error ? false : true,
-        error: error
-      });
-    }
-  }, {
     key: "render",
     value: function render() {
       var _this$state = this.state,
@@ -93,14 +73,15 @@ function (_Component) {
           sources = _this$state.sources,
           tracks = _this$state.tracks,
           mediaType = _this$state.mediaType,
+          canvasIndex = _this$state.canvasIndex,
           error = _this$state.error;
       var options = {};
 
       if (ready) {
         return _react["default"].createElement("div", {
-          "data-testid": "mediaelement",
-          id: "mediaelement"
+          "data-testid": "mediaelement-".concat(canvasIndex)
         }, _react["default"].createElement(_MediaElement["default"], {
+          key: "mediaelement-".concat(canvasIndex),
           id: "avln-mediaelement-component",
           mediaType: mediaType,
           preload: "auto",
@@ -121,6 +102,27 @@ function (_Component) {
 
       return null;
     }
+  }], [{
+    key: "getDerivedStateFromProps",
+    value: function getDerivedStateFromProps(nextProps) {
+      var manifest = nextProps.manifest,
+          canvasIndex = nextProps.canvasIndex;
+
+      var _getMediaInfo = (0, _iiifParser.getMediaInfo)(manifest, canvasIndex),
+          sources = _getMediaInfo.sources,
+          mediaType = _getMediaInfo.mediaType,
+          error = _getMediaInfo.error;
+
+      var tracks = (0, _iiifParser.getTracks)();
+      return {
+        sources: sources,
+        mediaType: mediaType,
+        canvasIndex: canvasIndex,
+        tracks: tracks,
+        ready: error ? false : true,
+        error: error
+      };
+    }
   }]);
   return MediaElementContainer;
 }(_react.Component);
@@ -131,6 +133,7 @@ MediaElementContainer.propTypes = {
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
+    reload: state.nav.reload,
     canvasIndex: state.player.canvasIndex
   };
 };

@@ -14,8 +14,6 @@ exports.getLabelValue = getLabelValue;
 exports.getMediaFragment = getMediaFragment;
 exports.getCanvasId = getCanvasId;
 exports.hasNextSection = hasNextSection;
-exports.isAtTop = isAtTop;
-exports.getSectionURI = getSectionURI;
 
 var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 
@@ -114,10 +112,6 @@ function getMediaInfo(manifest, canvasIndex) {
     };
   }
 }
-/**
- * Get captions in manifest
- */
-
 
 function getTracks() {
   return (0, _getReduxManifest.getReduxManifest)().getSeeAlso();
@@ -194,35 +188,4 @@ function hasNextSection(index) {
     return canvas.id;
   });
   return canvasIDs.length - 1 > index ? true : false;
-}
-/**
- * Identify the item at the top of the structure
- * @param {Object} item
- */
-
-
-function isAtTop(item) {
-  var behavior = (0, _getReduxManifest.getReduxManifest)().getRangeById(item.id).getBehavior();
-
-  if (behavior && behavior.value === 'top') {
-    return true;
-  }
-
-  return false;
-}
-/**
- * Construct url for the starting time of canvas
- * @param {Object} item
- */
-
-
-function getSectionURI(item) {
-  if (item.items && item.items.length > 0) {
-    var canvas = item.items[0].items;
-
-    if (canvas[0]) {
-      var canvasUri = getCanvasId(canvas[0].id);
-      return "".concat(canvasUri, "#t=0,");
-    }
-  }
 }

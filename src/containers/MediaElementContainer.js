@@ -12,30 +12,41 @@ class MediaElementContainer extends Component {
     sources: [],
     tracks: [],
     mediaType: null,
+    canvasIndex: this.props.canvasIndex,
     error: null
   };
 
-  componentDidMount() {
-    const { manifest, canvasIndex } = this.props;
+  static getDerivedStateFromProps(nextProps) {
+    const { manifest, canvasIndex } = nextProps;
     const { sources, mediaType, error } = getMediaInfo(manifest, canvasIndex);
     const tracks = getTracks();
-    this.setState({
+    return {
       sources,
       mediaType,
+      canvasIndex,
       tracks,
       ready: error ? false : true,
       error
-    });
+    };
   }
 
   render() {
-    const { manifest, ready, sources, tracks, mediaType, error } = this.state;
+    const {
+      manifest,
+      ready,
+      sources,
+      tracks,
+      mediaType,
+      canvasIndex,
+      error
+    } = this.state;
     const options = {};
 
     if (ready) {
       return (
-        <div data-testid={`mediaelement`} id="mediaelement">
+        <div data-testid={`mediaelement-${canvasIndex}`}>
           <MediaElement
+            key={`mediaelement-${canvasIndex}`}
             id="avln-mediaelement-component"
             mediaType={mediaType}
             preload="auto"
@@ -62,6 +73,7 @@ MediaElementContainer.propTypes = {
 };
 
 const mapStateToProps = state => ({
+  reload: state.nav.reload,
   canvasIndex: state.player.canvasIndex
 });
 

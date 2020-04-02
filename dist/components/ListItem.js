@@ -35,7 +35,8 @@ var ListItem = function ListItem(props) {
   };
 
   var renderListItem = function renderListItem() {
-    var label = (0, _iiifParser.getLabelValue)(item.label);
+    var label = null;
+    label = (0, _iiifParser.getLabelValue)(item.label);
 
     if (childCanvases.length > 0) {
       return childCanvases.map(function (canvasId) {
@@ -45,18 +46,9 @@ var ListItem = function ListItem(props) {
           onClick: handleClick
         }, label);
       });
+    } else {
+      return label;
     }
-
-    if (!(0, _iiifParser.isAtTop)(item)) {
-      var timeUri = (0, _iiifParser.getSectionURI)(item);
-      return _react["default"].createElement("a", {
-        key: timeUri,
-        href: timeUri,
-        onClick: handleClick
-      }, label);
-    }
-
-    return label;
   };
 
   return _react["default"].createElement("li", {

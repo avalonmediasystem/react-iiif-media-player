@@ -23,19 +23,17 @@ var _react = _interopRequireWildcard(require("react"));
 
 var _reactRedux = require("react-redux");
 
+var _actions = require("../actions");
+
 var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _iiifParser = require("../services/iiif-parser");
 
 var _hls = _interopRequireDefault(require("hls.js"));
 
 require("mediaelement");
 
 require("../mediaelement/javascript/plugins/mejs-quality.js");
-
-var _actions = require("../actions");
-
-var _iiifParser = require("../services/iiif-parser");
-
-var _mejsUtilityHelper = require("../services/mejs-utility-helper");
 
 require("../mediaelement/stylesheets/mediaelementplayer.css");
 
@@ -54,12 +52,7 @@ function (_Component) {
 
     (0, _classCallCheck2["default"])(this, MediaElement);
     _this = (0, _possibleConstructorReturn2["default"])(this, (0, _getPrototypeOf2["default"])(MediaElement).call(this, props));
-    _this.state = {
-      canvasIndex: _this.props.canvasIndex,
-      media: null,
-      node: null,
-      instance: null
-    };
+    _this.state = {};
     return _this;
   }
 
@@ -69,7 +62,6 @@ function (_Component) {
       var _this2 = this;
 
       var _this$props = this.props,
-          startTime = _this$props.startTime,
           mediaType = _this$props.mediaType,
           captionOn = _this$props.captionOn; // Your action when media was successfully loaded
 
@@ -79,39 +71,19 @@ function (_Component) {
 
       media.addEventListener('ended', function (ended) {
         if (ended) {
-          _this2.props.resetClick();
-
-          _this2.handleEnded(node, instance, media);
+          _this2.handleEnded();
         }
       }); // Register caption change event
 
       media.addEventListener('captionschange', function (captions) {
-        if (captions.detail.caption !== null) {
-          _this2.props.registerCaptionChange(true);
-        } else {
-          _this2.props.registerCaptionChange(false);
+        _this2.handleCaptionChange(captions.detail.caption);
+      }); // Set captions for video player
+
+      if (mediaType === 'video' && media.options.toggleCaptionsButtonWhenOnlyOne) {
+        if (captionOn && instance.tracks && instance.tracks.length == 1) {
+          instance.setTrack(instance.tracks[0].trackId, typeof keyboard !== 'undefined');
         }
-      });
-      media.addEventListener('play', function () {
-        _this2.props.setPlayingStatus(true);
-      });
-      media.addEventListener('pause', function () {
-        _this2.props.setPlayingStatus(false);
-      }); // Set tracks
-
-      (0, _mejsUtilityHelper.handleTracks)(instance, media, mediaType, captionOn); // Set the playhead at the desired start time
-
-      instance.setCurrentTime(startTime, this.props.resetClick());
-
-      if (this.props.isPlaying) {
-        instance.play();
       }
-
-      this.setState({
-        media: media,
-        node: node,
-        instance: instance
-      });
     }
   }, {
     key: "error",
@@ -121,16 +93,18 @@ function (_Component) {
     }
   }, {
     key: "handleEnded",
-    value: function handleEnded(node, instance, media) {
-      var canvasIndex = this.props.canvasIndex;
-
-      if ((0, _iiifParser.hasNextSection)(canvasIndex)) {
-        this.props.setCanvasIndex(canvasIndex + 1);
-        var newInstance = (0, _mejsUtilityHelper.switchMedia)(media, node, instance, this.props, true);
-        this.props.playerInitialized(newInstance);
-        this.setState({
-          canvasIndex: canvasIndex + 1
-        });
+    value: function handleEnded() {
+      if ((0, _iiifParser.hasNextSection)(this.props.canvasIndex)) {
+        this.props.swapMediaElement(this.props.canvasIndex + 1);
+      }
+    }
+  }, {
+    key: "handleCaptionChange",
+    value: function handleCaptionChange(caption) {
+      if (caption !== null) {
+        this.props.registerCaptionChange(true);
+      } else {
+        this.props.registerCaptionChange(false);
       }
     }
   }, {
@@ -178,8 +152,19 @@ function (_Component) {
       var props = this.props,
           sources = JSON.parse(props.sources),
           tracks = JSON.parse(props.tracks),
-          sourceTags = (0, _mejsUtilityHelper.createSourceTags)(sources),
-          tracksTags = (0, _mejsUtilityHelper.createTrackTags)(tracks);
+          sourceTags = [],
+          tracksTags = [];
+
+      for (var i = 0, total = sources.length; i < total; i++) {
+        var source = sources[i];
+        sourceTags.push("<source src=\"".concat(source.src, "\" type=\"").concat(source.format, "\" data-quality=\"").concat(source.quality, "\" />"));
+      }
+
+      for (var _i = 0, _total = tracks.length; _i < _total; _i++) {
+        var track = tracks[_i];
+        tracksTags.push("<track srclang=\"en\" kind=\"subtitles\" type=\"".concat(track.format, "\" src=\"").concat(track.id, "\"></track>"));
+      }
+
       var mediaBody = "".concat(sourceTags.join('\n'), "\n\t\t\t\t").concat(tracksTags.join('\n')),
           mediaHtml = props.mediaType === 'video' ? "<video data-testid=\"video-element\" id=\"".concat(props.id, "\" width=\"").concat(props.width, "\" height=\"").concat(props.height, "\"").concat(props.poster ? " poster=".concat(props.poster) : '', "\n\t\t\t\t\t  ").concat(props.controls ? ' controls' : '').concat(props.preload ? " preload=\"".concat(props.preload, "\"") : '', ">\n\t\t\t\t\t").concat(mediaBody, "\n\t\t\t\t</video>") : "<audio data-testid=\"audio-element\" id=\"".concat(props.id, "\" width=\"").concat(props.width, "\" ").concat(props.controls ? ' controls' : '').concat(props.preload ? " preload=\"".concat(props.preload, "\"") : '', ">\n\t\t\t\t\t").concat(mediaBody, "\n\t\t\t\t</audio>");
       return _react["default"].createElement("div", {
@@ -187,25 +172,6 @@ function (_Component) {
           __html: mediaHtml
         }
       });
-    }
-  }], [{
-    key: "getDerivedStateFromProps",
-    value: function getDerivedStateFromProps(nextProps, prevState) {
-      var clicked = nextProps.clicked,
-          canvasIndex = nextProps.canvasIndex;
-
-      if (prevState.canvasIndex !== canvasIndex && clicked) {
-        var media = prevState.media,
-            node = prevState.node,
-            instance = prevState.instance;
-        var newInstance = (0, _mejsUtilityHelper.switchMedia)(media, node, instance, nextProps, false);
-        nextProps.playerInitialized(newInstance);
-        return {
-          canvasIndex: nextProps.canvasIndex
-        };
-      }
-
-      return null;
     }
   }]);
   return MediaElement;
@@ -222,32 +188,22 @@ MediaElement.propTypes = {
   options: _propTypes["default"].string
 };
 var mapDispatchToProps = {
-  playerInitialized: function playerInitialized(player, canvasIndex) {
-    return (0, _actions.playerInitialized)(player, canvasIndex);
+  playerInitialized: function playerInitialized(player) {
+    return (0, _actions.playerInitialized)(player);
+  },
+  swapMediaElement: function swapMediaElement(canvasIndex) {
+    return (0, _actions.swapMediaElement)(canvasIndex);
   },
   registerCaptionChange: function registerCaptionChange(captionOn) {
     return (0, _actions.registerCaptionChange)(captionOn);
-  },
-  resetClick: function resetClick() {
-    return (0, _actions.resetClick)();
-  },
-  setPlayingStatus: function setPlayingStatus(isPlaying) {
-    return (0, _actions.setPlayingStatus)(isPlaying);
-  },
-  setCanvasIndex: function setCanvasIndex(index) {
-    return (0, _actions.setCanvasIndex)(index);
   }
 };
 
 var mapStateToProps = function mapStateToProps(state) {
   return {
     player: state.player.instance,
-    isPlaying: state.player.isPlaying,
     captionOn: state.player.captionOn,
-    canvasIndex: state.player.canvasIndex,
-    startTime: state.nav.startTime,
-    manifest: state.getManifest.manifest,
-    clicked: state.nav.clicked
+    canvasIndex: state.player.canvasIndex
   };
 };
 
