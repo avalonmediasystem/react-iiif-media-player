@@ -10,3 +10,15 @@
 .dropdown-menu {
   width: 320px;
 }
+
+.iiif-player-demo > .row {
+  margin: 0;
+}
+
+.explorer {
+  height: 665px;
+}
+
+.structured-nav {
+  padding: 5px;
+}

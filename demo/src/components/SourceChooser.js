@@ -24,7 +24,7 @@ const SourceChooser = props => {
   return (
     <Dropdown>
       <Dropdown.Toggle variant="success" id="dropdown-basic">
-        Choose Source
+        Choose Manifest
       </Dropdown.Toggle>
       <Dropdown.Menu ref={sourceMenuRef}>
         <Dropdown.Item
