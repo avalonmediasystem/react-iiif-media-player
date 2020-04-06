@@ -96,7 +96,7 @@
 
         player.qualitiesButton = document.createElement('div');
         player.qualitiesButton.className = t.options.classPrefix + 'button ' + t.options.classPrefix + 'qualities-button';
-        player.qualitiesButton.innerHTML = '<button type="button" data-testid="quality-btn" aria-controls="' + t.id + '" title="' + qualityTitle + '" ' + ('aria-label="' + qualityTitle + '" tabindex="0">' + defaultValue + '</button>') + ('<div class="' + t.options.classPrefix + 'qualities-selector ' + t.options.classPrefix + 'offscreen"' + 'aria-label="' + qualityTitle + '">') + ('<ul class="' + t.options.classPrefix + 'qualities-selector-list"></ul>') + '</div>';
+        player.qualitiesButton.innerHTML = '<button type="button" data-testid="quality-btn" aria-controls="' + t.id + '" title="' + qualityTitle + '" ' + ('aria-label="' + qualityTitle + '" tabindex="0"></button>') + ('<div class="' + t.options.classPrefix + 'qualities-selector ' + t.options.classPrefix + 'offscreen"' + 'aria-label="' + qualityTitle + '">') + ('<ul class="' + t.options.classPrefix + 'qualities-selector-list"></ul>') + '</div>';
         t.addControlElement(player.qualitiesButton, 'qualities');
         media.setSrc(qualityMap.get(defaultValue)[0].src);
         media.load();

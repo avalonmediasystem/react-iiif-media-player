@@ -115,11 +115,7 @@
               '" title="' +
               qualityTitle +
               '" ' +
-              ('aria-label="' +
-                qualityTitle +
-                '" tabindex="0">' +
-                defaultValue +
-                '</button>') +
+              ('aria-label="' + qualityTitle + '" tabindex="0"></button>') +
               ('<div class="' +
                 t.options.classPrefix +
                 'qualities-selector ' +

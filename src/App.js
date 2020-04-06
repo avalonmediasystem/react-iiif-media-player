@@ -15,7 +15,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const { iiifManifest, iiifManifestUrl } = this.props;
+    const { iiifManifest, iiifManifestUrl, canvasIndex } = this.props;
 
     if (iiifManifest) {
       return this.props.fetchManifestSuccess(iiifManifest);
@@ -28,6 +28,7 @@ class App extends Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.iiifManifest !== prevState.manifest) {
       nextProps.fetchManifestSuccess(nextProps.iiifManifest);
+      nextProps.setCanvasIndex(nextProps.canvasIndex);
       return {
         manifest: nextProps.iiifManifest
       };
@@ -63,7 +64,9 @@ const mapDispatchToProps = dispatch => ({
   fetchManifestSuccess: manifest =>
     dispatch(actions.fetchManifestSuccess(manifest)),
   getRemoteManifest: url => dispatch(actions.getRemoteManifest(url)),
-  updateExternalConfig: config => dispatch(actions.updateExternalConfig(config))
+  updateExternalConfig: config =>
+    dispatch(actions.updateExternalConfig(config)),
+  setCanvasIndex: canvasIndex => dispatch(actions.setCanvasIndex(canvasIndex))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

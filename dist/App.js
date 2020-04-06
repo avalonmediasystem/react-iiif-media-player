@@ -38,9 +38,15 @@ var App =
 function (_Component) {
   (0, _inherits2["default"])(App, _Component);
 
-  function App() {
+  function App(props) {
+    var _this;
+
     (0, _classCallCheck2["default"])(this, App);
-    return (0, _possibleConstructorReturn2["default"])(this, (0, _getPrototypeOf2["default"])(App).apply(this, arguments));
+    _this = (0, _possibleConstructorReturn2["default"])(this, (0, _getPrototypeOf2["default"])(App).call(this, props));
+    _this.state = {
+      manifest: _this.props.iiifManifest
+    };
+    return _this;
   }
 
   (0, _createClass2["default"])(App, [{
@@ -48,7 +54,8 @@ function (_Component) {
     value: function componentDidMount() {
       var _this$props = this.props,
           iiifManifest = _this$props.iiifManifest,
-          iiifManifestUrl = _this$props.iiifManifestUrl;
+          iiifManifestUrl = _this$props.iiifManifestUrl,
+          canvasIndex = _this$props.canvasIndex;
 
       if (iiifManifest) {
         return this.props.fetchManifestSuccess(iiifManifest);
@@ -70,6 +77,7 @@ function (_Component) {
         }, _react["default"].createElement("div", {
           className: "container"
         }, _react["default"].createElement(_MediaElementContainer["default"], {
+          key: Math.random(),
           manifest: manifest
         }), _react["default"].createElement(_StructuredNav["default"], {
           manifest: manifest
@@ -83,6 +91,19 @@ function (_Component) {
       }
 
       return _react["default"].createElement("p", null, "...Loading");
+    }
+  }], [{
+    key: "getDerivedStateFromProps",
+    value: function getDerivedStateFromProps(nextProps, prevState) {
+      if (nextProps.iiifManifest !== prevState.manifest) {
+        nextProps.fetchManifestSuccess(nextProps.iiifManifest);
+        nextProps.setCanvasIndex(nextProps.canvasIndex);
+        return {
+          manifest: nextProps.iiifManifest
+        };
+      }
+
+      return null;
     }
   }]);
   return App;
@@ -104,6 +125,9 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     },
     updateExternalConfig: function updateExternalConfig(config) {
       return dispatch(actions.updateExternalConfig(config));
+    },
+    setCanvasIndex: function setCanvasIndex(canvasIndex) {
+      return dispatch(actions.setCanvasIndex(canvasIndex));
     }
   };
 };

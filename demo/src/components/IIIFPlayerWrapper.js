@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Root from '../../../src';
-import { Container, Col, Row } from 'react-bootstrap';
-import SourceChooser from './SourceChooser';
+import { Col, Row } from 'react-bootstrap';
 import axios from 'axios';
 
 class IIIFPlayerWrapper extends Component {
@@ -23,7 +22,6 @@ class IIIFPlayerWrapper extends Component {
   componentDidMount() {
     const self = this;
     this.iiifExplorer.current.addEventListener('selectManifest', function(e) {
-      console.log(e.detail.id);
       self.selectIIIFManifest(e.detail.id);
     });
   }
@@ -31,19 +29,21 @@ class IIIFPlayerWrapper extends Component {
   render() {
     return (
       <div className="iiif-player-demo">
-        <h1>IIIF Player Demo</h1>
         <Row>
           <Col>
-            <Root
-              config={this.props.config}
-              iiifManifest={this.state.iiifmanifest}
-            />
+            <div className="player-container">
+              <h1>IIIF Player Demo</h1>
+              <Root
+                config={this.props.config}
+                iiifManifest={this.state.iiifmanifest}
+                canvasIndex={0}
+              />
+            </div>
           </Col>
-          {/* <SourceChooser getManifest={this.selectIIIFManifest}></SourceChooser> */}
           <Col className="explorer">
             <iiif-explorer
               ref={this.iiifExplorer}
-              manifest="https://figgy.princeton.edu/collections/aeea1349-1da4-48b2-9ce8-49da9e833db8/manifest"
+              manifest="https://dlib.indiana.edu/iiif_av/iiif-player-samples/manifest-collections.json"
               copy-enabled="true"
             />
           </Col>

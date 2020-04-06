@@ -91,27 +91,33 @@ function getMediaInfo(manifest, canvasIndex) {
       error: 'No media sources found'
     };
   } else {
-    var sources = choiceItems.map(function (item) {
-      return {
-        src: item.id,
-        // TODO: make type more generic, possibly use mime-db
-        format: item.getFormat().value,
-        quality: item.getLabel()[0].value
-      };
-    });
-    var allTypes = choiceItems.map(function (item) {
-      return item.getType().value;
-    });
-    var uniqueTypes = allTypes.filter(function (t, index) {
-      return allTypes.indexOf(t) === index;
-    }); // Default type if there are different types
+    try {
+      var sources = choiceItems.map(function (item) {
+        return {
+          src: item.id,
+          // TODO: make type more generic, possibly use mime-db
+          format: item.getFormat().value,
+          quality: item.getLabel()[0].value
+        };
+      });
+      var allTypes = choiceItems.map(function (item) {
+        return item.getType().value;
+      });
+      var uniqueTypes = allTypes.filter(function (t, index) {
+        return allTypes.indexOf(t) === index;
+      }); // Default type if there are different types
 
-    var mediaType = uniqueTypes.length === 1 ? uniqueTypes[0] : 'video';
-    return {
-      sources: sources,
-      mediaType: mediaType,
-      error: null
-    };
+      var mediaType = uniqueTypes.length === 1 ? uniqueTypes[0] : 'video';
+      return {
+        sources: sources,
+        mediaType: mediaType,
+        error: null
+      };
+    } catch (e) {
+      return {
+        error: 'Manifest cannot be parsed.'
+      };
+    }
   }
 }
 /**
@@ -120,7 +126,13 @@ function getMediaInfo(manifest, canvasIndex) {
 
 
 function getTracks() {
-  return (0, _getReduxManifest.getReduxManifest)().getSeeAlso();
+  var seeAlso = (0, _getReduxManifest.getReduxManifest)().getSeeAlso();
+
+  if (seeAlso !== undefined) {
+    return seeAlso;
+  }
+
+  return [];
 }
 /**
  * Parse the label value from a manifest item
@@ -131,14 +143,12 @@ function getTracks() {
 
 function getLabelValue(label) {
   if (label && (0, _typeof2["default"])(label) === 'object') {
-    // English
-    if (label.hasOwnProperty('en')) {
-      return label['en'].length > 0 ? label['en'][0] : '';
-    } // None
+    var labelKeys = Object.keys(label);
 
-
-    if (label.hasOwnProperty('none')) {
-      return label['none'].length > 0 ? label['none'][0] : '';
+    if (labelKeys && labelKeys.length > 0) {
+      // Get the first key's first value
+      var firstKey = labelKeys[0];
+      return label[firstKey].length > 0 ? label[firstKey][0] : '';
     }
   } else if (typeof label === 'string') {
     return label;

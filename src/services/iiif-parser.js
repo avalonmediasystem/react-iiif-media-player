@@ -97,7 +97,7 @@ export function getMediaInfo(manifest, canvasIndex) {
       return { sources, mediaType, error: null };
     } catch (e) {
       return {
-        error: 'Given Manifest cannot be parsed'
+        error: 'Manifest cannot be parsed.'
       };
     }
   }
@@ -121,14 +121,11 @@ export function getTracks() {
  */
 export function getLabelValue(label) {
   if (label && typeof label === 'object') {
-    const regex = /^@?[a-z]*$/i;
-    // English
-    if (label.hasOwnProperty('@en')) {
-      return label['@en'].length > 0 ? label['@en'][0] : '';
-    }
-    // None
-    if (label.hasOwnProperty('@none')) {
-      return label['@none'].length > 0 ? label['@none'][0] : '';
+    const labelKeys = Object.keys(label);
+    if (labelKeys && labelKeys.length > 0) {
+      // Get the first key's first value
+      const firstKey = labelKeys[0];
+      return label[firstKey].length > 0 ? label[firstKey][0] : '';
     }
   } else if (typeof label === 'string') {
     return label;

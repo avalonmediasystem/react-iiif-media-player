@@ -1,6 +1,5 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { Container } from 'react-bootstrap';
 import IIIFPlayerWrapper from './components/IIIFPlayerWrapper';
 
 // test-component is the name of our made up Web Component that we have
