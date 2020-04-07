@@ -1,4 +1,4 @@
-import manifest from '../json/manifest-pawpaw-mahler';
+import manifest from '../json/mahler-symphony-audio';
 import manifestVideo from '../json/mahler-symphony-video';
 import * as iiifParser from './iiif-parser';
 

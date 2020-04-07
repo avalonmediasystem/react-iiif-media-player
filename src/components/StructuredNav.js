@@ -49,10 +49,11 @@ class StructuredNav extends Component {
   }
 
   render() {
-    if (this.manifest.structures) {
+    const { manifest } = this.props;
+    if (manifest.structures) {
       return (
-        <div data-testid="structured-nav">
-          <List items={this.manifest.structures} />
+        <div data-testid="structured-nav" className="structured-nav">
+          <List items={manifest.structures} />
         </div>
       );
     }

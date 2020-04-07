@@ -78,23 +78,28 @@ export function getMediaInfo(manifest, canvasIndex) {
       error: 'No media sources found'
     };
   } else {
-    const sources = choiceItems.map(item => {
+    try {
+      const sources = choiceItems.map(item => {
+        return {
+          src: item.id,
+          // TODO: make type more generic, possibly use mime-db
+          format: item.getFormat().value,
+          quality: item.getLabel()[0].value
+        };
+      });
+
+      let allTypes = choiceItems.map(item => item.getType().value);
+      let uniqueTypes = allTypes.filter((t, index) => {
+        return allTypes.indexOf(t) === index;
+      });
+      // Default type if there are different types
+      const mediaType = uniqueTypes.length === 1 ? uniqueTypes[0] : 'video';
+      return { sources, mediaType, error: null };
+    } catch (e) {
       return {
-        src: item.id,
-        // TODO: make type more generic, possibly use mime-db
-        format: item.getFormat().value,
-        quality: item.getLabel()[0].value
+        error: 'Manifest cannot be parsed.'
       };
-    });
-
-    let allTypes = choiceItems.map(item => item.getType().value);
-    let uniqueTypes = allTypes.filter((t, index) => {
-      return allTypes.indexOf(t) === index;
-    });
-    // Default type if there are different types
-    const mediaType = uniqueTypes.length === 1 ? uniqueTypes[0] : 'video';
-
-    return { sources, mediaType, error: null };
+    }
   }
 }
 
@@ -102,7 +107,11 @@ export function getMediaInfo(manifest, canvasIndex) {
  * Get captions in manifest
  */
 export function getTracks() {
-  return getReduxManifest().getSeeAlso();
+  const seeAlso = getReduxManifest().getSeeAlso();
+  if (seeAlso !== undefined) {
+    return seeAlso;
+  }
+  return [];
 }
 
 /**
@@ -112,13 +121,11 @@ export function getTracks() {
  */
 export function getLabelValue(label) {
   if (label && typeof label === 'object') {
-    // English
-    if (label.hasOwnProperty('en')) {
-      return label['en'].length > 0 ? label['en'][0] : '';
-    }
-    // None
-    if (label.hasOwnProperty('none')) {
-      return label['none'].length > 0 ? label['none'][0] : '';
+    const labelKeys = Object.keys(label);
+    if (labelKeys && labelKeys.length > 0) {
+      // Get the first key's first value
+      const firstKey = labelKeys[0];
+      return label[firstKey].length > 0 ? label[firstKey][0] : '';
     }
   } else if (typeof label === 'string') {
     return label;

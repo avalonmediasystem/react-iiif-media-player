@@ -1,10 +1,18 @@
 import React from 'react';
 import { render } from 'react-dom';
-import Root from '../../src';
+import IIIFPlayerWrapper from './components/IIIFPlayerWrapper';
+
+// test-component is the name of our made up Web Component that we have
+// published to npm:
+import { applyPolyfills, defineCustomElements } from 'iiif-explorer/loader';
 
 // Import a local manifest here.
 // If included in the 'props' below, it will take precedence over the URI
 import iiifManifest from '../../src/json/mahler-symphony-video';
+
+applyPolyfills().then(() => {
+  defineCustomElements(window);
+});
 
 // A valid IIIF Manifest URI endpoint
 const iiifManifestUrl =
@@ -24,4 +32,4 @@ const props = {
   iiifManifestUrl
 };
 
-render(<Root {...props} />, document.getElementById('root'));
+render(<IIIFPlayerWrapper {...props} />, document.getElementById('root'));

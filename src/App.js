@@ -7,8 +7,15 @@ import * as actions from './actions';
 import './App.css';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      manifest: this.props.iiifManifest
+    };
+  }
+
   componentDidMount() {
-    const { iiifManifest, iiifManifestUrl } = this.props;
+    const { iiifManifest, iiifManifestUrl, canvasIndex } = this.props;
 
     if (iiifManifest) {
       return this.props.fetchManifestSuccess(iiifManifest);
@@ -18,6 +25,17 @@ class App extends Component {
     this.props.getRemoteManifest(iiifManifestUrl);
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.iiifManifest !== prevState.manifest) {
+      nextProps.fetchManifestSuccess(nextProps.iiifManifest);
+      nextProps.setCanvasIndex(nextProps.canvasIndex);
+      return {
+        manifest: nextProps.iiifManifest
+      };
+    }
+    return null;
+  }
+
   render() {
     const { manifest, error } = this.props.getManifest;
 
@@ -25,7 +43,7 @@ class App extends Component {
       return (
         <section className="iiif-player">
           <div className="container">
-            <MediaElementContainer manifest={manifest} />
+            <MediaElementContainer key={Math.random()} manifest={manifest} />
             <StructuredNav manifest={manifest} />
           </div>
         </section>
@@ -46,7 +64,9 @@ const mapDispatchToProps = dispatch => ({
   fetchManifestSuccess: manifest =>
     dispatch(actions.fetchManifestSuccess(manifest)),
   getRemoteManifest: url => dispatch(actions.getRemoteManifest(url)),
-  updateExternalConfig: config => dispatch(actions.updateExternalConfig(config))
+  updateExternalConfig: config =>
+    dispatch(actions.updateExternalConfig(config)),
+  setCanvasIndex: canvasIndex => dispatch(actions.setCanvasIndex(canvasIndex))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

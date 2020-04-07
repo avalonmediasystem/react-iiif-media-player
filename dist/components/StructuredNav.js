@@ -49,11 +49,14 @@ function (_Component) {
   (0, _createClass2["default"])(StructuredNav, [{
     key: "render",
     value: function render() {
-      if (this.manifest.structures) {
+      var manifest = this.props.manifest;
+
+      if (manifest.structures) {
         return _react["default"].createElement("div", {
-          "data-testid": "structured-nav"
+          "data-testid": "structured-nav",
+          className: "structured-nav"
         }, _react["default"].createElement(_List["default"], {
-          items: this.manifest.structures
+          items: manifest.structures
         }));
       }
 
