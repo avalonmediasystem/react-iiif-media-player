@@ -11,14 +11,14 @@ export function canvasesInManifest(manifest) {
     .create(manifest)
     .getSequences()[0]
     .getCanvases()
-    .map(canvas => {
+    .map((canvas) => {
       let sources = canvas
         .getContent()[0]
         .getBody()
-        .map(source => source.id);
+        .map((source) => source.id);
       return {
         canvasId: canvas.id,
-        canvasSources: sources
+        canvasSources: sources,
       };
     });
   return canvases;
@@ -29,9 +29,7 @@ export function canvasesInManifest(manifest) {
  * @param {Object} item
  */
 export function filterVisibleRangeItem(item) {
-  const behavior = getReduxManifest()
-    .getRangeById(item.id)
-    .getBehavior();
+  const behavior = getReduxManifest().getRangeById(item.id).getBehavior();
 
   if (behavior && behavior.value === 'no-nav') {
     return null;
@@ -43,9 +41,7 @@ export function getChildCanvases(rangeId) {
   let rangeCanvases = [];
 
   try {
-    rangeCanvases = getReduxManifest()
-      .getRangeById(rangeId)
-      .getCanvasIds();
+    rangeCanvases = getReduxManifest().getRangeById(rangeId).getCanvasIds();
   } catch (e) {
     console.log('error fetching range canvases', e);
   }
@@ -75,20 +71,22 @@ export function getMediaInfo(manifest, canvasIndex) {
 
   if (choiceItems.length === 0) {
     return {
-      error: 'No media sources found'
+      error: 'No media sources found',
     };
   } else {
     try {
-      const sources = choiceItems.map(item => {
+      const sources = choiceItems.map((item) => {
         return {
           src: item.id,
           // TODO: make type more generic, possibly use mime-db
-          format: item.getFormat().value,
-          quality: item.getLabel()[0].value
+          format: item.getFormat()
+            ? item.getFormat().value
+            : 'application/x-mpegurl',
+          quality: item.getLabel()[0] ? item.getLabel()[0].value : 'auto',
         };
       });
 
-      let allTypes = choiceItems.map(item => item.getType().value);
+      let allTypes = choiceItems.map((item) => item.getType().value);
       let uniqueTypes = allTypes.filter((t, index) => {
         return allTypes.indexOf(t) === index;
       });
@@ -97,7 +95,7 @@ export function getMediaInfo(manifest, canvasIndex) {
       return { sources, mediaType, error: null };
     } catch (e) {
       return {
-        error: 'Manifest cannot be parsed.'
+        error: 'Manifest cannot be parsed.',
       };
     }
   }
@@ -147,7 +145,7 @@ export function getMediaFragment(uri) {
       const splitFragment = fragment.split(',');
       return {
         start: splitFragment[0],
-        stop: splitFragment[1]
+        stop: splitFragment[1],
       };
     } else {
       return undefined;
@@ -175,7 +173,7 @@ export function hasNextSection(index) {
   let canvasIDs = getReduxManifest()
     .getSequences()[0]
     .getCanvases()
-    .map(canvas => canvas.id);
+    .map((canvas) => canvas.id);
   return canvasIDs.length - 1 > index ? true : false;
 }
 
@@ -184,9 +182,7 @@ export function hasNextSection(index) {
  * @param {Object} item
  */
 export function isAtTop(item) {
-  const behavior = getReduxManifest()
-    .getRangeById(item.id)
-    .getBehavior();
+  const behavior = getReduxManifest().getRangeById(item.id).getBehavior();
 
   if (behavior && behavior.value === 'top') {
     return true;

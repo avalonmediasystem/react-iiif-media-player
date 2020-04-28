@@ -89,7 +89,7 @@ function (_Component) {
         } // Clicked fragment is not in the current canvas => load relevant canvas
 
 
-        if (!canvasSources.includes(player.getSrc())) {
+        if (canvasSources && !canvasSources.includes(player.getSrc())) {
           nextProps.switchCanvas(canvasIndex, timeFragment.start);
         } else {
           // Set the playhead at the start of the time fragment
