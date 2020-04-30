@@ -16,7 +16,7 @@ class IIIFPlayerWrapper extends Component {
     this.state = {
       iiifmanifest: this.props.iiifManifest,
       iiifmanifestURL: this.props.iiifManifest.id,
-      manifestFetched: true,
+      showManifestFetchedAlert: false,
       manifestError: null,
     };
     this.iiifExplorer = React.createRef();
@@ -28,7 +28,10 @@ class IIIFPlayerWrapper extends Component {
       axios
         .get(this.state.iiifmanifestURL)
         .then(function (result) {
-          self.setState({ iiifmanifest: result.data, manifestFetched: true });
+          self.setState({
+            iiifmanifest: result.data,
+            showManifestFetchedAlert: false,
+          });
         })
         .catch(function (error) {
           let errorMessage =
@@ -37,9 +40,10 @@ class IIIFPlayerWrapper extends Component {
             errorMessage = `Couldn't load manifest. Error status: ${error.response.status}, status text: ${error.response.statusText}`;
           }
           self.setState({
-            manifestFetched: false,
+            showManifestFetchedAlert: true,
             manifestError: errorMessage,
           });
+          self.handleAlert();
         });
     }
   };
@@ -50,11 +54,10 @@ class IIIFPlayerWrapper extends Component {
     });
   };
 
-  setManifestFetched = () => {
-    const fetched = this.state.manifestFetched;
-    this.setState({
-      manifestFetched: !fetched,
-    });
+  handleAlert = () => {
+    setTimeout(() => {
+      this.setState({ showManifestFetchedAlert: false });
+    }, 3000);
   };
 
   componentDidMount() {
@@ -85,14 +88,8 @@ class IIIFPlayerWrapper extends Component {
               manifest="https://dlib.indiana.edu/iiif_av/iiif-player-samples/manifest-collections.json"
             />
             <br />
-            {!this.state.manifestFetched && (
-              <Alert
-                variant="danger"
-                onClose={this.setManifestFetched}
-                dismissible
-              >
-                {this.state.manifestError}
-              </Alert>
+            {this.state.showManifestFetchedAlert && (
+              <Alert variant="danger">{this.state.manifestError}</Alert>
             )}
             <InputGroup className="mb-3">
               <FormControl
