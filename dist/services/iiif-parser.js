@@ -96,8 +96,8 @@ function getMediaInfo(manifest, canvasIndex) {
         return {
           src: item.id,
           // TODO: make type more generic, possibly use mime-db
-          format: item.getFormat().value,
-          quality: item.getLabel()[0].value
+          format: item.getFormat() ? item.getFormat().value : 'application/x-mpegurl',
+          quality: item.getLabel()[0] ? item.getLabel()[0].value : 'auto'
         };
       });
       var allTypes = choiceItems.map(function (item) {

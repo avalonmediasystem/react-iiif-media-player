@@ -16,7 +16,7 @@ class StructuredNav extends Component {
     const { player, clickedUrl, canvases, clicked } = nextProps;
     if (clicked) {
       const canvasInManifest = canvases.find(
-        c => getCanvasId(clickedUrl) === c.canvasId
+        (c) => getCanvasId(clickedUrl) === c.canvasId
       );
       const canvasIndex = canvases.indexOf(canvasInManifest);
 
@@ -36,7 +36,7 @@ class StructuredNav extends Component {
       }
 
       // Clicked fragment is not in the current canvas => load relevant canvas
-      if (!canvasSources.includes(player.getSrc())) {
+      if (canvasSources && !canvasSources.includes(player.getSrc())) {
         nextProps.switchCanvas(canvasIndex, timeFragment.start);
       } else {
         // Set the playhead at the start of the time fragment
@@ -62,20 +62,20 @@ class StructuredNav extends Component {
 }
 
 StructuredNav.propTypes = {
-  manifest: PropTypes.object.isRequired
+  manifest: PropTypes.object.isRequired,
 };
 
 const mapDispatchToProps = {
   switchCanvas: switchCanvas,
-  resetClick: resetClick
+  resetClick: resetClick,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   clickedUrl: state.nav.clickedUrl,
   player: state.player.instance,
   canvases: state.getManifest.canvases,
   clicked: state.nav.clicked,
-  canvasIndex: state.player.canvasIndex
+  canvasIndex: state.player.canvasIndex,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(StructuredNav);
