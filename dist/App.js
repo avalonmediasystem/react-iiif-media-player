@@ -31,7 +31,7 @@ var _reactRedux = require("react-redux");
 
 var actions = _interopRequireWildcard(require("./actions"));
 
-require("./App.css");
+require("./App.scss");
 
 var App =
 /*#__PURE__*/
@@ -54,8 +54,7 @@ function (_Component) {
     value: function componentDidMount() {
       var _this$props = this.props,
           iiifManifest = _this$props.iiifManifest,
-          iiifManifestUrl = _this$props.iiifManifestUrl,
-          canvasIndex = _this$props.canvasIndex;
+          iiifManifestUrl = _this$props.iiifManifestUrl;
 
       if (iiifManifest) {
         return this.props.fetchManifestSuccess(iiifManifest);

@@ -31,17 +31,17 @@ describe('filterVisibleRangeItem()', () => {
       id: 'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/range/2',
       type: 'Range',
       label: {
-        en: ['CD2 - Mahler, Symphony No.3 (cont.)']
+        en: ['CD2 - Mahler, Symphony No.3 (cont.)'],
       },
       items: [
         {
           id: 'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/range/2-1',
           type: 'Range',
           label: {
-            en: ['Track 1. II. Tempo di Menuetto']
-          }
-        }
-      ]
+            en: ['Track 1. II. Tempo di Menuetto'],
+          },
+        },
+      ],
     };
     expect(iiifParser.filterVisibleRangeItem(item)).toEqual(item);
   });
@@ -51,8 +51,8 @@ describe('filterVisibleRangeItem()', () => {
       type: 'Range',
       behavior: 'no-nav',
       label: {
-        en: ['CD1 - Mahler, Symphony No.3']
-      }
+        en: ['CD1 - Mahler, Symphony No.3'],
+      },
     };
     expect(iiifParser.filterVisibleRangeItem(item)).toBeNull();
   });
@@ -87,24 +87,24 @@ describe('getMediaInfo()', () => {
           src:
             'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/CD1/high/320Kbps.mp4',
           format: 'video/mp4',
-          quality: 'High'
+          quality: 'High',
         },
         {
           src:
             'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/CD1/medium/128Kbps.mp4',
           format: 'video/mp4',
-          quality: 'Medium'
-        }
+          quality: 'Medium',
+        },
       ],
       mediaType: 'video',
-      error: null
+      error: null,
     };
     expect(iiifParser.getMediaInfo(manifestVideo, 0)).toEqual(expectedObject);
   });
 
   it('should return error when invalid canvas index is given', () => {
     const expectedObject = {
-      error: 'No media sources found'
+      error: 'No media sources found',
     };
     expect(iiifParser.getMediaInfo(manifestVideo, 2)).toEqual(expectedObject);
   });
@@ -116,8 +116,8 @@ it('getTracks() returns captions related info', () => {
       id: 'http://localhost:3001/src/json/upc-video-subtitles-en.vtt',
       type: 'Text',
       format: 'application/webvtt',
-      label: 'subtitles'
-    }
+      label: 'subtitles',
+    },
   ];
   expect(iiifParser.getTracks()).toEqual(expectedObject);
 });
@@ -125,13 +125,13 @@ it('getTracks() returns captions related info', () => {
 describe('getLabelValue()', () => {
   it('returns label when en tag is available', () => {
     const label = {
-      en: ['Track 4. Schwungvoll']
+      en: ['Track 4. Schwungvoll'],
     };
     expect(iiifParser.getLabelValue(label)).toEqual('Track 4. Schwungvoll');
   });
   it('returns label when none tag is available', () => {
     const label = {
-      none: ['Track 2. Langsam. Schwer']
+      none: ['Track 2. Langsam. Schwer'],
     };
     expect(iiifParser.getLabelValue(label)).toEqual('Track 2. Langsam. Schwer');
   });
@@ -170,9 +170,9 @@ describe('isAtTop()', () => {
       type: 'Range',
       behavior: 'top',
       label: {
-        en: ['Symphony no. 3 - Mahler, Gustav']
+        en: ['Symphony no. 3 - Mahler, Gustav'],
       },
-      items: []
+      items: [],
     };
 
     expect(iiifParser.isAtTop(item)).toBeTruthy();
@@ -182,41 +182,11 @@ describe('isAtTop()', () => {
       id: 'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/range/1',
       type: 'Range',
       label: {
-        en: ['CD1 - Mahler, Symphony No.3']
+        en: ['CD1 - Mahler, Symphony No.3'],
       },
-      items: []
+      items: [],
     };
 
     expect(iiifParser.isAtTop(item)).toBeFalsy();
   });
-});
-
-it('getSectionURI() returns the first fragment in section', () => {
-  const item = {
-    id: 'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/range/1',
-    type: 'Range',
-    label: {
-      en: ['CD1 - Mahler, Symphony No.3']
-    },
-    items: [
-      {
-        id: 'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/range/1-1',
-        type: 'Range',
-        label: {
-          en: ['Track 1. I. Kraftig']
-        },
-        items: [
-          {
-            id:
-              'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/canvas/1#t=0,374',
-            type: 'Canvas'
-          }
-        ]
-      }
-    ]
-  };
-
-  expect(iiifParser.getSectionURI(item)).toEqual(
-    'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/canvas/1#t=0,'
-  );
 });

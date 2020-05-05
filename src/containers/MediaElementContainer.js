@@ -12,7 +12,7 @@ class MediaElementContainer extends Component {
     sources: [],
     tracks: [],
     mediaType: null,
-    error: null
+    error: null,
   };
 
   componentDidMount() {
@@ -24,7 +24,7 @@ class MediaElementContainer extends Component {
       mediaType,
       tracks,
       ready: error ? false : true,
-      error
+      error,
     });
   }
 
@@ -58,11 +58,11 @@ class MediaElementContainer extends Component {
 }
 
 MediaElementContainer.propTypes = {
-  manifest: PropTypes.object
+  manifest: PropTypes.object,
 };
 
-const mapStateToProps = state => ({
-  canvasIndex: state.player.canvasIndex
+const mapStateToProps = (state) => ({
+  canvasIndex: state.player.canvasIndex,
 });
 
 export default connect(mapStateToProps)(MediaElementContainer);

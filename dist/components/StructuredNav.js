@@ -54,10 +54,15 @@ function (_Component) {
       if (manifest.structures) {
         return _react["default"].createElement("div", {
           "data-testid": "structured-nav",
-          className: "structured-nav"
-        }, _react["default"].createElement(_List["default"], {
-          items: manifest.structures
-        }));
+          className: "structured-nav",
+          key: Math.random()
+        }, manifest.structures[0] && manifest.structures[0].items ? manifest.structures[0].items.map(function (item, index) {
+          return _react["default"].createElement(_List["default"], {
+            items: [item],
+            key: index,
+            isChild: false
+          });
+        }) : null);
       }
 
       return _react["default"].createElement("p", null, "There are no structures in the manifest.");
@@ -68,29 +73,24 @@ function (_Component) {
       var player = nextProps.player,
           clickedUrl = nextProps.clickedUrl,
           canvases = nextProps.canvases,
-          clicked = nextProps.clicked;
+          clicked = nextProps.clicked,
+          canvasIndex = nextProps.canvasIndex;
 
       if (clicked) {
         var canvasInManifest = canvases.find(function (c) {
           return (0, _iiifParser.getCanvasId)(clickedUrl) === c.canvasId;
         });
-        var canvasIndex = canvases.indexOf(canvasInManifest);
-        var canvasSources = null;
-
-        if (canvasInManifest) {
-          canvasSources = canvasInManifest.canvasSources;
-        }
-
+        var currentCanvasIndex = canvases.indexOf(canvasInManifest);
         var timeFragment = (0, _iiifParser.getMediaFragment)(clickedUrl); // Invalid time fragment
 
         if (!timeFragment) {
           console.error('Error retrieving time fragment object from Canvas url in StructuredNav.js');
           return;
-        } // Clicked fragment is not in the current canvas => load relevant canvas
+        } // When clicked structure item is not in the current canvas
 
 
-        if (canvasSources && !canvasSources.includes(player.getSrc())) {
-          nextProps.switchCanvas(canvasIndex, timeFragment.start);
+        if (canvasIndex !== currentCanvasIndex) {
+          nextProps.switchCanvas(currentCanvasIndex, timeFragment.start);
         } else {
           // Set the playhead at the start of the time fragment
           player.setCurrentTime(timeFragment.start, nextProps.resetClick());

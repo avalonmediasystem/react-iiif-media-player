@@ -10,14 +10,14 @@ import {
   registerCaptionChange,
   resetClick,
   setPlayingStatus,
-  setCanvasIndex
+  setCanvasIndex,
 } from '../actions';
 import { hasNextSection } from '../services/iiif-parser';
 import {
   switchMedia,
   createSourceTags,
   createTrackTags,
-  handleTracks
+  handleTracks,
 } from '../services/mejs-utility-helper';
 
 // Import stylesheets
@@ -32,7 +32,7 @@ class MediaElement extends Component {
       canvasIndex: this.props.canvasIndex,
       media: null,
       node: null,
-      instance: null
+      instance: null,
     };
   }
 
@@ -45,7 +45,7 @@ class MediaElement extends Component {
     this.props.playerInitialized(instance);
 
     // Register ended event
-    media.addEventListener('ended', ended => {
+    media.addEventListener('ended', (ended) => {
       if (ended) {
         this.props.resetClick();
         this.handleEnded(node, instance, media);
@@ -53,7 +53,7 @@ class MediaElement extends Component {
     });
 
     // Register caption change event
-    media.addEventListener('captionschange', captions => {
+    media.addEventListener('captionschange', (captions) => {
       if (captions.detail.caption !== null) {
         this.props.registerCaptionChange(true);
       } else {
@@ -118,10 +118,10 @@ class MediaElement extends Component {
         'volume',
         'quality',
         this.props.mediaType === 'video' ? 'tracks' : '',
-        'fullscreen'
+        'fullscreen',
       ],
       qualityText: 'Stream Quality',
-      toggleCaptionsButtonWhenOnlyOne: true
+      toggleCaptionsButtonWhenOnlyOne: true,
     });
 
     window.Hls = hlsjs;
@@ -189,26 +189,26 @@ MediaElement.propTypes = {
   height: PropTypes.number,
   poster: PropTypes.string,
   sources: PropTypes.string,
-  options: PropTypes.string
+  options: PropTypes.string,
 };
 
 const mapDispatchToProps = {
   playerInitialized: (player, canvasIndex) =>
     playerInitialized(player, canvasIndex),
-  registerCaptionChange: captionOn => registerCaptionChange(captionOn),
+  registerCaptionChange: (captionOn) => registerCaptionChange(captionOn),
   resetClick: () => resetClick(),
-  setPlayingStatus: isPlaying => setPlayingStatus(isPlaying),
-  setCanvasIndex: index => setCanvasIndex(index)
+  setPlayingStatus: (isPlaying) => setPlayingStatus(isPlaying),
+  setCanvasIndex: (index) => setCanvasIndex(index),
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   player: state.player.instance,
   isPlaying: state.player.isPlaying,
   captionOn: state.player.captionOn,
   canvasIndex: state.player.canvasIndex,
   startTime: state.nav.startTime,
   manifest: state.getManifest.manifest,
-  clicked: state.nav.clicked
+  clicked: state.nav.clicked,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MediaElement);

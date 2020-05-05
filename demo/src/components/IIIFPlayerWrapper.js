@@ -70,17 +70,15 @@ class IIIFPlayerWrapper extends Component {
 
   render() {
     return (
-      <div className="iiif-player-demo">
+      <div className="container" id="iiif-player-demo">
         <Row>
           <Col>
-            <div className="player-container">
-              <h1>IIIF Media Player</h1>
-              <Root
-                config={this.props.config}
-                iiifManifest={this.state.iiifmanifest}
-                canvasIndex={0}
-              />
-            </div>
+            <h1>IIIF Media Player</h1>
+            <Root
+              config={this.props.config}
+              iiifManifest={this.state.iiifmanifest}
+              canvasIndex={0}
+            />
           </Col>
           <Col className="explorer">
             <iiif-explorer

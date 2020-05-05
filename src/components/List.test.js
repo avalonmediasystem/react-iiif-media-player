@@ -4,8 +4,8 @@ import manifest from '../json/mahler-symphony-audio';
 import { renderWithRedux } from '../services/testing-helpers';
 
 test('ListItem component renders successfully', () => {
-  const { container, debug } = renderWithRedux(
-    <List items={manifest.structures} />
+  const { container } = renderWithRedux(
+    <List items={manifest.structures} isChild={false} />
   );
   expect(container).toBeTruthy();
 });
@@ -16,34 +16,55 @@ test('Displays the correct ListItems', () => {
       id: 'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/range/1-1',
       type: 'Range',
       label: {
-        en: ['Track 1. I. Kraftig']
+        en: ['Track 1. I. Kraftig'],
       },
       items: [
         {
           id:
             'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/canvas/1#t=0,374',
-          type: 'Canvas'
-        }
-      ]
+          type: 'Canvas',
+        },
+      ],
     },
     {
       id: 'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/range/1-2',
       type: 'Range',
       label: {
-        en: ['Track 2. Langsam. Schwer']
+        en: ['Track 2. Langsam. Schwer'],
       },
       items: [
         {
           id:
             'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/canvas/1#t=374,525',
-          type: 'Canvas'
-        }
-      ]
-    }
+          type: 'Canvas',
+        },
+      ],
+    },
   ];
 
-  const { getByText, getByTestId } = renderWithRedux(<List items={items} />);
+  const { getByText, getByTestId } = renderWithRedux(
+    <List items={items} isChild={true} />
+  );
   expect(getByTestId('list')).toBeInTheDocument();
   expect(getByText('Track 1. I. Kraftig')).toBeInTheDocument();
   expect(getByText('Track 2. Langsam. Schwer')).toBeInTheDocument();
+});
+
+test('Displays collapsible structure', () => {
+  const items = [
+    {
+      id: 'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/range/1',
+      type: 'Range',
+      label: {
+        en: ['CD1 - Mahler, Symphony No.3'],
+      },
+      items: [],
+    },
+  ];
+
+  const { getByText, getByTestId } = renderWithRedux(
+    <List items={items} isChild={false} />
+  );
+  expect(getByTestId('collapsible')).toBeInTheDocument();
+  expect(getByText('CD1 - Mahler, Symphony No.3')).toBeInTheDocument();
 });
