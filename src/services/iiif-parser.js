@@ -118,8 +118,8 @@ export function getTracks() {
  * @param {Object} label
  */
 export function getLabelValue(label) {
-  let decodeHTML = (lableText) => {
-    return lableText
+  let decodeHTML = (labelText) => {
+    return labelText
       .replace(/&amp;/g, '&')
       .replace(/&lt;/g, '<')
       .replace(/&gt;/g, '>')
