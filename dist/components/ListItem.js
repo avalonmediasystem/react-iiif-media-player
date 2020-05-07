@@ -25,7 +25,8 @@ var ListItem = function ListItem(props) {
   var item = props.item;
   var childCanvases = (0, _iiifParser.getChildCanvases)(item.id);
   var subMenu = item.items && item.items.length > 0 && childCanvases.length === 0 ? _react["default"].createElement(_List["default"], {
-    items: item.items
+    items: item.items,
+    isChild: true
   }) : null;
 
   var handleClick = function handleClick(e) {
@@ -47,16 +48,11 @@ var ListItem = function ListItem(props) {
       });
     }
 
-    if (!(0, _iiifParser.isAtTop)(item)) {
-      var timeUri = (0, _iiifParser.getSectionURI)(item);
-      return _react["default"].createElement("a", {
-        key: timeUri,
-        href: timeUri,
-        onClick: handleClick
-      }, label);
+    if (props.isChild) {
+      return label;
     }
 
-    return label;
+    return null;
   };
 
   return _react["default"].createElement("li", {
@@ -65,7 +61,8 @@ var ListItem = function ListItem(props) {
 };
 
 ListItem.propTypes = {
-  item: _propTypes["default"].object.isRequired
+  item: _propTypes["default"].object.isRequired,
+  isChild: _propTypes["default"].bool
 };
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {

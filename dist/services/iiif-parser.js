@@ -15,7 +15,6 @@ exports.getMediaFragment = getMediaFragment;
 exports.getCanvasId = getCanvasId;
 exports.hasNextSection = hasNextSection;
 exports.isAtTop = isAtTop;
-exports.getSectionURI = getSectionURI;
 
 var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 
@@ -142,16 +141,20 @@ function getTracks() {
 
 
 function getLabelValue(label) {
+  var decodeHTML = function decodeHTML(lableText) {
+    return lableText.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+  };
+
   if (label && (0, _typeof2["default"])(label) === 'object') {
     var labelKeys = Object.keys(label);
 
     if (labelKeys && labelKeys.length > 0) {
       // Get the first key's first value
       var firstKey = labelKeys[0];
-      return label[firstKey].length > 0 ? label[firstKey][0] : '';
+      return label[firstKey].length > 0 ? decodeHTML(label[firstKey][0]) : '';
     }
   } else if (typeof label === 'string') {
-    return label;
+    return decodeHTML(label);
   }
 
   return 'Label could not be parsed';
@@ -219,20 +222,4 @@ function isAtTop(item) {
   }
 
   return false;
-}
-/**
- * Construct url for the starting time of canvas
- * @param {Object} item
- */
-
-
-function getSectionURI(item) {
-  if (item.items && item.items.length > 0) {
-    var canvas = item.items[0].items;
-
-    if (canvas[0]) {
-      var canvasUri = getCanvasId(canvas[0].id);
-      return "".concat(canvasUri, "#t=0,");
-    }
-  }
 }

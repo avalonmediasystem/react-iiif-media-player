@@ -13,17 +13,12 @@ class StructuredNav extends Component {
   }
 
   static getDerivedStateFromProps(nextProps) {
-    const { player, clickedUrl, canvases, clicked } = nextProps;
+    const { player, clickedUrl, canvases, clicked, canvasIndex } = nextProps;
     if (clicked) {
       const canvasInManifest = canvases.find(
         (c) => getCanvasId(clickedUrl) === c.canvasId
       );
-      const canvasIndex = canvases.indexOf(canvasInManifest);
-
-      let canvasSources = null;
-      if (canvasInManifest) {
-        canvasSources = canvasInManifest.canvasSources;
-      }
+      const currentCanvasIndex = canvases.indexOf(canvasInManifest);
 
       const timeFragment = getMediaFragment(clickedUrl);
 
@@ -35,9 +30,9 @@ class StructuredNav extends Component {
         return;
       }
 
-      // Clicked fragment is not in the current canvas => load relevant canvas
-      if (canvasSources && !canvasSources.includes(player.getSrc())) {
-        nextProps.switchCanvas(canvasIndex, timeFragment.start);
+      // When clicked structure item is not in the current canvas
+      if (canvasIndex !== currentCanvasIndex) {
+        nextProps.switchCanvas(currentCanvasIndex, timeFragment.start);
       } else {
         // Set the playhead at the start of the time fragment
         player.setCurrentTime(timeFragment.start, nextProps.resetClick());
@@ -52,8 +47,16 @@ class StructuredNav extends Component {
     const { manifest } = this.props;
     if (manifest.structures) {
       return (
-        <div data-testid="structured-nav" className="structured-nav">
-          <List items={manifest.structures} />
+        <div
+          data-testid="structured-nav"
+          className="structured-nav"
+          key={Math.random()}
+        >
+          {manifest.structures[0] && manifest.structures[0].items
+            ? manifest.structures[0].items.map((item, index) => (
+                <List items={[item]} key={index} isChild={false} />
+              ))
+            : null}
         </div>
       );
     }

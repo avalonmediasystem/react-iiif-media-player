@@ -4,18 +4,18 @@ import StructuredNav from './components/StructuredNav';
 import ErrorMessage from './components/ErrorMessage';
 import { connect } from 'react-redux';
 import * as actions from './actions';
-import './App.css';
+import './App.scss';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      manifest: this.props.iiifManifest
+      manifest: this.props.iiifManifest,
     };
   }
 
   componentDidMount() {
-    const { iiifManifest, iiifManifestUrl, canvasIndex } = this.props;
+    const { iiifManifest, iiifManifestUrl } = this.props;
 
     if (iiifManifest) {
       return this.props.fetchManifestSuccess(iiifManifest);
@@ -30,7 +30,7 @@ class App extends Component {
       nextProps.fetchManifestSuccess(nextProps.iiifManifest);
       nextProps.setCanvasIndex(nextProps.canvasIndex);
       return {
-        manifest: nextProps.iiifManifest
+        manifest: nextProps.iiifManifest,
       };
     }
     return null;
@@ -56,17 +56,18 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  getManifest: state.getManifest
+const mapStateToProps = (state) => ({
+  getManifest: state.getManifest,
 });
 
-const mapDispatchToProps = dispatch => ({
-  fetchManifestSuccess: manifest =>
+const mapDispatchToProps = (dispatch) => ({
+  fetchManifestSuccess: (manifest) =>
     dispatch(actions.fetchManifestSuccess(manifest)),
-  getRemoteManifest: url => dispatch(actions.getRemoteManifest(url)),
-  updateExternalConfig: config =>
+  getRemoteManifest: (url) => dispatch(actions.getRemoteManifest(url)),
+  updateExternalConfig: (config) =>
     dispatch(actions.updateExternalConfig(config)),
-  setCanvasIndex: canvasIndex => dispatch(actions.setCanvasIndex(canvasIndex))
+  setCanvasIndex: (canvasIndex) =>
+    dispatch(actions.setCanvasIndex(canvasIndex)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

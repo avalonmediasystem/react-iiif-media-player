@@ -118,15 +118,23 @@ export function getTracks() {
  * @param {Object} label
  */
 export function getLabelValue(label) {
+  let decodeHTML = (labelText) => {
+    return labelText
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&apos;/g, "'");
+  };
   if (label && typeof label === 'object') {
     const labelKeys = Object.keys(label);
     if (labelKeys && labelKeys.length > 0) {
       // Get the first key's first value
       const firstKey = labelKeys[0];
-      return label[firstKey].length > 0 ? label[firstKey][0] : '';
+      return label[firstKey].length > 0 ? decodeHTML(label[firstKey][0]) : '';
     }
   } else if (typeof label === 'string') {
-    return label;
+    return decodeHTML(label);
   }
   return 'Label could not be parsed';
 }
@@ -188,18 +196,4 @@ export function isAtTop(item) {
     return true;
   }
   return false;
-}
-
-/**
- * Construct url for the starting time of canvas
- * @param {Object} item
- */
-export function getSectionURI(item) {
-  if (item.items && item.items.length > 0) {
-    let canvas = item.items[0].items;
-    if (canvas[0]) {
-      let canvasUri = getCanvasId(canvas[0].id);
-      return `${canvasUri}#t=0,`;
-    }
-  }
 }
