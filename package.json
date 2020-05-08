@@ -78,5 +78,9 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/avalonmediasystem/react-iiif-media-player.git"
+  },
+  "resolutions": {
+    "istanbul-reports": "2.2.7",
+    "mkdirp": "^0.5.3"
   }
 }
