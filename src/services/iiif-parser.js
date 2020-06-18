@@ -58,13 +58,13 @@ export function getChildCanvases(rangeId) {
  */
 export function getMediaInfo(manifest, canvasIndex) {
   let choiceItems = [];
+  let canvasId = null;
   try {
-    choiceItems = manifesto
-      .create(manifest)
-      .getSequences()[0]
-      .getCanvases()
-      [canvasIndex].getContent()[0]
-      .getBody();
+    let canvas = manifesto.create(manifest).getSequences()[0].getCanvases()[
+      canvasIndex
+    ];
+    canvasId = canvas['id'];
+    choiceItems = canvas.getContent()[0].getBody();
   } catch (e) {
     console.log(e);
   }
@@ -86,13 +86,17 @@ export function getMediaInfo(manifest, canvasIndex) {
         };
       });
 
+      let service = null;
+      if (choiceItems[0].__jsonld['service']) {
+        service = choiceItems[0].__jsonld['service'][0];
+      }
       let allTypes = choiceItems.map((item) => item.getType().value);
       let uniqueTypes = allTypes.filter((t, index) => {
         return allTypes.indexOf(t) === index;
       });
       // Default type if there are different types
       const mediaType = uniqueTypes.length === 1 ? uniqueTypes[0] : 'video';
-      return { sources, mediaType, error: null };
+      return { sources, mediaType, error: null, service, canvasId };
     } catch (e) {
       return {
         error: 'Manifest cannot be parsed.',

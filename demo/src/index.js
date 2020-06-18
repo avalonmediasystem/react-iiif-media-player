@@ -8,7 +8,7 @@ import { applyPolyfills, defineCustomElements } from 'iiif-explorer/loader';
 
 // Import a local manifest here.
 // If included in the 'props' below, it will take precedence over the URI
-import iiifManifest from '../../src/json/mahler-symphony-video';
+import iiifManifest from '../../src/json/mahler-symphony-audio';
 
 applyPolyfills().then(() => {
   defineCustomElements(window);
@@ -24,12 +24,12 @@ const props = {
     // network request for a IIIF Manifest URI, place here
     fetch: {
       options: {
-        credentials: 'omit'
-      }
-    }
+        credentials: 'omit',
+      },
+    },
   },
   iiifManifest,
-  iiifManifestUrl
+  iiifManifestUrl,
 };
 
 render(<IIIFPlayerWrapper {...props} />, document.getElementById('root'));
