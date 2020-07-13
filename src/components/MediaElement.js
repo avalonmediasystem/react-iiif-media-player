@@ -33,6 +33,7 @@ class MediaElement extends Component {
       media: null,
       node: null,
       instance: null,
+      token: this.props.token,
     };
   }
 
@@ -152,7 +153,7 @@ class MediaElement extends Component {
     const props = this.props,
       sources = JSON.parse(props.sources),
       tracks = JSON.parse(props.tracks),
-      sourceTags = createSourceTags(sources),
+      sourceTags = createSourceTags(sources, this.props.token),
       tracksTags = createTrackTags(tracks);
 
     const mediaBody = `${sourceTags.join('\n')}

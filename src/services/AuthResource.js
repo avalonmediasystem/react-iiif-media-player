@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import AuthModal from '../components/AuthModal';
 import LoadingSpinner from './LoadingSpinner';
+import MediaElement from '../components/MediaElement';
 
 function log(...args) {
   if (process.env.NODE_ENV !== 'production') {
@@ -159,7 +160,7 @@ function openTokenService(tokenService) {
   });
 }
 
-export function AuthCookieService1({ service, resource, children }) {
+export function AuthCookieService1({ service, resource, meProps }) {
   const {
     confirmLabel,
     description,
@@ -273,7 +274,7 @@ export function AuthCookieService1({ service, resource, children }) {
 
   if (!service) {
     console.log('WHEN NULL SERVICE');
-    return children;
+    return <MediaElement {...meProps} />;
   }
 
   const confirmModal = () => {
@@ -334,9 +335,9 @@ export function AuthCookieService1({ service, resource, children }) {
   }
 
   if (currentStage === AUTHENTICATED) {
-    return children;
+    return <MediaElement {...meProps} token={authToken} />;
   }
 
   // User opt-out.
-  return children;
+  return <MediaElement {...meProps} />;
 }

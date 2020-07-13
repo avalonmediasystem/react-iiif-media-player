@@ -46,12 +46,16 @@ export function handleTracks(instance, media, mediaType, captionOn) {
   }
 }
 
-export function createSourceTags(sources) {
+export function createSourceTags(sources, token = '') {
   const sourceTags = [];
   for (let i = 0, total = sources.length; i < total; i++) {
     const source = sources[i];
+    let url = source.src;
+    if (token !== '') {
+      url = `${source.src}?token=${token}`;
+    }
     sourceTags.push(
-      `<source src="${source.src}" type="${source.format}" data-quality="${source.quality}" />`
+      `<source src="${url}" type="${source.format}" data-quality="${source.quality}" />`
     );
   }
   return sourceTags;

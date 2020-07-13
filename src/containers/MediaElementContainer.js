@@ -49,28 +49,34 @@ class MediaElementContainer extends Component {
     } = this.state;
     const options = {};
 
+    const props = {
+      id: 'avln-mediaelement-component',
+      mediaType: mediaType,
+      preload: 'auto',
+      controls: true,
+      width: manifest.width || 480,
+      height: manifest.height || 360,
+      poster: '',
+      crossorigin: 'anonymous',
+      sources: JSON.stringify(sources),
+      tracks: JSON.stringify(tracks),
+      options: JSON.stringify(options),
+    };
+
     if (ready) {
       return (
         <div data-testid={`mediaelement`} id="mediaelement">
-          <AuthCookieService1
-            key={canvasId}
-            resource={sources.length > 0 ? sources[0].src : ''}
-            service={service}
-          >
-            <MediaElement
-              id="avln-mediaelement-component"
-              mediaType={mediaType}
-              preload="auto"
-              controls
-              width={manifest.width || 480}
-              height={manifest.height || 360}
-              poster=""
-              crossorigin="anonymous"
-              sources={JSON.stringify(sources)}
-              tracks={JSON.stringify(tracks)}
-              options={JSON.stringify(options)}
+          {service ? (
+            <AuthCookieService1
+              key={canvasId}
+              resource={sources.length > 0 ? sources[0].src : ''}
+              service={service}
+              meProps={props}
             />
-          </AuthCookieService1>
+          ) : (
+            <MediaElement {...props}
+            />
+          )}
         </div>
       );
     } else if (error) {
