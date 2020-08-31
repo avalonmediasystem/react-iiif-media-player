@@ -7,6 +7,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = exports.store = void 0;
 
+var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/extends"));
+
 var _react = _interopRequireDefault(require("react"));
 
 var _reactRedux = require("react-redux");
@@ -25,7 +27,9 @@ exports.store = store;
 var Root = function Root(props) {
   return _react["default"].createElement(_reactRedux.Provider, {
     store: store
-  }, _react["default"].createElement(_App["default"], props));
+  }, _react["default"].createElement(_App["default"], (0, _extends2["default"])({}, props, {
+    canvasIndex: 0
+  })));
 };
 
 var _default = Root;

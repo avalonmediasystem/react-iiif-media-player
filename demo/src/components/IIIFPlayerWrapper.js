@@ -77,7 +77,6 @@ class IIIFPlayerWrapper extends Component {
             <Root
               config={this.props.config}
               iiifManifest={this.state.iiifmanifest}
-              canvasIndex={0}
             />
           </Col>
           <Col className="explorer">

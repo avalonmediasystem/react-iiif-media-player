@@ -141,8 +141,8 @@ function getTracks() {
 
 
 function getLabelValue(label) {
-  var decodeHTML = function decodeHTML(lableText) {
-    return lableText.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+  var decodeHTML = function decodeHTML(labelText) {
+    return labelText.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'");
   };
 
   if (label && (0, _typeof2["default"])(label) === 'object') {
