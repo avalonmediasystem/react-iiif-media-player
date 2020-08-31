@@ -11,7 +11,7 @@ export { store };
 const Root = props => {
   return (
     <Provider store={store}>
-      <App {...props} />
+      <App {...props} canvasIndex={0} />
     </Provider>
   );
 };
