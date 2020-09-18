@@ -15,7 +15,7 @@ class IIIFPlayerWrapper extends Component {
     super(props);
     this.state = {
       iiifmanifest: this.props.iiifManifest,
-      iiifmanifestURL: this.props.iiifManifest.id,
+      iiifmanifestURL: this.props.iiifManifestUrl,
       showManifestFetchedAlert: false,
       manifestError: null,
     };
@@ -24,9 +24,9 @@ class IIIFPlayerWrapper extends Component {
 
   selectIIIFManifest = () => {
     const self = this;
-    if (this.state.iiifmanifestURL != '') {
+    if (self.state.iiifmanifestURL != '') {
       axios
-        .get(this.state.iiifmanifestURL)
+        .get(self.state.iiifmanifestURL)
         .then(function (result) {
           self.setState({
             iiifmanifest: result.data,
