@@ -11,9 +11,7 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/cl
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 
-var UtilityHelpers =
-/*#__PURE__*/
-function () {
+var UtilityHelpers = /*#__PURE__*/function () {
   function UtilityHelpers() {
     (0, _classCallCheck2["default"])(this, UtilityHelpers);
     this.errorClass = 'error-message';

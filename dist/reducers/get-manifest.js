@@ -1,7 +1,5 @@
 "use strict";
 
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
 var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
 
 Object.defineProperty(exports, "__esModule", {
@@ -13,7 +11,7 @@ var types = _interopRequireWildcard(require("../actions/types"));
 
 var _iiifParser = require("../services/iiif-parser");
 
-var _manifesto = _interopRequireDefault(require("manifesto.js"));
+var _manifesto = require("manifesto.js");
 
 var initialState = {
   error: false,
@@ -38,7 +36,7 @@ var getManifest = function getManifest() {
         error: false,
         loading: false,
         manifest: action.payload,
-        parsedManifest: _manifesto["default"].create(action.payload),
+        parsedManifest: (0, _manifesto.parseManifest)(action.payload),
         canvases: (0, _iiifParser.canvasesInManifest)(action.payload)
       });
 

@@ -12,7 +12,7 @@ var _react = _interopRequireDefault(require("react"));
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
 var ErrorMessage = function ErrorMessage(props) {
-  return _react["default"].createElement("p", null, "ERROR: ", props.message);
+  return /*#__PURE__*/_react["default"].createElement("p", null, "ERROR: ", props.message);
 };
 
 ErrorMessage.propTypes = {

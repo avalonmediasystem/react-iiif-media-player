@@ -1,11 +1,11 @@
 import reducer from './player';
 import * as types from '../actions/types';
 
-describe('player reducer', () => {
+describe('Redux player reducer', () => {
   const initialState = {
     captionOn: true,
     canvasIndex: 0,
-    isPlaying: false
+    isPlaying: false,
   };
 
   it('should return the initial state', () => {
@@ -16,12 +16,12 @@ describe('player reducer', () => {
   it('should handle MEJS_PLAYER_INITIALIZED', () => {
     const player = {
       mejsProp1: 'foo',
-      mejsProp2: 'bar'
+      mejsProp2: 'bar',
     };
     expect(
       reducer(undefined, {
         type: types.MEJS_PLAYER_INITIALIZED,
-        payload: player
+        payload: player,
       })
     ).toEqual({ ...initialState, instance: player });
   });
@@ -31,7 +31,7 @@ describe('player reducer', () => {
     expect(
       reducer(undefined, {
         type: types.MEJS_CAPTIONS,
-        payload: captionOn
+        payload: captionOn,
       })
     ).toEqual({ ...initialState, captionOn });
   });
@@ -41,7 +41,7 @@ describe('player reducer', () => {
     expect(
       reducer(undefined, {
         type: types.MEJS_PLAYING,
-        payload: isPlaying
+        payload: isPlaying,
       })
     ).toEqual({ ...initialState, isPlaying });
   });
