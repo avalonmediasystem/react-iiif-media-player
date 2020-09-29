@@ -131,9 +131,6 @@ var mapDispatchToProps = function mapDispatchToProps(dispatch) {
     },
     setCanvasIndex: function setCanvasIndex(canvasIndex) {
       return dispatch(actions.setCanvasIndex(canvasIndex));
-    },
-    setStartTime: function setStartTime(time) {
-      return dispatch(actions.setStartTime(time));
     }
   };
 };
