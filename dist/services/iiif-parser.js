@@ -18,7 +18,7 @@ exports.isAtTop = isAtTop;
 
 var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 
-var _manifesto = _interopRequireDefault(require("manifesto.js"));
+var _manifesto = require("manifesto.js");
 
 var _getReduxManifest = require("./get-redux-manifest");
 
@@ -28,7 +28,7 @@ var _getReduxManifest = require("./get-redux-manifest");
  * @return {Object} array of canvases in manifest
  **/
 function canvasesInManifest(manifest) {
-  var canvases = _manifesto["default"].create(manifest).getSequences()[0].getCanvases().map(function (canvas) {
+  var canvases = (0, _manifesto.parseManifest)(manifest).getSequences()[0].getCanvases().map(function (canvas) {
     var sources = canvas.getContent()[0].getBody().map(function (source) {
       return source.id;
     });
@@ -37,7 +37,6 @@ function canvasesInManifest(manifest) {
       canvasSources: sources
     };
   });
-
   return canvases;
 }
 /**
@@ -49,7 +48,7 @@ function canvasesInManifest(manifest) {
 function filterVisibleRangeItem(item) {
   var behavior = (0, _getReduxManifest.getReduxManifest)().getRangeById(item.id).getBehavior();
 
-  if (behavior && behavior.value === 'no-nav') {
+  if (behavior && behavior === 'no-nav') {
     return null;
   }
 
@@ -80,7 +79,7 @@ function getMediaInfo(manifest, canvasIndex) {
   var choiceItems = [];
 
   try {
-    choiceItems = _manifesto["default"].create(manifest).getSequences()[0].getCanvases()[canvasIndex].getContent()[0].getBody();
+    choiceItems = (0, _manifesto.parseManifest)(manifest).getSequences()[0].getCanvases()[canvasIndex].getContent()[0].getBody();
   } catch (e) {
     console.log(e);
   }
@@ -95,12 +94,12 @@ function getMediaInfo(manifest, canvasIndex) {
         return {
           src: item.id,
           // TODO: make type more generic, possibly use mime-db
-          format: item.getFormat() ? item.getFormat().value : 'application/x-mpegurl',
+          format: item.getFormat() ? item.getFormat() : 'application/x-mpegurl',
           quality: item.getLabel()[0] ? item.getLabel()[0].value : 'auto'
         };
       });
       var allTypes = choiceItems.map(function (item) {
-        return item.getType().value;
+        return item.getType();
       });
       var uniqueTypes = allTypes.filter(function (t, index) {
         return allTypes.indexOf(t) === index;
@@ -217,7 +216,7 @@ function hasNextSection(index) {
 function isAtTop(item) {
   var behavior = (0, _getReduxManifest.getReduxManifest)().getRangeById(item.id).getBehavior();
 
-  if (behavior && behavior.value === 'top') {
+  if (behavior && behavior === 'top') {
     return true;
   }
 

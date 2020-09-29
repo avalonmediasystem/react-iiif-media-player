@@ -29,7 +29,7 @@ var List = function List(props) {
       label = _useState2[0],
       setLabel = _useState2[1];
 
-  var collapsibleContent = _react["default"].createElement("ul", {
+  var collapsibleContent = /*#__PURE__*/_react["default"].createElement("ul", {
     "data-testid": "list"
   }, props.items.map(function (item) {
     var filteredItem = (0, _iiifParser.filterVisibleRangeItem)(item);
@@ -38,14 +38,14 @@ var List = function List(props) {
       return null;
     }
 
-    return _react["default"].createElement(_ListItem["default"], {
+    return /*#__PURE__*/_react["default"].createElement(_ListItem["default"], {
       key: filteredItem.id,
       item: filteredItem,
       isChild: props.isChild
     });
   }));
 
-  return _react["default"].createElement(_react["default"].Fragment, null, !props.isChild ? _react["default"].createElement(Collapsible, {
+  return /*#__PURE__*/_react["default"].createElement(_react["default"].Fragment, null, !props.isChild ? /*#__PURE__*/_react["default"].createElement(Collapsible, {
     children: collapsibleContent,
     title: label,
     key: props.index
@@ -69,16 +69,16 @@ var Collapsible = function Collapsible(props) {
     setOpen(!open);
   };
 
-  return _react["default"].createElement(_react["default"].Fragment, null, _react["default"].createElement("div", {
+  return /*#__PURE__*/_react["default"].createElement(_react["default"].Fragment, null, /*#__PURE__*/_react["default"].createElement("div", {
     onClick: function onClick(e) {
       return togglePanel(e);
     },
     className: "structure-header",
     "data-testid": "collapsible"
-  }, props.title, _react["default"].createElement(_reactFontawesome.FontAwesomeIcon, {
+  }, props.title, /*#__PURE__*/_react["default"].createElement(_reactFontawesome.FontAwesomeIcon, {
     className: "fa-icon",
     icon: open ? _freeSolidSvgIcons.faMinus : _freeSolidSvgIcons.faPlus
-  })), open ? _react["default"].createElement("div", {
+  })), open ? /*#__PURE__*/_react["default"].createElement("div", {
     className: "structure-content"
   }, props.children) : null);
 };

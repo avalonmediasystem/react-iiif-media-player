@@ -13,11 +13,11 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/cl
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 
+var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
+
 var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
 
 var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
-
-var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
 
 var _react = _interopRequireWildcard(require("react"));
 
@@ -43,17 +43,20 @@ require("../mediaelement/stylesheets/plugins/mejs-quality.scss");
 
 require("../mediaelement/stylesheets/mejs-iiif-player-styles.scss");
 
-// Import stylesheets
-var MediaElement =
-/*#__PURE__*/
-function (_Component) {
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0, _getPrototypeOf2["default"])(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2["default"])(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2["default"])(this, result); }; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+
+var MediaElement = /*#__PURE__*/function (_Component) {
   (0, _inherits2["default"])(MediaElement, _Component);
+
+  var _super = _createSuper(MediaElement);
 
   function MediaElement(props) {
     var _this;
 
     (0, _classCallCheck2["default"])(this, MediaElement);
-    _this = (0, _possibleConstructorReturn2["default"])(this, (0, _getPrototypeOf2["default"])(MediaElement).call(this, props));
+    _this = _super.call(this, props);
     _this.state = {
       canvasIndex: _this.props.canvasIndex,
       media: null,
@@ -101,7 +104,7 @@ function (_Component) {
 
       (0, _mejsUtilityHelper.handleTracks)(instance, media, mediaType, captionOn); // Set the playhead at the desired start time
 
-      instance.setCurrentTime(startTime, this.props.resetClick());
+      instance.setCurrentTime(startTime);
 
       if (this.props.isPlaying) {
         instance.play();
@@ -166,6 +169,7 @@ function (_Component) {
     key: "componentWillUnmount",
     value: function componentWillUnmount() {
       if (this.state.player) {
+        this.props.resetClick();
         this.state.player.remove();
         this.setState({
           player: null
@@ -182,7 +186,7 @@ function (_Component) {
           tracksTags = (0, _mejsUtilityHelper.createTrackTags)(tracks);
       var mediaBody = "".concat(sourceTags.join('\n'), "\n\t\t\t\t").concat(tracksTags.join('\n')),
           mediaHtml = props.mediaType === 'video' ? "<video data-testid=\"video-element\" id=\"".concat(props.id, "\" width=\"").concat(props.width, "\" height=\"").concat(props.height, "\"").concat(props.poster ? " poster=".concat(props.poster) : '', "\n\t\t\t\t\t  ").concat(props.controls ? ' controls' : '').concat(props.preload ? " preload=\"".concat(props.preload, "\"") : '', ">\n\t\t\t\t\t").concat(mediaBody, "\n\t\t\t\t</video>") : "<audio data-testid=\"audio-element\" id=\"".concat(props.id, "\" width=\"").concat(props.width, "\" ").concat(props.controls ? ' controls' : '').concat(props.preload ? " preload=\"".concat(props.preload, "\"") : '', ">\n\t\t\t\t\t").concat(mediaBody, "\n\t\t\t\t</audio>");
-      return _react["default"].createElement("div", {
+      return /*#__PURE__*/_react["default"].createElement("div", {
         dangerouslySetInnerHTML: {
           __html: mediaHtml
         }
@@ -191,15 +195,17 @@ function (_Component) {
   }], [{
     key: "getDerivedStateFromProps",
     value: function getDerivedStateFromProps(nextProps, prevState) {
-      var clicked = nextProps.clicked,
-          canvasIndex = nextProps.canvasIndex;
+      var canvasIndex = nextProps.canvasIndex,
+          player = nextProps.player,
+          startTime = nextProps.startTime;
 
-      if (prevState.canvasIndex !== canvasIndex && clicked) {
+      if (prevState.canvasIndex !== canvasIndex) {
         var media = prevState.media,
             node = prevState.node,
             instance = prevState.instance;
         var newInstance = (0, _mejsUtilityHelper.switchMedia)(media, node, instance, nextProps, false);
         nextProps.playerInitialized(newInstance);
+        player.setCurrentTime(startTime);
         return {
           canvasIndex: nextProps.canvasIndex
         };

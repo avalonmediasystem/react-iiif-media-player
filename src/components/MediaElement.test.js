@@ -9,20 +9,20 @@ describe('MediaElement component', () => {
       src:
         'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/CD1/medium/480Kbps.mp4',
       format: 'audio/mp4',
-      quality: 'medium'
+      quality: 'medium',
     },
     {
       src:
         'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/CD1/auto/128Kbps.mp4',
       format: 'audio/mp4',
-      quality: 'auto'
+      quality: 'auto',
     },
     {
       src:
         'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/CD1/high/720Kbps.mp4',
       format: 'audio/mp4',
-      quality: 'high'
-    }
+      quality: 'high',
+    },
   ];
 
   const tracks = [
@@ -31,8 +31,8 @@ describe('MediaElement component', () => {
         'https://www.iandevlin.com/html5test/webvtt/upc-video-subtitles-en.vtt',
       type: 'Text',
       format: 'application/webvtt',
-      label: 'subtitles'
-    }
+      label: 'subtitles',
+    },
   ];
 
   const videoProps = {
@@ -45,7 +45,7 @@ describe('MediaElement component', () => {
     crossorigin: 'anonymous',
     sources: JSON.stringify(sources),
     tracks: JSON.stringify(tracks),
-    options: JSON.stringify({})
+    options: JSON.stringify({}),
   };
 
   const audioProps = {
@@ -58,7 +58,7 @@ describe('MediaElement component', () => {
     crossorigin: 'anonymous',
     sources: JSON.stringify(sources),
     tracks: JSON.stringify([]),
-    options: JSON.stringify({})
+    options: JSON.stringify({}),
   };
 
   test('renders a video player successfully', () => {

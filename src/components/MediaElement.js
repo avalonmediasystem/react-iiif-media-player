@@ -11,6 +11,7 @@ import {
   resetClick,
   setPlayingStatus,
   setCanvasIndex,
+  setStartTime,
 } from '../actions';
 import { hasNextSection } from '../services/iiif-parser';
 import {
@@ -73,7 +74,7 @@ class MediaElement extends Component {
     handleTracks(instance, media, mediaType, captionOn);
 
     // Set the playhead at the desired start time
-    instance.setCurrentTime(startTime, this.props.resetClick());
+    instance.setCurrentTime(startTime);
 
     if (this.props.isPlaying) {
       instance.play();
@@ -129,12 +130,13 @@ class MediaElement extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    const { clicked, canvasIndex } = nextProps;
-    if (prevState.canvasIndex !== canvasIndex && clicked) {
+    const { canvasIndex, player, startTime } = nextProps;
+    if (prevState.canvasIndex !== canvasIndex) {
       const { media, node, instance } = prevState;
       let newInstance = switchMedia(media, node, instance, nextProps, false);
 
       nextProps.playerInitialized(newInstance);
+      player.setCurrentTime(startTime);
 
       return { canvasIndex: nextProps.canvasIndex };
     }
@@ -143,6 +145,7 @@ class MediaElement extends Component {
 
   componentWillUnmount() {
     if (this.state.player) {
+      this.props.resetClick();
       this.state.player.remove();
       this.setState({ player: null });
     }

@@ -68,6 +68,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(actions.updateExternalConfig(config)),
   setCanvasIndex: (canvasIndex) =>
     dispatch(actions.setCanvasIndex(canvasIndex)),
+  setStartTime: (time) => dispatch(actions.setStartTime(time)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

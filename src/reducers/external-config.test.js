@@ -1,7 +1,7 @@
 import reducer from './external-config';
 import * as types from '../actions/types';
 
-describe('reducer', () => {
+describe('Redux external-config reducer', () => {
   it('should return the initial state', () => {
     expect(reducer(undefined, {})).toEqual({});
   });
@@ -9,15 +9,15 @@ describe('reducer', () => {
   it('should handle UPDATE_EXTERNAL_CONFIG', () => {
     const mockExternalConfig = {
       fetch: {
-        credentials: 'omit'
+        credentials: 'omit',
       },
-      resizable: true
+      resizable: true,
     };
 
     expect(
       reducer(undefined, {
         type: types.UPDATE_EXTERNAL_CONFIG,
-        payload: mockExternalConfig
+        payload: mockExternalConfig,
       })
     ).toEqual(mockExternalConfig);
   });

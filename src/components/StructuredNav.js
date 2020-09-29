@@ -35,7 +35,7 @@ class StructuredNav extends Component {
         nextProps.switchCanvas(currentCanvasIndex, timeFragment.start);
       } else {
         // Set the playhead at the start of the time fragment
-        player.setCurrentTime(timeFragment.start, nextProps.resetClick());
+        player.setCurrentTime(timeFragment.start);
       }
 
       return null;

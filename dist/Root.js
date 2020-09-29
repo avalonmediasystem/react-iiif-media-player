@@ -25,9 +25,9 @@ var store = (0, _redux.createStore)(_reducers["default"], (0, _redux.applyMiddle
 exports.store = store;
 
 var Root = function Root(props) {
-  return _react["default"].createElement(_reactRedux.Provider, {
+  return /*#__PURE__*/_react["default"].createElement(_reactRedux.Provider, {
     store: store
-  }, _react["default"].createElement(_App["default"], (0, _extends2["default"])({}, props, {
+  }, /*#__PURE__*/_react["default"].createElement(_App["default"], (0, _extends2["default"])({}, props, {
     canvasIndex: 0
   })));
 };
