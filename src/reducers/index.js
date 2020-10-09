@@ -8,7 +8,7 @@ const rootReducer = combineReducers({
   externalConfig,
   getManifest,
   nav,
-  player
+  player,
 });
 
 export default rootReducer;

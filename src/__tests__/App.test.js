@@ -5,7 +5,7 @@ import manifest from '../json/mahler-symphony-audio';
 import { fireEvent } from '@testing-library/react';
 
 describe('Integration test', () => {
-  test('renders successfully', () => {
+  test('both components renders successfully', () => {
     const { getByTestId, queryByTestId, getByText } = renderWithRedux(
       <App iiifManifest={manifest} />
     );

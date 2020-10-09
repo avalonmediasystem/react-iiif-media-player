@@ -24,7 +24,7 @@ var _propTypes = _interopRequireDefault(require("prop-types"));
 var ListItem = function ListItem(props) {
   var item = props.item;
   var childCanvases = (0, _iiifParser.getChildCanvases)(item.id);
-  var subMenu = item.items && item.items.length > 0 && childCanvases.length === 0 ? _react["default"].createElement(_List["default"], {
+  var subMenu = item.items && item.items.length > 0 && childCanvases.length === 0 ? /*#__PURE__*/_react["default"].createElement(_List["default"], {
     items: item.items,
     isChild: true
   }) : null;
@@ -40,7 +40,7 @@ var ListItem = function ListItem(props) {
 
     if (childCanvases.length > 0) {
       return childCanvases.map(function (canvasId) {
-        return _react["default"].createElement("a", {
+        return /*#__PURE__*/_react["default"].createElement("a", {
           key: canvasId,
           href: canvasId,
           onClick: handleClick
@@ -55,7 +55,7 @@ var ListItem = function ListItem(props) {
     return null;
   };
 
-  return _react["default"].createElement("li", {
+  return /*#__PURE__*/_react["default"].createElement("li", {
     "data-testid": "list-item"
   }, renderListItem(), subMenu);
 };

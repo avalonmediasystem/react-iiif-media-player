@@ -1,10 +1,10 @@
 import reducer from './nav';
 import * as types from '../actions/types';
 
-describe('nav reducer', () => {
+describe('Redux nav reducer', () => {
   const initialState = {
     clickedUrl: '',
-    startTime: 0
+    startTime: 0,
   };
 
   it('should return the initial state', () => {
@@ -18,12 +18,12 @@ describe('nav reducer', () => {
     expect(
       reducer(undefined, {
         type: types.NAV_ITEM_CLICK,
-        payload: url
+        payload: url,
       })
     ).toEqual({
       clickedUrl: url,
       clicked: true,
-      startTime: 0
+      startTime: 0,
     });
   });
 });

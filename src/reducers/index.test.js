@@ -1,15 +1,15 @@
 import reducer from './index';
 
-describe('reducer', () => {
+describe('Redux index reducer', () => {
   const playerInitialState = {
     captionOn: true,
     canvasIndex: 0,
-    isPlaying: false
+    isPlaying: false,
   };
 
   const navInitialState = {
     clickedUrl: '',
-    startTime: 0
+    startTime: 0,
   };
   it('should return the initial state', () => {
     const reducerResults = reducer(undefined, { type: 'YYY' });
@@ -17,10 +17,10 @@ describe('reducer', () => {
       externalConfig: {},
       getManifest: {
         error: false,
-        loading: false
+        loading: false,
       },
       nav: navInitialState,
-      player: playerInitialState
+      player: playerInitialState,
     });
   });
 });

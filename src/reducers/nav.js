@@ -2,7 +2,7 @@ import * as types from '../actions/types';
 
 const initialState = {
   clickedUrl: '',
-  startTime: 0
+  startTime: 0,
 };
 
 const nav = (state = initialState, action) => {
@@ -10,19 +10,19 @@ const nav = (state = initialState, action) => {
     case types.NAV_ITEM_CLICK:
       return Object.assign({}, state, {
         clickedUrl: action.payload,
-        clicked: true
+        clicked: true,
       });
 
     case types.NAV_START_TIME:
       return Object.assign({}, state, {
-        startTime: action.payload
+        startTime: action.payload,
       });
 
     case types.NAV_RESET_CLICK:
       return Object.assign({}, state, {
         clicked: false,
         startTime: 0,
-        clickedUrl: ''
+        clickedUrl: '',
       });
 
     default:

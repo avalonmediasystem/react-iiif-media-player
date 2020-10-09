@@ -1,4 +1,4 @@
-import manifesto from 'manifesto.js';
+import { parseManifest } from 'manifesto.js';
 import { getReduxManifest } from './get-redux-manifest';
 
 /**
@@ -7,8 +7,7 @@ import { getReduxManifest } from './get-redux-manifest';
  * @return {Object} array of canvases in manifest
  **/
 export function canvasesInManifest(manifest) {
-  const canvases = manifesto
-    .create(manifest)
+  const canvases = parseManifest(manifest)
     .getSequences()[0]
     .getCanvases()
     .map((canvas) => {
@@ -31,7 +30,7 @@ export function canvasesInManifest(manifest) {
 export function filterVisibleRangeItem(item) {
   const behavior = getReduxManifest().getRangeById(item.id).getBehavior();
 
-  if (behavior && behavior.value === 'no-nav') {
+  if (behavior && behavior === 'no-nav') {
     return null;
   }
   return item;
@@ -59,8 +58,7 @@ export function getChildCanvases(rangeId) {
 export function getMediaInfo(manifest, canvasIndex) {
   let choiceItems = [];
   try {
-    choiceItems = manifesto
-      .create(manifest)
+    choiceItems = parseManifest(manifest)
       .getSequences()[0]
       .getCanvases()
       [canvasIndex].getContent()[0]
@@ -79,14 +77,12 @@ export function getMediaInfo(manifest, canvasIndex) {
         return {
           src: item.id,
           // TODO: make type more generic, possibly use mime-db
-          format: item.getFormat()
-            ? item.getFormat().value
-            : 'application/x-mpegurl',
+          format: item.getFormat() ? item.getFormat() : 'application/x-mpegurl',
           quality: item.getLabel()[0] ? item.getLabel()[0].value : 'auto',
         };
       });
 
-      let allTypes = choiceItems.map((item) => item.getType().value);
+      let allTypes = choiceItems.map((item) => item.getType());
       let uniqueTypes = allTypes.filter((t, index) => {
         return allTypes.indexOf(t) === index;
       });
@@ -192,7 +188,7 @@ export function hasNextSection(index) {
 export function isAtTop(item) {
   const behavior = getReduxManifest().getRangeById(item.id).getBehavior();
 
-  if (behavior && behavior.value === 'top') {
+  if (behavior && behavior === 'top') {
     return true;
   }
   return false;
