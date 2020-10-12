@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { filterVisibleRangeItem, getLabelValue } from '../services/iiif-parser';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Collapse } from 'react-bootstrap';
 
 const List = (props) => {
   const [label, setLabel] = useState(getLabelValue(props.items[0].label));
@@ -53,6 +54,7 @@ const Collapsible = (props) => {
 
   const togglePanel = () => {
     setOpen(!open);
+
   };
 
   return (
@@ -65,7 +67,9 @@ const Collapsible = (props) => {
         {props.title}
         <FontAwesomeIcon className="fa-icon" icon={open ? faMinus : faPlus} />
       </div>
-      {open ? <div className="structure-content">{props.children}</div> : null}
+      <Collapse in={open}>
+        <div className="structure-content">{props.children}</div>
+      </Collapse>      
     </React.Fragment>
   );
 };

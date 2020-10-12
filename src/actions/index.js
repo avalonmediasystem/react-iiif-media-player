@@ -72,6 +72,7 @@ export function playerInitialized(player) {
 }
 
 export function switchCanvas(canvasId, startTime = 0) {
+  console.log('switching canvas to, ', canvasId);
   return (dispatch) => {
     dispatch(setCanvasIndex(canvasId));
     dispatch(setStartTime(startTime));

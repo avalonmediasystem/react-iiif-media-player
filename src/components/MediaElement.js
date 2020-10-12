@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import hlsjs from 'hls.js';
 import 'mediaelement';
@@ -11,7 +11,6 @@ import {
   resetClick,
   setPlayingStatus,
   setCanvasIndex,
-  setStartTime,
 } from '../actions';
 import { hasNextSection } from '../services/iiif-parser';
 import {
@@ -26,48 +25,64 @@ import '../mediaelement/stylesheets/mediaelementplayer.css';
 import '../mediaelement/stylesheets/plugins/mejs-quality.scss';
 import '../mediaelement/stylesheets/mejs-iiif-player-styles.scss';
 
-class MediaElement extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      canvasIndex: this.props.canvasIndex,
-      media: null,
-      node: null,
-      instance: null,
-    };
-  }
+const MediaElement = (props) => {
+  const playerProp = useSelector((state) => state.player);
+  const { instance, isPlaying, captionOn, canvasIndex } = playerProp;
+  const navProp = useSelector((state) => state.nav);
+  const { startTime, clicked } = navProp;
+  const manifest = useSelector((state) => state.getManifest.manifest);
 
-  success(media, node, instance) {
-    const { startTime, mediaType, captionOn } = this.props;
+  const dispatch = useDispatch();
+
+  const [cIndex, setCIndex] = useState(canvasIndex);
+  const [meMedia, setMEMedia] = useState(null);
+  const [meNode, setMENode] = useState(null);
+  const [meInstance, setMEInstance] = useState(null);
+  const [mePlayer, setMEPlayer] = useState(null);
+
+  const {
+    controls,
+    height,
+    id,
+    mediaType,
+    options,
+    poster,
+    preload,
+    sources,
+    tracks,
+    width,
+  } = props;
+
+  const success = (media, node, instance) => {
     // Your action when media was successfully loaded
     console.log('Loaded successfully');
 
     // Action reducer
-    this.props.playerInitialized(instance);
+    dispatch(playerInitialized(instance));
 
     // Register ended event
     media.addEventListener('ended', (ended) => {
       if (ended) {
-        this.props.resetClick();
-        this.handleEnded(node, instance, media);
+        dispatch(resetClick());
+        handleEnded(node, instance, media);
       }
     });
 
     // Register caption change event
     media.addEventListener('captionschange', (captions) => {
       if (captions.detail.caption !== null) {
-        this.props.registerCaptionChange(true);
+        dispatch(registerCaptionChange(true));
       } else {
-        this.props.registerCaptionChange(false);
+        dispatch(registerCaptionChange(false));
       }
     });
 
     media.addEventListener('play', () => {
-      this.props.setPlayingStatus(true);
+      dispatch(setPlayingStatus(true));
     });
 
     media.addEventListener('pause', () => {
-      this.props.setPlayingStatus(false);
+      dispatch(setPlayingStatus(false));
     });
 
     // Set tracks
@@ -76,41 +91,50 @@ class MediaElement extends Component {
     // Set the playhead at the desired start time
     instance.setCurrentTime(startTime);
 
-    if (this.props.isPlaying) {
+    if (isPlaying) {
       instance.play();
     }
-    this.setState({ media, node, instance });
-  }
+    setMEMedia(media);
+    setMENode(node);
+    setMEInstance(instance);
+  };
 
-  error(media) {
+  const error = (media) => {
     // Your action when media had an error loading
     console.log('Error loading');
-  }
+  };
 
-  handleEnded(node, instance, media) {
-    const { canvasIndex } = this.props;
+  const handleEnded = (node, instance, media) => {
     if (hasNextSection(canvasIndex)) {
-      this.props.setCanvasIndex(canvasIndex + 1);
+      dispatch(setCanvasIndex(canvasIndex + 1));
 
-      let newInstance = switchMedia(media, node, instance, this.props, true);
+      let newInstance = switchMedia(
+        media,
+        node,
+        instance,
+        canvasIndex + 1,
+        isPlaying,
+        captionOn,
+        manifest,
+        true
+      );
 
-      this.props.playerInitialized(newInstance);
-
-      this.setState({ canvasIndex: canvasIndex + 1 });
+      dispatch(playerInitialized(newInstance));
+      setCIndex(cIndex + 1);
     }
-  }
+  };
 
-  componentDidMount() {
+  useEffect(() => {
     const { MediaElementPlayer } = global;
 
     if (!MediaElementPlayer) {
       return;
     }
 
-    const options = Object.assign({}, JSON.parse(this.props.options), {
+    const meConfigs = Object.assign({}, JSON.parse(options), {
       pluginPath: './static/media/',
-      success: (media, node, instance) => this.success(media, node, instance),
-      error: (media, node) => this.error(media, node),
+      success: (media, node, instance) => success(media, node, instance),
+      error: (media, node) => error(media, node),
       features: [
         'playpause',
         'current',
@@ -118,7 +142,7 @@ class MediaElement extends Component {
         'duration',
         'volume',
         'quality',
-        this.props.mediaType === 'video' ? 'tracks' : '',
+        mediaType === 'video' ? 'tracks' : '',
         'fullscreen',
       ],
       qualityText: 'Stream Quality',
@@ -126,63 +150,49 @@ class MediaElement extends Component {
     });
 
     window.Hls = hlsjs;
-    this.setState({ player: new MediaElementPlayer(this.props.id, options) });
+    setMEPlayer(new MediaElementPlayer(id, meConfigs));
+  }, []);
+
+  if (cIndex !== canvasIndex && clicked) {
+    let newInstance = switchMedia(
+      meMedia,
+      meNode,
+      meInstance,
+      canvasIndex,
+      isPlaying,
+      captionOn,
+      manifest,
+      false
+    );
+
+    dispatch(playerInitialized(newInstance));
+    instance.setCurrentTime(startTime);
+
+    setCIndex(canvasIndex);
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    const { canvasIndex, player, startTime } = nextProps;
-    if (prevState.canvasIndex !== canvasIndex) {
-      const { media, node, instance } = prevState;
-      let newInstance = switchMedia(media, node, instance, nextProps, false);
+  const sourceTags = createSourceTags(JSON.parse(sources));
+  const tracksTags = createTrackTags(JSON.parse(tracks));
 
-      nextProps.playerInitialized(newInstance);
-      player.setCurrentTime(startTime);
+  const mediaBody = `${sourceTags.join('\n')} ${tracksTags.join('\n')}`;
+  const mediaHtml =
+    mediaType === 'video'
+      ? `<video data-testid="video-element" id="${id}" width="${width}" height="${height}"${
+          poster ? ` poster=${poster}` : ''
+        }
+          ${controls ? ' controls' : ''}${
+          preload ? ` preload="${preload}"` : ''
+        }>
+        ${mediaBody}
+      </video>`
+      : `<audio data-testid="audio-element" id="${id}" width="${width}" ${
+          controls ? ' controls' : ''
+        }${preload ? ` preload="${preload}"` : ''}>
+        ${mediaBody}
+      </audio>`;
 
-      return { canvasIndex: nextProps.canvasIndex };
-    }
-    return null;
-  }
-
-  componentWillUnmount() {
-    if (this.state.player) {
-      this.props.resetClick();
-      this.state.player.remove();
-      this.setState({ player: null });
-    }
-  }
-
-  render() {
-    const props = this.props,
-      sources = JSON.parse(props.sources),
-      tracks = JSON.parse(props.tracks),
-      sourceTags = createSourceTags(sources),
-      tracksTags = createTrackTags(tracks);
-
-    const mediaBody = `${sourceTags.join('\n')}
-				${tracksTags.join('\n')}`,
-      mediaHtml =
-        props.mediaType === 'video'
-          ? `<video data-testid="video-element" id="${props.id}" width="${
-              props.width
-            }" height="${props.height}"${
-              props.poster ? ` poster=${props.poster}` : ''
-            }
-					  ${props.controls ? ' controls' : ''}${
-              props.preload ? ` preload="${props.preload}"` : ''
-            }>
-					${mediaBody}
-				</video>`
-          : `<audio data-testid="audio-element" id="${props.id}" width="${
-              props.width
-            }" ${props.controls ? ' controls' : ''}${
-              props.preload ? ` preload="${props.preload}"` : ''
-            }>
-					${mediaBody}
-				</audio>`;
-
-    return <div dangerouslySetInnerHTML={{ __html: mediaHtml }} />;
-  }
-}
+  return <div dangerouslySetInnerHTML={{ __html: mediaHtml }} />;
+};
 
 MediaElement.propTypes = {
   id: PropTypes.string,
@@ -195,23 +205,25 @@ MediaElement.propTypes = {
   options: PropTypes.string,
 };
 
-const mapDispatchToProps = {
-  playerInitialized: (player, canvasIndex) =>
-    playerInitialized(player, canvasIndex),
-  registerCaptionChange: (captionOn) => registerCaptionChange(captionOn),
-  resetClick: () => resetClick(),
-  setPlayingStatus: (isPlaying) => setPlayingStatus(isPlaying),
-  setCanvasIndex: (index) => setCanvasIndex(index),
-};
+// const mapDispatchToProps = {
+//   playerInitialized: (player, canvasIndex) =>
+//     playerInitialized(player, canvasIndex),
+//   registerCaptionChange: (captionOn) => registerCaptionChange(captionOn),
+//   resetClick: () => resetClick(),
+//   setPlayingStatus: (isPlaying) => setPlayingStatus(isPlaying),
+//   setCanvasIndex: (index) => setCanvasIndex(index),
+// };
 
-const mapStateToProps = (state) => ({
-  player: state.player.instance,
-  isPlaying: state.player.isPlaying,
-  captionOn: state.player.captionOn,
-  canvasIndex: state.player.canvasIndex,
-  startTime: state.nav.startTime,
-  manifest: state.getManifest.manifest,
-  clicked: state.nav.clicked,
-});
+// const mapStateToProps = (state) => ({
+//   player: state.player.instance,
+//   isPlaying: state.player.isPlaying,
+//   captionOn: state.player.captionOn,
+//   canvasIndex: state.player.canvasIndex,
+//   startTime: state.nav.startTime,
+//   manifest: state.getManifest.manifest,
+//   clicked: state.nav.clicked,
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MediaElement);
+// const MediaElement = connect(null, mapDispatchToProps)(_MediaElement);
+
+export default MediaElement;

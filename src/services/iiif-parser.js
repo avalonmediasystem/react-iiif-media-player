@@ -42,7 +42,7 @@ export function getChildCanvases(rangeId) {
   try {
     rangeCanvases = getReduxManifest().getRangeById(rangeId).getCanvasIds();
   } catch (e) {
-    console.log('error fetching range canvases', e);
+    console.log('error fetching range canvases');
   }
 
   return rangeCanvases;
@@ -64,7 +64,7 @@ export function getMediaInfo(manifest, canvasIndex) {
       [canvasIndex].getContent()[0]
       .getBody();
   } catch (e) {
-    console.log(e);
+    console.log('error fetching content');
   }
 
   if (choiceItems.length === 0) {
