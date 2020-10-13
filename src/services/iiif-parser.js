@@ -28,12 +28,15 @@ export function canvasesInManifest(manifest) {
  * @param {Object} item
  */
 export function filterVisibleRangeItem(item) {
-  const behavior = getReduxManifest().getRangeById(item.id).getBehavior();
+  const itemInManifest = getReduxManifest().getRangeById(item.id);
+  if (itemInManifest) {
+    const behavior = itemInManifest.getBehavior();
 
-  if (behavior && behavior === 'no-nav') {
-    return null;
+    if (behavior && behavior === 'no-nav') {
+      return null;
+    }
+    return item;
   }
-  return item;
 }
 
 export function getChildCanvases(rangeId) {

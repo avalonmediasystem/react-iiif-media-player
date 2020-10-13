@@ -151,25 +151,27 @@ const MediaElement = (props) => {
 
     window.Hls = hlsjs;
     setMEPlayer(new MediaElementPlayer(id, meConfigs));
-  }, []);
+  }, []); // Run the effect only at the first render
 
-  if (cIndex !== canvasIndex && clicked) {
-    let newInstance = switchMedia(
-      meMedia,
-      meNode,
-      meInstance,
-      canvasIndex,
-      isPlaying,
-      captionOn,
-      manifest,
-      false
-    );
+  useEffect(() => {
+    if (cIndex !== canvasIndex && clicked) {
+      let newInstance = switchMedia(
+        meMedia,
+        meNode,
+        meInstance,
+        canvasIndex,
+        isPlaying,
+        captionOn,
+        manifest,
+        false
+      );
 
-    dispatch(playerInitialized(newInstance));
-    instance.setCurrentTime(startTime);
+      dispatch(playerInitialized(newInstance));
+      instance.setCurrentTime(startTime);
 
-    setCIndex(canvasIndex);
-  }
+      setCIndex(canvasIndex);
+    }
+  }, [canvasIndex]); // Re-run the effect only when canvas changes
 
   const sourceTags = createSourceTags(JSON.parse(sources));
   const tracksTags = createTrackTags(JSON.parse(tracks));
@@ -204,26 +206,5 @@ MediaElement.propTypes = {
   sources: PropTypes.string,
   options: PropTypes.string,
 };
-
-// const mapDispatchToProps = {
-//   playerInitialized: (player, canvasIndex) =>
-//     playerInitialized(player, canvasIndex),
-//   registerCaptionChange: (captionOn) => registerCaptionChange(captionOn),
-//   resetClick: () => resetClick(),
-//   setPlayingStatus: (isPlaying) => setPlayingStatus(isPlaying),
-//   setCanvasIndex: (index) => setCanvasIndex(index),
-// };
-
-// const mapStateToProps = (state) => ({
-//   player: state.player.instance,
-//   isPlaying: state.player.isPlaying,
-//   captionOn: state.player.captionOn,
-//   canvasIndex: state.player.canvasIndex,
-//   startTime: state.nav.startTime,
-//   manifest: state.getManifest.manifest,
-//   clicked: state.nav.clicked,
-// });
-
-// const MediaElement = connect(null, mapDispatchToProps)(_MediaElement);
 
 export default MediaElement;
