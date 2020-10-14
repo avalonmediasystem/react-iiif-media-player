@@ -26,7 +26,6 @@ const IIIFPlayerWrapper = (props) => {
   }, []);
 
   const selectIIIFManifest = (url) => {
-    debugger;
     if (url != '') {
       axios
         .get(url)
@@ -62,7 +61,11 @@ const IIIFPlayerWrapper = (props) => {
       <Row>
         <Col>
           <h1>IIIF Media Player</h1>
-          <Root config={props.config} iiifManifest={iiifmanifest} />
+          <Root
+            config={props.config}
+            iiifManifest={iiifmanifest}
+            iiifManifestUrl={iiifmanifestURL}
+          />
         </Col>
         <Col className="explorer">
           <iiif-explorer

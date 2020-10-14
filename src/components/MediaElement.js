@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { connect, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import hlsjs from 'hls.js';
 import 'mediaelement';
@@ -26,20 +26,25 @@ import '../mediaelement/stylesheets/plugins/mejs-quality.scss';
 import '../mediaelement/stylesheets/mejs-iiif-player-styles.scss';
 
 const MediaElement = (props) => {
+  // Subscribe to Redux store variables
   const playerProp = useSelector((state) => state.player);
   const { instance, isPlaying, captionOn, canvasIndex } = playerProp;
   const navProp = useSelector((state) => state.nav);
   const { startTime, clicked } = navProp;
   const manifest = useSelector((state) => state.getManifest.manifest);
 
+  // Create reference for dispatching actions
   const dispatch = useDispatch();
 
+  // Component state variables
   const [cIndex, setCIndex] = useState(canvasIndex);
-  const [meMedia, setMEMedia] = useState(null);
-  const [meNode, setMENode] = useState(null);
-  const [meInstance, setMEInstance] = useState(null);
-  const [mePlayer, setMEPlayer] = useState(null);
+  const [meJSPlayer, setMEJSPlayer] = useState({
+    media: null,
+    node: null,
+    instance: null,
+  });
 
+  // Player related props from MediaElementContainer component
   const {
     controls,
     height,
@@ -54,6 +59,7 @@ const MediaElement = (props) => {
   } = props;
 
   const success = (media, node, instance) => {
+    const player = { media, node, instance };
     // Your action when media was successfully loaded
     console.log('Loaded successfully');
 
@@ -64,7 +70,7 @@ const MediaElement = (props) => {
     media.addEventListener('ended', (ended) => {
       if (ended) {
         dispatch(resetClick());
-        handleEnded(node, instance, media);
+        handleEnded(player);
       }
     });
 
@@ -85,6 +91,9 @@ const MediaElement = (props) => {
       dispatch(setPlayingStatus(false));
     });
 
+    // Set component state
+    setMEJSPlayer(player);
+
     // Set tracks
     handleTracks(instance, media, mediaType, captionOn);
 
@@ -94,9 +103,6 @@ const MediaElement = (props) => {
     if (isPlaying) {
       instance.play();
     }
-    setMEMedia(media);
-    setMENode(node);
-    setMEInstance(instance);
   };
 
   const error = (media) => {
@@ -104,14 +110,12 @@ const MediaElement = (props) => {
     console.log('Error loading');
   };
 
-  const handleEnded = (node, instance, media) => {
+  const handleEnded = (player) => {
     if (hasNextSection(canvasIndex)) {
       dispatch(setCanvasIndex(canvasIndex + 1));
 
       let newInstance = switchMedia(
-        media,
-        node,
-        instance,
+        player,
         canvasIndex + 1,
         isPlaying,
         captionOn,
@@ -124,6 +128,7 @@ const MediaElement = (props) => {
     }
   };
 
+  // Equivalent to componentDidMount() lifecycle method
   useEffect(() => {
     const { MediaElementPlayer } = global;
 
@@ -150,15 +155,14 @@ const MediaElement = (props) => {
     });
 
     window.Hls = hlsjs;
-    setMEPlayer(new MediaElementPlayer(id, meConfigs));
+    new MediaElementPlayer(id, meConfigs);
   }, []); // Run the effect only at the first render
 
+  // Equivalent getDerivedStateFromProps method responding to canvas changes
   useEffect(() => {
     if (cIndex !== canvasIndex && clicked) {
       let newInstance = switchMedia(
-        meMedia,
-        meNode,
-        meInstance,
+        meJSPlayer,
         canvasIndex,
         isPlaying,
         captionOn,

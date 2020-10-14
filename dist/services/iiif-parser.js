@@ -46,13 +46,17 @@ function canvasesInManifest(manifest) {
 
 
 function filterVisibleRangeItem(item) {
-  var behavior = (0, _getReduxManifest.getReduxManifest)().getRangeById(item.id).getBehavior();
+  var itemInManifest = (0, _getReduxManifest.getReduxManifest)().getRangeById(item.id);
 
-  if (behavior && behavior === 'no-nav') {
-    return null;
+  if (itemInManifest) {
+    var behavior = itemInManifest.getBehavior();
+
+    if (behavior && behavior === 'no-nav') {
+      return null;
+    }
+
+    return item;
   }
-
-  return item;
 }
 
 function getChildCanvases(rangeId) {
@@ -61,7 +65,7 @@ function getChildCanvases(rangeId) {
   try {
     rangeCanvases = (0, _getReduxManifest.getReduxManifest)().getRangeById(rangeId).getCanvasIds();
   } catch (e) {
-    console.log('error fetching range canvases', e);
+    console.log('error fetching range canvases');
   }
 
   return rangeCanvases;
@@ -81,7 +85,7 @@ function getMediaInfo(manifest, canvasIndex) {
   try {
     choiceItems = (0, _manifesto.parseManifest)(manifest).getSequences()[0].getCanvases()[canvasIndex].getContent()[0].getBody();
   } catch (e) {
-    console.log(e);
+    console.log('error fetching content');
   }
 
   if (choiceItems.length === 0) {

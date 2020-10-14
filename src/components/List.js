@@ -49,12 +49,12 @@ List.propTypes = {
 
 export default List;
 
+// Collapsible panel for structure for each section
 const Collapsible = (props) => {
   const [open, setOpen] = useState(true);
 
   const togglePanel = () => {
     setOpen(!open);
-
   };
 
   return (
@@ -69,7 +69,7 @@ const Collapsible = (props) => {
       </div>
       <Collapse in={open}>
         <div className="structure-content">{props.children}</div>
-      </Collapse>      
+      </Collapse>
     </React.Fragment>
   );
 };

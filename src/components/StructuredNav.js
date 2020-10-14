@@ -6,12 +6,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
 const StructuredNav = (props) => {
+  // Subscribe to Redux store variables
   const playerProps = useSelector((state) => state.player);
   const { instance, canvasIndex } = playerProps;
   const navProps = useSelector((state) => state.nav);
   const { clicked, clickedUrl } = navProps;
   const canvases = useSelector((state) => state.getManifest.canvases);
 
+  // Reference for dispatching actions
   const dispatch = useDispatch();
 
   const { manifest } = props;
@@ -21,6 +23,7 @@ const StructuredNav = (props) => {
       const canvasInManifest = canvases.find(
         (c) => getCanvasId(clickedUrl) === c.canvasId
       );
+
       const currentCanvasIndex = canvases.indexOf(canvasInManifest);
       const timeFragment = getMediaFragment(clickedUrl);
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import List from './List';
 import { getChildCanvases, getLabelValue } from '../services/iiif-parser';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import * as actions from '../actions';
 import PropTypes from 'prop-types';
 
@@ -13,10 +13,13 @@ const ListItem = (props) => {
       <List items={item.items} isChild={true} />
     ) : null;
 
+  // Reference for dispatching actions
+  const dispatch = useDispatch();
+
   const handleClick = (e) => {
     e.stopPropagation();
     e.preventDefault();
-    props.navItemClick(e.target.href);
+    dispatch(actions.navItemClick(e.target.href));
   };
 
   const renderListItem = () => {
@@ -47,8 +50,4 @@ ListItem.propTypes = {
   isChild: PropTypes.bool,
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  navItemClick: (url) => dispatch(actions.navItemClick(url)),
-});
-
-export default connect(null, mapDispatchToProps)(ListItem);
+export default ListItem;

@@ -7,7 +7,7 @@ import { fireEvent } from '@testing-library/react';
 describe('Integration test', () => {
   test('both components renders successfully', () => {
     const { getByTestId, queryByTestId, getByText } = renderWithRedux(
-      <App iiifManifest={manifest} />
+      <App iiifManifest={manifest} canvasIndex={0} />
     );
     expect(getByTestId('mediaelement')).toBeInTheDocument();
     expect(queryByTestId('audio-element')).toBeInTheDocument();
@@ -18,7 +18,7 @@ describe('Integration test', () => {
 
   test('renders section when clicked on structure item', () => {
     const { getByTestId, getByText } = renderWithRedux(
-      <App iiifManifest={manifest} />
+      <App iiifManifest={manifest} canvasIndex={0} />
     );
 
     // Check for a segment in 2nd section

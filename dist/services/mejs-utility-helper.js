@@ -10,11 +10,18 @@ exports.createTrackTags = createTrackTags;
 
 var _iiifParser = require("./iiif-parser");
 
-function switchMedia(media, node, instance, props, isEnded) {
-  var captionOn = props.captionOn,
-      manifest = props.manifest,
-      canvasIndex = props.canvasIndex,
-      isPlaying = props.isPlaying;
+/**
+ * Switch media player source and track files when previous file ended or
+ * a different canvas is selected
+ * @param {Object} meJSPlayer MediaElement player wrapper, HTML node, and instance
+ * @param {Integer} canvasIndex Current canvas index
+ * @param {Object} props Redux state props
+ * @param {Boolean} isEnded Flag indicating player advancing from previous media file or not
+ */
+function switchMedia(meJSPlayer, canvasIndex, isPlaying, captionOn, manifest, isEnded) {
+  var media = meJSPlayer.media,
+      node = meJSPlayer.node,
+      instance = meJSPlayer.instance;
 
   var _getMediaInfo = (0, _iiifParser.getMediaInfo)(manifest, canvasIndex),
       mediaType = _getMediaInfo.mediaType,
