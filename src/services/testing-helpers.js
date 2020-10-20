@@ -13,14 +13,21 @@ export function renderWithRedux(
   ui,
   {
     initialState,
-    store = createStore(rootReducer, initialState, applyMiddleware(thunk))
-  } = {}
+    store = createStore(rootReducer, initialState, applyMiddleware(thunk)),
+  } = {},
+  renderFn = render
 ) {
-  return {
-    ...render(<Provider store={store}>{ui}</Provider>),
-    // adding `store` to the returned utilities to allow us
-    // to reference it in our tests (just try to avoid using
-    // this to test implementation details).
-    store
+  const obj = {
+    ...renderFn(<Provider store={store}>{ui}</Provider>),
+    store,
   };
+  obj.rerenderWithRedux = (el, nextState) => {
+    if (nextState) {
+      store.replaceReducer(() => nextState);
+      store.dispatch({ type: '__TEST_ACTION_REPLACE_STATE__' });
+      store.replaceReducer(reducer);
+    }
+    return renderWithRedux(el, { store }, obj.rerender);
+  };
+  return obj;
 }

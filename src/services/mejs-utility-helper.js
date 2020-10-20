@@ -1,7 +1,22 @@
 import { getMediaInfo, getTracks } from './iiif-parser';
 
-export function switchMedia(media, node, instance, props, isEnded) {
-  const { captionOn, manifest, canvasIndex, isPlaying } = props;
+/**
+ * Switch media player source and track files when previous file ended or
+ * a different canvas is selected
+ * @param {Object} meJSPlayer MediaElement player wrapper, HTML node, and instance
+ * @param {Integer} canvasIndex Current canvas index
+ * @param {Object} props Redux state props
+ * @param {Boolean} isEnded Flag indicating player advancing from previous media file or not
+ */
+export function switchMedia(
+  meJSPlayer,
+  canvasIndex,
+  isPlaying,
+  captionOn,
+  manifest,
+  isEnded
+) {
+  const { media, node, instance } = meJSPlayer;
   const { mediaType, sources, error } = getMediaInfo(manifest, canvasIndex);
 
   if (error) {

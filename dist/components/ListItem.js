@@ -27,12 +27,14 @@ var ListItem = function ListItem(props) {
   var subMenu = item.items && item.items.length > 0 && childCanvases.length === 0 ? /*#__PURE__*/_react["default"].createElement(_List["default"], {
     items: item.items,
     isChild: true
-  }) : null;
+  }) : null; // Reference for dispatching actions
+
+  var dispatch = (0, _reactRedux.useDispatch)();
 
   var handleClick = function handleClick(e) {
     e.stopPropagation();
     e.preventDefault();
-    props.navItemClick(e.target.href);
+    dispatch(actions.navItemClick(e.target.href));
   };
 
   var renderListItem = function renderListItem() {
@@ -64,15 +66,5 @@ ListItem.propTypes = {
   item: _propTypes["default"].object.isRequired,
   isChild: _propTypes["default"].bool
 };
-
-var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-  return {
-    navItemClick: function navItemClick(url) {
-      return dispatch(actions.navItemClick(url));
-    }
-  };
-};
-
-var _default = (0, _reactRedux.connect)(null, mapDispatchToProps)(ListItem);
-
+var _default = ListItem;
 exports["default"] = _default;

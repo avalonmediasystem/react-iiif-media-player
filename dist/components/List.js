@@ -23,6 +23,8 @@ var _freeSolidSvgIcons = require("@fortawesome/free-solid-svg-icons");
 
 var _reactFontawesome = require("@fortawesome/react-fontawesome");
 
+var _reactBootstrap = require("react-bootstrap");
+
 var List = function List(props) {
   var _useState = (0, _react.useState)((0, _iiifParser.getLabelValue)(props.items[0].label)),
       _useState2 = (0, _slicedToArray2["default"])(_useState, 2),
@@ -56,7 +58,8 @@ List.propTypes = {
   items: _propTypes["default"].array.isRequired,
   isChild: _propTypes["default"].bool.isRequired
 };
-var _default = List;
+var _default = List; // Collapsible panel for structure for each section
+
 exports["default"] = _default;
 
 var Collapsible = function Collapsible(props) {
@@ -78,7 +81,9 @@ var Collapsible = function Collapsible(props) {
   }, props.title, /*#__PURE__*/_react["default"].createElement(_reactFontawesome.FontAwesomeIcon, {
     className: "fa-icon",
     icon: open ? _freeSolidSvgIcons.faMinus : _freeSolidSvgIcons.faPlus
-  })), open ? /*#__PURE__*/_react["default"].createElement("div", {
+  })), /*#__PURE__*/_react["default"].createElement(_reactBootstrap.Collapse, {
+    "in": open
+  }, /*#__PURE__*/_react["default"].createElement("div", {
     className: "structure-content"
-  }, props.children) : null);
+  }, props.children)));
 };

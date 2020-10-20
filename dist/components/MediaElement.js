@@ -9,15 +9,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
-
-var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
-
-var _inherits2 = _interopRequireDefault(require("@babel/runtime/helpers/inherits"));
-
-var _possibleConstructorReturn2 = _interopRequireDefault(require("@babel/runtime/helpers/possibleConstructorReturn"));
-
-var _getPrototypeOf2 = _interopRequireDefault(require("@babel/runtime/helpers/getPrototypeOf"));
+var _slicedToArray2 = _interopRequireDefault(require("@babel/runtime/helpers/slicedToArray"));
 
 var _react = _interopRequireWildcard(require("react"));
 
@@ -43,179 +35,155 @@ require("../mediaelement/stylesheets/plugins/mejs-quality.scss");
 
 require("../mediaelement/stylesheets/mejs-iiif-player-styles.scss");
 
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0, _getPrototypeOf2["default"])(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2["default"])(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2["default"])(this, result); }; }
+// Import stylesheets
+var MediaElement = function MediaElement(props) {
+  // Subscribe to Redux store variables
+  var playerProp = (0, _reactRedux.useSelector)(function (state) {
+    return state.player;
+  });
+  var instance = playerProp.instance,
+      isPlaying = playerProp.isPlaying,
+      captionOn = playerProp.captionOn,
+      canvasIndex = playerProp.canvasIndex;
+  var navProp = (0, _reactRedux.useSelector)(function (state) {
+    return state.nav;
+  });
+  var startTime = navProp.startTime,
+      clicked = navProp.clicked;
+  var manifest = (0, _reactRedux.useSelector)(function (state) {
+    return state.getManifest.manifest;
+  }); // Create reference for dispatching actions
 
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call(Reflect.construct(Date, [], function () {})); return true; } catch (e) { return false; } }
+  var dispatch = (0, _reactRedux.useDispatch)(); // Component state variables
 
-var MediaElement = /*#__PURE__*/function (_Component) {
-  (0, _inherits2["default"])(MediaElement, _Component);
+  var _useState = (0, _react.useState)(canvasIndex),
+      _useState2 = (0, _slicedToArray2["default"])(_useState, 2),
+      cIndex = _useState2[0],
+      setCIndex = _useState2[1];
 
-  var _super = _createSuper(MediaElement);
+  var _useState3 = (0, _react.useState)({
+    media: null,
+    node: null,
+    instance: null
+  }),
+      _useState4 = (0, _slicedToArray2["default"])(_useState3, 2),
+      meJSPlayer = _useState4[0],
+      setMEJSPlayer = _useState4[1]; // Player related props from MediaElementContainer component
 
-  function MediaElement(props) {
-    var _this;
 
-    (0, _classCallCheck2["default"])(this, MediaElement);
-    _this = _super.call(this, props);
-    _this.state = {
-      canvasIndex: _this.props.canvasIndex,
-      media: null,
-      node: null,
-      instance: null
-    };
-    return _this;
-  }
+  var controls = props.controls,
+      height = props.height,
+      id = props.id,
+      mediaType = props.mediaType,
+      options = props.options,
+      poster = props.poster,
+      preload = props.preload,
+      sources = props.sources,
+      tracks = props.tracks,
+      width = props.width;
 
-  (0, _createClass2["default"])(MediaElement, [{
-    key: "success",
-    value: function success(media, node, instance) {
-      var _this2 = this;
+  var _success = function success(media, node, instance) {
+    var player = {
+      media: media,
+      node: node,
+      instance: instance
+    }; // Your action when media was successfully loaded
 
-      var _this$props = this.props,
-          startTime = _this$props.startTime,
-          mediaType = _this$props.mediaType,
-          captionOn = _this$props.captionOn; // Your action when media was successfully loaded
+    console.log('Loaded successfully'); // Action reducer
 
-      console.log('Loaded successfully'); // Action reducer
+    dispatch((0, _actions.playerInitialized)(instance)); // Register ended event
 
-      this.props.playerInitialized(instance); // Register ended event
+    media.addEventListener('ended', function (ended) {
+      if (ended) {
+        dispatch((0, _actions.resetClick)());
+        handleEnded(player);
+      }
+    }); // Register caption change event
 
-      media.addEventListener('ended', function (ended) {
-        if (ended) {
-          _this2.props.resetClick();
+    media.addEventListener('captionschange', function (captions) {
+      if (captions.detail.caption !== null) {
+        dispatch((0, _actions.registerCaptionChange)(true));
+      } else {
+        dispatch((0, _actions.registerCaptionChange)(false));
+      }
+    });
+    media.addEventListener('play', function () {
+      dispatch((0, _actions.setPlayingStatus)(true));
+    });
+    media.addEventListener('pause', function () {
+      dispatch((0, _actions.setPlayingStatus)(false));
+    }); // Set component state
 
-          _this2.handleEnded(node, instance, media);
-        }
-      }); // Register caption change event
+    setMEJSPlayer(player); // Set tracks
 
-      media.addEventListener('captionschange', function (captions) {
-        if (captions.detail.caption !== null) {
-          _this2.props.registerCaptionChange(true);
-        } else {
-          _this2.props.registerCaptionChange(false);
-        }
-      });
-      media.addEventListener('play', function () {
-        _this2.props.setPlayingStatus(true);
-      });
-      media.addEventListener('pause', function () {
-        _this2.props.setPlayingStatus(false);
-      }); // Set tracks
+    (0, _mejsUtilityHelper.handleTracks)(instance, media, mediaType, captionOn); // Set the playhead at the desired start time
 
-      (0, _mejsUtilityHelper.handleTracks)(instance, media, mediaType, captionOn); // Set the playhead at the desired start time
+    instance.setCurrentTime(startTime);
 
+    if (isPlaying) {
+      instance.play();
+    }
+  };
+
+  var _error = function error(media) {
+    // Your action when media had an error loading
+    console.log('Error loading');
+  };
+
+  var handleEnded = function handleEnded(player) {
+    if ((0, _iiifParser.hasNextSection)(canvasIndex)) {
+      dispatch((0, _actions.setCanvasIndex)(canvasIndex + 1));
+      var newInstance = (0, _mejsUtilityHelper.switchMedia)(player, canvasIndex + 1, isPlaying, captionOn, manifest, true);
+      dispatch((0, _actions.playerInitialized)(newInstance));
+      setCIndex(cIndex + 1);
+    }
+  }; // Equivalent to componentDidMount() lifecycle method
+
+
+  (0, _react.useEffect)(function () {
+    var _global = global,
+        MediaElementPlayer = _global.MediaElementPlayer;
+
+    if (!MediaElementPlayer) {
+      return;
+    }
+
+    var meConfigs = Object.assign({}, JSON.parse(options), {
+      pluginPath: './static/media/',
+      success: function success(media, node, instance) {
+        return _success(media, node, instance);
+      },
+      error: function error(media, node) {
+        return _error(media, node);
+      },
+      features: ['playpause', 'current', 'progress', 'duration', 'volume', 'quality', mediaType === 'video' ? 'tracks' : '', 'fullscreen'],
+      qualityText: 'Stream Quality',
+      toggleCaptionsButtonWhenOnlyOne: true
+    });
+    window.Hls = _hls["default"];
+    new MediaElementPlayer(id, meConfigs);
+  }, []); // Run the effect only at the first render
+  // Equivalent getDerivedStateFromProps method responding to canvas changes
+
+  (0, _react.useEffect)(function () {
+    if (cIndex !== canvasIndex && clicked) {
+      var newInstance = (0, _mejsUtilityHelper.switchMedia)(meJSPlayer, canvasIndex, isPlaying, captionOn, manifest, false);
+      dispatch((0, _actions.playerInitialized)(newInstance));
       instance.setCurrentTime(startTime);
-
-      if (this.props.isPlaying) {
-        instance.play();
-      }
-
-      this.setState({
-        media: media,
-        node: node,
-        instance: instance
-      });
+      setCIndex(canvasIndex);
     }
-  }, {
-    key: "error",
-    value: function error(media) {
-      // Your action when media had an error loading
-      console.log('Error loading');
-    }
-  }, {
-    key: "handleEnded",
-    value: function handleEnded(node, instance, media) {
-      var canvasIndex = this.props.canvasIndex;
+  }, [canvasIndex]); // Re-run the effect only when canvas changes
 
-      if ((0, _iiifParser.hasNextSection)(canvasIndex)) {
-        this.props.setCanvasIndex(canvasIndex + 1);
-        var newInstance = (0, _mejsUtilityHelper.switchMedia)(media, node, instance, this.props, true);
-        this.props.playerInitialized(newInstance);
-        this.setState({
-          canvasIndex: canvasIndex + 1
-        });
-      }
+  var sourceTags = (0, _mejsUtilityHelper.createSourceTags)(JSON.parse(sources));
+  var tracksTags = (0, _mejsUtilityHelper.createTrackTags)(JSON.parse(tracks));
+  var mediaBody = "".concat(sourceTags.join('\n'), " ").concat(tracksTags.join('\n'));
+  var mediaHtml = mediaType === 'video' ? "<video data-testid=\"video-element\" id=\"".concat(id, "\" width=\"").concat(width, "\" height=\"").concat(height, "\"").concat(poster ? " poster=".concat(poster) : '', "\n          ").concat(controls ? ' controls' : '').concat(preload ? " preload=\"".concat(preload, "\"") : '', ">\n        ").concat(mediaBody, "\n      </video>") : "<audio data-testid=\"audio-element\" id=\"".concat(id, "\" width=\"").concat(width, "\" ").concat(controls ? ' controls' : '').concat(preload ? " preload=\"".concat(preload, "\"") : '', ">\n        ").concat(mediaBody, "\n      </audio>");
+  return /*#__PURE__*/_react["default"].createElement("div", {
+    dangerouslySetInnerHTML: {
+      __html: mediaHtml
     }
-  }, {
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var _this3 = this;
-
-      var _global = global,
-          MediaElementPlayer = _global.MediaElementPlayer;
-
-      if (!MediaElementPlayer) {
-        return;
-      }
-
-      var options = Object.assign({}, JSON.parse(this.props.options), {
-        pluginPath: './static/media/',
-        success: function success(media, node, instance) {
-          return _this3.success(media, node, instance);
-        },
-        error: function error(media, node) {
-          return _this3.error(media, node);
-        },
-        features: ['playpause', 'current', 'progress', 'duration', 'volume', 'quality', this.props.mediaType === 'video' ? 'tracks' : '', 'fullscreen'],
-        qualityText: 'Stream Quality',
-        toggleCaptionsButtonWhenOnlyOne: true
-      });
-      window.Hls = _hls["default"];
-      this.setState({
-        player: new MediaElementPlayer(this.props.id, options)
-      });
-    }
-  }, {
-    key: "componentWillUnmount",
-    value: function componentWillUnmount() {
-      if (this.state.player) {
-        this.props.resetClick();
-        this.state.player.remove();
-        this.setState({
-          player: null
-        });
-      }
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var props = this.props,
-          sources = JSON.parse(props.sources),
-          tracks = JSON.parse(props.tracks),
-          sourceTags = (0, _mejsUtilityHelper.createSourceTags)(sources),
-          tracksTags = (0, _mejsUtilityHelper.createTrackTags)(tracks);
-      var mediaBody = "".concat(sourceTags.join('\n'), "\n\t\t\t\t").concat(tracksTags.join('\n')),
-          mediaHtml = props.mediaType === 'video' ? "<video data-testid=\"video-element\" id=\"".concat(props.id, "\" width=\"").concat(props.width, "\" height=\"").concat(props.height, "\"").concat(props.poster ? " poster=".concat(props.poster) : '', "\n\t\t\t\t\t  ").concat(props.controls ? ' controls' : '').concat(props.preload ? " preload=\"".concat(props.preload, "\"") : '', ">\n\t\t\t\t\t").concat(mediaBody, "\n\t\t\t\t</video>") : "<audio data-testid=\"audio-element\" id=\"".concat(props.id, "\" width=\"").concat(props.width, "\" ").concat(props.controls ? ' controls' : '').concat(props.preload ? " preload=\"".concat(props.preload, "\"") : '', ">\n\t\t\t\t\t").concat(mediaBody, "\n\t\t\t\t</audio>");
-      return /*#__PURE__*/_react["default"].createElement("div", {
-        dangerouslySetInnerHTML: {
-          __html: mediaHtml
-        }
-      });
-    }
-  }], [{
-    key: "getDerivedStateFromProps",
-    value: function getDerivedStateFromProps(nextProps, prevState) {
-      var canvasIndex = nextProps.canvasIndex,
-          player = nextProps.player,
-          startTime = nextProps.startTime;
-
-      if (prevState.canvasIndex !== canvasIndex) {
-        var media = prevState.media,
-            node = prevState.node,
-            instance = prevState.instance;
-        var newInstance = (0, _mejsUtilityHelper.switchMedia)(media, node, instance, nextProps, false);
-        nextProps.playerInitialized(newInstance);
-        player.setCurrentTime(startTime);
-        return {
-          canvasIndex: nextProps.canvasIndex
-        };
-      }
-
-      return null;
-    }
-  }]);
-  return MediaElement;
-}(_react.Component);
+  });
+};
 
 MediaElement.propTypes = {
   id: _propTypes["default"].string,
@@ -227,36 +195,5 @@ MediaElement.propTypes = {
   sources: _propTypes["default"].string,
   options: _propTypes["default"].string
 };
-var mapDispatchToProps = {
-  playerInitialized: function playerInitialized(player, canvasIndex) {
-    return (0, _actions.playerInitialized)(player, canvasIndex);
-  },
-  registerCaptionChange: function registerCaptionChange(captionOn) {
-    return (0, _actions.registerCaptionChange)(captionOn);
-  },
-  resetClick: function resetClick() {
-    return (0, _actions.resetClick)();
-  },
-  setPlayingStatus: function setPlayingStatus(isPlaying) {
-    return (0, _actions.setPlayingStatus)(isPlaying);
-  },
-  setCanvasIndex: function setCanvasIndex(index) {
-    return (0, _actions.setCanvasIndex)(index);
-  }
-};
-
-var mapStateToProps = function mapStateToProps(state) {
-  return {
-    player: state.player.instance,
-    isPlaying: state.player.isPlaying,
-    captionOn: state.player.captionOn,
-    canvasIndex: state.player.canvasIndex,
-    startTime: state.nav.startTime,
-    manifest: state.getManifest.manifest,
-    clicked: state.nav.clicked
-  };
-};
-
-var _default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(MediaElement);
-
+var _default = MediaElement;
 exports["default"] = _default;
