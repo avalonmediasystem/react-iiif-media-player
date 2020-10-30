@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { Component } from 'react';
 import Root from '../../../src';
 import {
   Col,
@@ -10,28 +10,28 @@ import {
 } from 'react-bootstrap';
 import axios from 'axios';
 
-const IIIFPlayerWrapper = (props) => {
-  const [iiifmanifest, setIIIFmanifest] = useState(props.iiifManifest);
-  const [iiifmanifestURL, setIIIFmanifestURL] = useState(props.iiifManifestUrl);
-  const [showManifestFetchedAlert, setAlert] = useState(false);
-  const [manifestError, setError] = useState(null);
+class IIIFPlayerWrapper extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      iiifmanifest: this.props.iiifManifest,
+      iiifmanifestURL: this.props.iiifManifestUrl,
+      showManifestFetchedAlert: false,
+      manifestError: null,
+    };
+    this.iiifExplorer = React.createRef();
+  }
 
-  const iiifExplorer = useRef();
-
-  useEffect(() => {
-    iiifExplorer.current.addEventListener('selectManifest', function (e) {
-      setIIIFmanifestURL(e.detail.id);
-      selectIIIFManifest(e.detail.id);
-    });
-  }, []);
-
-  const selectIIIFManifest = (url) => {
-    if (url != '') {
+  selectIIIFManifest = () => {
+    const self = this;
+    if (self.state.iiifmanifestURL != '') {
       axios
-        .get(url)
+        .get(self.state.iiifmanifestURL)
         .then(function (result) {
-          setIIIFmanifest(result.data);
-          setAlert(false);
+          self.setState({
+            iiifmanifest: result.data,
+            showManifestFetchedAlert: false,
+          });
         })
         .catch(function (error) {
           let errorMessage =
@@ -39,60 +39,76 @@ const IIIFPlayerWrapper = (props) => {
           if (error.response) {
             errorMessage = `Couldn't load manifest. Error status: ${error.response.status}, status text: ${error.response.statusText}`;
           }
-          setAlert(true);
-          setError(errorMessage);
-          handleAlert();
+          self.setState({
+            showManifestFetchedAlert: true,
+            manifestError: errorMessage,
+          });
+          self.handleAlert();
         });
     }
   };
 
-  const handleChange = (e) => {
-    setIIIFmanifestURL(e.target.value);
+  handleChange = (e) => {
+    this.setState({
+      iiifmanifestURL: e.target.value,
+    });
   };
 
-  const handleAlert = () => {
+  handleAlert = () => {
     setTimeout(() => {
-      setAlert(false);
+      this.setState({ showManifestFetchedAlert: false });
     }, 3000);
   };
 
-  return (
-    <div className="container" id="iiif-player-demo">
-      <Row>
-        <Col>
-          <h1>IIIF Media Player</h1>
-          <Root
-            config={props.config}
-            iiifManifest={iiifmanifest}
-            iiifManifestUrl={iiifmanifestURL}
-          />
-        </Col>
-        <Col className="explorer">
-          <iiif-explorer
-            ref={iiifExplorer}
-            manifest="https://dlib.indiana.edu/iiif_av/iiif-player-samples/manifest-collections.json"
-          />
-          <br />
-          {showManifestFetchedAlert && (
-            <Alert variant="danger">{manifestError}</Alert>
-          )}
-          <InputGroup className="mb-3">
-            <FormControl
-              placeholder="Manifest URL"
-              aria-label="Manifest URL"
-              value={iiifmanifestURL}
-              onChange={handleChange}
+  componentDidMount() {
+    const self = this;
+    this.iiifExplorer.current.addEventListener('selectManifest', function (e) {
+      self.setState({ iiifmanifestURL: e.detail.id });
+      self.selectIIIFManifest();
+    });
+  }
+
+  render() {
+    return (
+      <div className="container" id="iiif-player-demo">
+        <Row>
+          <Col>
+            <h1>IIIF Media Player</h1>
+            <Root
+              config={this.props.config}
+              iiifManifest={this.state.iiifmanifest}
             />
-            <InputGroup.Append>
-              <Button variant="outline-secondary" onClick={selectIIIFManifest}>
-                Set Manifest
-              </Button>
-            </InputGroup.Append>
-          </InputGroup>
-        </Col>
-      </Row>
-    </div>
-  );
-};
+          </Col>
+          <Col className="explorer">
+            <iiif-explorer
+              ref={this.iiifExplorer}
+              manifest="https://dlib.indiana.edu/iiif_av/iiif-player-samples/manifest-collections.json"
+            />
+            <br />
+            {this.state.showManifestFetchedAlert && (
+              <Alert variant="danger">{this.state.manifestError}</Alert>
+            )}
+            <InputGroup className="mb-3">
+              <FormControl
+                placeholder="Manifest URL"
+                aria-label="Manifest URL"
+                value={this.state.iiifmanifestURL}
+                onChange={this.handleChange}
+              />
+              <InputGroup.Append>
+                <Button
+                  variant="outline-secondary"
+                  onClick={this.selectIIIFManifest}
+                >
+                  Set Manifest
+                </Button>
+              </InputGroup.Append>
+            </InputGroup>
+          </Col>
+        </Row>
+      </div>
+    );
+  }
+}
 
 export default IIIFPlayerWrapper;
