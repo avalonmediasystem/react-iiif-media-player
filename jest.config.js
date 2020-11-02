@@ -67,10 +67,7 @@ module.exports = {
   moduleFileExtensions: ['js', 'json', 'jsx'],
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
-  moduleNameMapper: {
-    '^.+.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$':
-      'jest-transform-stub'
-  },
+  // moduleNameMapper: { },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
@@ -88,7 +85,7 @@ module.exports = {
   // projects: null,
 
   // Use this configuration option to add custom reporters to Jest
-  reporters: ["default", "jest-junit"],
+  // reporters: undefined,
 
   // Automatically reset mock state between every test
   // resetMocks: false,
@@ -118,8 +115,9 @@ module.exports = {
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   setupFilesAfterEnv: [
+    './jest.setup.js',
     '<rootDir>/jest/setupJestDom.js',
-    '<rootDir>/jest/mockReduxManifest.js'
+    '<rootDir>/jest/mockReduxManifest.js',
   ],
 
   // A list of paths to snapshot serializer modules Jest should use for snapshot testing
@@ -159,7 +157,7 @@ module.exports = {
   // transform: null,
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
-  transformIgnorePatterns: ['/node_modules/']
+  transformIgnorePatterns: ['/node_modules/'],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,
