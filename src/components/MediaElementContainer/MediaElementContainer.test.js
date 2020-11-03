@@ -1,8 +1,8 @@
 import React from 'react';
-import { renderWithRedux } from '../services/testing-helpers';
+import { renderWithRedux } from '../../services/testing-helpers';
 import MediaElementContainer from './MediaElementContainer';
-import manifestAudio from '../json/mahler-symphony-audio';
-import manifestVideo from '../json/mahler-symphony-video';
+import manifestAudio from '../../json/mahler-symphony-audio';
+import manifestVideo from '../../json/mahler-symphony-video';
 
 describe('MediaElementContainer component', () => {
   test('reads media type as audio from manifest', () => {

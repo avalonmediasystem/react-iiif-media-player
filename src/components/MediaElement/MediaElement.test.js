@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderWithRedux } from '../services/testing-helpers';
+import { renderWithRedux } from '../../services/testing-helpers';
 import MediaElement from './MediaElement';
 import { fireEvent } from '@testing-library/react';
 

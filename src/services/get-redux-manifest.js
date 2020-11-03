@@ -1,4 +1,4 @@
-import { store } from '../Root';
+import { store } from '../components/IIIFPlayerWrapper/IIIFPlayerWrapper';
 
 // Necessary so we can more easily mock in tests
 export const getReduxManifest = () => {
