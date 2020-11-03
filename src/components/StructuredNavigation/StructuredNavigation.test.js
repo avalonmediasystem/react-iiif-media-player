@@ -1,6 +1,6 @@
 import React from 'react';
 import { renderWithRedux } from '../services/testing-helpers';
-import StructuredNav from './StructuredNav';
+import StructuredNav from './StructuredNavigation';
 import manifest from '../json/mahler-symphony-audio';
 
 describe('StructuredNav component', () => {

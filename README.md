@@ -6,52 +6,44 @@ A ReactJS component which renders both a MediaelementJS player (http://www.media
 
 Add the `react-iiif-media-player` component into your ReactJS application via `yarn` or `npm`.
 
-`yarn add react-iiif-media-player`
+```
+yarn add react-iiif-media-player
+
+// Add peer dependencies
+...
+```
 
 ### Example usage
 
 ```
-import React, { Component } from "react";
-import IIIFMediaPlayer from "react-iiif-media-player";
+import React from 'react';
+import { IIIFPlayer } from "react-iiif-media-player"
 
-// Import a local manifest here.
-// If included in the 'props' below, it will take precedence over the URI
-import iiifManifest from '../../src/json/manifest-pawpaw-mahler';
+const App = () => {
+  // Get your manifest from somewhere
+  const manifestUrl = "https://some-manifest-url-here.json";
 
-class App extends Component {
-  // A valid IIIF Manifest URI endpoint
-  iiifManifestUrl =
-    "https://pawpaw.dlib.indiana.edu/media_objects/2j62s484w/manifest.json";
-
-  configProps = {
-    config: {
-      // If you'd like to include any fetch API configuration in the
-      // network request for a IIIF Manifest URI, place here
-      fetch: {
-        options: {
-          credentials: "omit"
-        }
-      }
-    },
-    iiifManifestUrl: this.iiifManifestUrl
-    iiifManifest
-  };
-  render() {
-    return (
-      <div>
-        <IIIFMediaPlayer {...this.configProps} />
-      </div>
-    );
-  }
+  return (
+    <IIIFPlayer manifestUrl={manifestUrl} />
+  );
 }
 
 export default App;
-
 ```
 
-Including a local manifest for testing, `iiifManifest` will take precedence over a supplied manifest url `iiifManifestUrl`.
+### Cross-site Requests
 
-_Note:_ you may experience CORS or CORB errors if running this application locally in development mode when trying to hit an external manifest uri. Make sure your server is configured properly to support CORS if neeeded or necessary.
+** This info pulled from the [Diva.js](https://github.com/ddmal/diva.js) package**
+
+You may receive an error that looks something like this:
+
+```bash
+XMLHttpRequest cannot load http://example.com/demo/imagefiles.json. No 'Access-Control-Allow-Origin' header is present on the requested resource. Origin 'http://localhost:8000' is therefore not allowed access.
+```
+
+This is a security precaution that all browsers use to prevent cross-site request forgeries. If you receive this message it is because your `manifestUrl` prop and the server used to serve the OpenSeadragon React Viewer are not at the same server address.
+
+To fix this you must ensure that the OpenSeadragon React Viewer host's React application, and the location pointed to by the `manifestUrl` prop are being served by the same server, or you must create an exception using the Access-Control-Allow-Origin header on your server to explicitly white-list the `manifestUrl` location.
 
 #### IIIF 3.0 spec
 
@@ -59,73 +51,35 @@ http://iiif.io/api/presentation/3.0/
 
 ## Developing
 
-### Run the application locally
+### Styleguidist development
 
-First clone the repository:
-
-`git clone git@github.com:avalonmediasystem/react-iiif-media-player.git`
-
-Install dependencies:
-
-`yarn install`
-
-Run the demo application:
-
-`yarn start`
-
-View the application in a web browser. Visit:
-
-http://localhost:3001/
-
-### Development process
-
-Work on all files located in `/src`, and in development mode you can test your work in the demo application (`/demo/src`). This is what is displayed at http://localhost:3001/.
-
-## Building the package
-
-When you're ready to build the package, run:
-
-`yarn run transpile`
-
-This will create NPM/Yarn package files in the `/dist` folder, which can be pushed to the NPM registry.
-
-## Tests
-
-`yarn test`
-
-### Commands
-
-The following commands are available to the application via `npm scripts` located in the `package.json` file.
+Styleguidist, in addition to providing documentation, also offers an isolated development environment. To run the environment and test it out:
 
 ```
-yarn clean
+yarn dev
+// or
+yarn styleguide
 ```
 
-Cleans the output directory `dist`, ensuring a fresh copy of files when preparing your files for packaging.
+To build a static html version of the docs (which Github pages uses), run:
 
 ```
-yarn start
+yarn styleguide:build
 ```
 
-Starts the webpack development server in which you can view your work. http://localhost:3001/
+## Deployment
+
+To deploy your forked version of this repo, run:
 
 ```
-yarn test
+yarn build
 ```
 
-Runs the application's tests once, and provides a coverage report.
+This will create CommoneJS, ES Module, and UMD distribution files located in the `/dist/` directory.
 
-```
-yarn test:watch
-```
+## Documentation
 
-If you prefer to keep an open `watch` on your tests during development, run this command in a separate tab in your terminal/shell.
-
-```
-yarn transpile
-```
-
-Prepares the React component for packaging and distribution. It moves files into the `/dist` directory.
+See the [Styleguidist docs](https://samvera-labs.github.io/openseadragon-react-viewer/) for documentation on the components.
 
 ## Running the tests
 
@@ -146,16 +100,6 @@ yarn test:watch
 ### Coding style tests
 
 There is a `prettierrc` file with project coding style settings.
-
-## Deployment
-
-To create a new build package which can be imported by a consuming application, run:
-
-```
-yarn transpile
-```
-
-This will create a component build package in the `/dist` folder.
 
 ## Built With
 

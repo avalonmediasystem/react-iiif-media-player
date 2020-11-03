@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import List from './List';
-import { getMediaFragment, getCanvasId } from '../services/iiif-parser';
+import List from '@Components/List';
+import { getMediaFragment, getCanvasId } from '@Services/iiif-parser';
 import PropTypes from 'prop-types';
 
-const StructuredNav = ({ manifest }) => {
-  console.log('StructuredNav() manifest', manifest);
+const StructuredNavigation = ({ manifest }) => {
+  console.log('StructuredNavigation() manifest', manifest);
   if (manifest.structures) {
     return (
       <div
@@ -23,8 +23,8 @@ const StructuredNav = ({ manifest }) => {
   return <p>There are no structures in the manifest.</p>;
 };
 
-StructuredNav.propTypes = {
+StructuredNavigation.propTypes = {
   manifest: PropTypes.object.isRequired,
 };
 
-export default StructuredNav;
+export default StructuredNavigation;
