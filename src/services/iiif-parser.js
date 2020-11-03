@@ -27,7 +27,7 @@ export function canvasesInManifest(manifest) {
  * @param {Object} item
  */
 export function filterVisibleRangeItem({ item, manifest }) {
-  const itemInManifest = manifest.getRangeById(item.id);
+  const itemInManifest = parseManifest(manifest).getRangeById(item.id);
   if (itemInManifest) {
     const behavior = itemInManifest.getBehavior();
 
@@ -42,7 +42,9 @@ export function getChildCanvases({ rangeId, manifest }) {
   let rangeCanvases = [];
 
   try {
-    rangeCanvases = manifest.getRangeById(rangeId).getCanvasIds();
+    rangeCanvases = parseManifest(manifest)
+      .getRangeById(rangeId)
+      .getCanvasIds();
   } catch (e) {
     console.log('error fetching range canvases');
   }

@@ -4,12 +4,15 @@ import PropTypes from 'prop-types';
 import { filterVisibleRangeItem, getLabelValue } from '../services/iiif-parser';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Collapse } from 'react-bootstrap';
 import { useManifestState } from '../context/manifest-context';
 
 const List = (props) => {
   const [label, setLabel] = useState(getLabelValue(props.items[0].label));
   const manifestState = useManifestState();
+
+  if (!manifestState.manifest) {
+    return <p>No manifest in List yet</p>;
+  }
 
   const collapsibleContent = (
     <ul data-testid="list">
@@ -34,15 +37,7 @@ const List = (props) => {
 
   return (
     <React.Fragment>
-      {!props.isChild ? (
-        <Collapsible
-          children={collapsibleContent}
-          title={label}
-          key={props.index}
-        ></Collapsible>
-      ) : (
-        collapsibleContent
-      )}
+      {!props.isChild ? collapsibleContent : collapsibleContent}
     </React.Fragment>
   );
 };

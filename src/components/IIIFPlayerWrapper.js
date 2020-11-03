@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import MediaElementContainer from '@Components/MediaElementContainer';
 import { useManifestDispatch } from '../context/manifest-context';
+import StructuredNav from '@Components/StructuredNav';
 
 export default function IIIFPlayerWrapper({ manifestUrl }) {
   const [manifest, setManifest] = useState();
@@ -22,7 +23,7 @@ export default function IIIFPlayerWrapper({ manifestUrl }) {
     <section className="iiif-player">
       <div className="container">
         <MediaElementContainer manifest={manifest} canvasIndex={0} />
-        {/* <StructuredNav manifest={manifest} /> */}
+        <StructuredNav manifest={manifest} />
       </div>
     </section>
   );
