@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import hlsjs from 'hls.js';
 import 'mediaelement';
-import '../../mediaelement/javascript/plugins/mejs-quality.js';
+import '../mediaelement/javascript/plugins/mejs-quality.js';
 
 // Import stylesheets
-import '../../mediaelement/stylesheets/mediaelementplayer.css';
-import '../../mediaelement/stylesheets/plugins/mejs-quality.scss';
-import '../../mediaelement/stylesheets/mejs-iiif-player-styles.scss';
+import '../mediaelement/stylesheets/mediaelementplayer.css';
+import '../mediaelement/stylesheets/plugins/mejs-quality.scss';
+import '../mediaelement/stylesheets/mejs-iiif-player-styles.scss';
 
 import {
   createSourceTags,
   createTrackTags,
-} from '../../services/mejs-utility-helper';
+} from '@Services/mejs-utility-helper';
 
 const MediaElement = ({
   controls,

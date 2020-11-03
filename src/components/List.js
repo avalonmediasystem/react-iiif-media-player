@@ -5,14 +5,19 @@ import { filterVisibleRangeItem, getLabelValue } from '../services/iiif-parser';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Collapse } from 'react-bootstrap';
+import { useManifestState } from '../context/manifest-context';
 
 const List = (props) => {
   const [label, setLabel] = useState(getLabelValue(props.items[0].label));
+  const manifestState = useManifestState();
 
   const collapsibleContent = (
     <ul data-testid="list">
       {props.items.map((item) => {
-        const filteredItem = filterVisibleRangeItem(item);
+        const filteredItem = filterVisibleRangeItem({
+          item,
+          manifest: manifestState.manifest,
+        });
         if (!filteredItem) {
           return null;
         }

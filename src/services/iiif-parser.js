@@ -1,5 +1,4 @@
 import { parseManifest } from 'manifesto.js';
-import { getReduxManifest } from './get-redux-manifest';
 
 /**
  * Get all the canvases in manifest
@@ -27,8 +26,8 @@ export function canvasesInManifest(manifest) {
  * Check if item's behavior is set to a value which should hide it
  * @param {Object} item
  */
-export function filterVisibleRangeItem(item) {
-  const itemInManifest = getReduxManifest().getRangeById(item.id);
+export function filterVisibleRangeItem({ item, manifest }) {
+  const itemInManifest = manifest.getRangeById(item.id);
   if (itemInManifest) {
     const behavior = itemInManifest.getBehavior();
 
@@ -39,11 +38,11 @@ export function filterVisibleRangeItem(item) {
   }
 }
 
-export function getChildCanvases(rangeId) {
+export function getChildCanvases({ rangeId, manifest }) {
   let rangeCanvases = [];
 
   try {
-    rangeCanvases = getReduxManifest().getRangeById(rangeId).getCanvasIds();
+    rangeCanvases = manifest.getRangeById(rangeId).getCanvasIds();
   } catch (e) {
     console.log('error fetching range canvases');
   }
@@ -68,6 +67,7 @@ export function getMediaInfo(manifest, canvasIndex) {
       .getBody();
   } catch (e) {
     console.log('error fetching content');
+    return { error: 'Error fetching content' };
   }
 
   if (choiceItems.length === 0) {
@@ -103,8 +103,8 @@ export function getMediaInfo(manifest, canvasIndex) {
 /**
  * Get captions in manifest
  */
-export function getTracks() {
-  const seeAlso = getReduxManifest().getSeeAlso();
+export function getTracks({ manifest }) {
+  const seeAlso = parseManifest(manifest).getSeeAlso();
   if (seeAlso !== undefined) {
     return seeAlso;
   }
@@ -176,23 +176,25 @@ export function getCanvasId(uri) {
  * Determine there is a next section to play when the current section ends
  * @param {Number} index index of the canvas in manifest
  */
-export function hasNextSection(index) {
-  let canvasIDs = getReduxManifest()
-    .getSequences()[0]
-    .getCanvases()
-    .map((canvas) => canvas.id);
-  return canvasIDs.length - 1 > index ? true : false;
-}
+//TODO: Are we still using this?
+// export function hasNextSection(index) {
+//   let canvasIDs = getReduxManifest()
+//     .getSequences()[0]
+//     .getCanvases()
+//     .map((canvas) => canvas.id);
+//   return canvasIDs.length - 1 > index ? true : false;
+// }
 
 /**
  * Identify the item at the top of the structure
  * @param {Object} item
  */
-export function isAtTop(item) {
-  const behavior = getReduxManifest().getRangeById(item.id).getBehavior();
+//TODO: Are we still using this?
+// export function isAtTop(item) {
+//   const behavior = getReduxManifest().getRangeById(item.id).getBehavior();
 
-  if (behavior && behavior === 'top') {
-    return true;
-  }
-  return false;
-}
+//   if (behavior && behavior === 'top') {
+//     return true;
+//   }
+//   return false;
+// }

@@ -69,10 +69,7 @@
     "istanbul-reports": "3.0.2",
     "manifesto.js": "^4.1.0",
     "mediaelement": "^4.2.16",
-    "mkdirp": "^1.0.4",
-    "react-redux": "^7.2.1",
-    "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0"
+    "mkdirp": "^1.0.4"
   },
   "peerDependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
@@ -86,10 +83,7 @@
     "mediaelement": "^4.2.16",
     "mkdirp": "^1.0.4",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-redux": "^7.2.1",
-    "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0"
+    "react-dom": "^16.13.1"
   },
   "repository": {
     "type": "git",

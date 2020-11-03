@@ -1,2 +1,2 @@
 // Buttons
-export { default as ErrorMessage } from './components/ErrorMessage/ErrorMessage';
+export { default as IIIFPlayer } from '@Components/IIIFPlayer/IIIFPlayer';

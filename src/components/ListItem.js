@@ -4,10 +4,15 @@ import { getChildCanvases, getLabelValue } from '../services/iiif-parser';
 import { useDispatch } from 'react-redux';
 import * as actions from '../actions';
 import PropTypes from 'prop-types';
+import { useManifestState } from '../context/manifest-context';
 
 const ListItem = (props) => {
+  const manifestState = useManifestState();
   const { item } = props;
-  const childCanvases = getChildCanvases(item.id);
+  const childCanvases = getChildCanvases({
+    rangeId: item.id,
+    manifest: manifestState.manifest,
+  });
   const subMenu =
     item.items && item.items.length > 0 && childCanvases.length === 0 ? (
       <List items={item.items} isChild={true} />

@@ -27,7 +27,7 @@ export function switchMedia(
 
   // Build sources and tracks
   const sourceTags = createSourceTags(sources);
-  const tracksTags = createTrackTags(getTracks());
+  const tracksTags = createTrackTags(getTracks({ manifest }));
   const newChildren = `${sourceTags.join('\n')}${tracksTags.join('\n')}`;
 
   // Attach the new sources and tracks to video element

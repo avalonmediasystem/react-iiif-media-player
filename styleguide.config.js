@@ -3,7 +3,15 @@ const path = require('path');
 module.exports = {
   skipComponentsWithoutExample: true,
   webpackConfig: {
+    devtool: 'source-map',
+    resolve: {
+      alias: {
+        '@Components': path.resolve(__dirname, 'src/components/'),
+        '@Services': path.resolve(__dirname, 'src/services/'),
+      },
+    },
     module: {
+      // Enable sourcemaps for debugging webpack's output.
       rules: [
         {
           test: /\.jsx?$/,
