@@ -20,9 +20,6 @@ const MediaElementContainer = ({ manifest, canvasIndex }) => {
   useEffect(() => {
     if (manifest) {
       const { sources, mediaType, error } = getMediaInfo(manifest, canvasIndex);
-      console.log('sources', sources);
-      console.log('mediaType', mediaType);
-
       setTracks(getTracks({ manifest }));
       setSources(sources);
       setMediaType(mediaType);
@@ -38,17 +35,17 @@ const MediaElementContainer = ({ manifest, canvasIndex }) => {
   return ready ? (
     <div data-testid={`mediaelement`} id="mediaelement">
       <MediaElement
+        controls
+        crossorigin="anonymous"
+        height={manifest.height || 360}
         id="avln-mediaelement-component"
         mediaType={mediaType}
-        preload="auto"
-        controls
-        width={manifest.width || 480}
-        height={manifest.height || 360}
+        options={JSON.stringify({})}
         poster=""
-        crossorigin="anonymous"
+        preload="auto"
         sources={JSON.stringify(sources)}
         tracks={JSON.stringify(tracks)}
-        options={JSON.stringify({})}
+        width={manifest.width || 480}
       />
     </div>
   ) : null;
@@ -56,6 +53,7 @@ const MediaElementContainer = ({ manifest, canvasIndex }) => {
 
 MediaElementContainer.propTypes = {
   manifest: PropTypes.object,
+  canvasIndex: PropTypes.number,
 };
 
 export default MediaElementContainer;

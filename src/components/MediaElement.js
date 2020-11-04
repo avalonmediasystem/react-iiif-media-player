@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import hlsjs from 'hls.js';
+import { usePlayerDispatch, usePlayerState } from '../context/player-context';
 import 'mediaelement';
 import '../mediaelement/javascript/plugins/mejs-quality.js';
 
@@ -26,20 +27,41 @@ const MediaElement = ({
   tracks,
   width,
 }) => {
-  const [player, setPlayer] = useState();
+  const dispatch = usePlayerDispatch();
 
   const success = (media, node, instance) => {
-    const player = { media, node, instance };
-    // Your action when media was successfully loaded
     console.log('Loaded successfully');
+
+    const player = { media, node, instance };
+    console.log('player', player);
+
+    //dispatch({ player: instance, type: 'updatePlayer' });
+
+    // Register ended event
+    media.addEventListener('ended', (ended) => {
+      if (ended) {
+        handleEnded(player);
+      }
+    });
+
+    // Register caption change event
+    media.addEventListener('captionschange', (captions) => {
+      console.log('captionschange', captions);
+    });
+
+    media.addEventListener('play', () => {
+      console.log('play event fires');
+    });
+
+    media.addEventListener('pause', () => {
+      console.log('pause event fires');
+    });
   };
 
   const error = (media) => {
-    // Your action when media had an error loading
     console.log('Error loading');
   };
 
-  // Equivalent to componentDidMount() lifecycle method
   useEffect(() => {
     const { MediaElementPlayer } = global;
 
@@ -47,6 +69,9 @@ const MediaElement = ({
       return;
     }
 
+    /**
+     * Create the configuration object for MediaElement.js player
+     */
     const meConfigs = Object.assign({}, JSON.parse(options), {
       pluginPath: './static/media/',
       success: (media, node, instance) => success(media, node, instance),
@@ -66,7 +91,11 @@ const MediaElement = ({
     });
 
     window.Hls = hlsjs;
-    setPlayer(new MediaElementPlayer(id, meConfigs));
+
+    dispatch({
+      player: new MediaElementPlayer(id, meConfigs),
+      type: 'updatePlayer',
+    });
   }, []);
 
   const sourceTags = createSourceTags(JSON.parse(sources));
@@ -93,14 +122,16 @@ const MediaElement = ({
 };
 
 MediaElement.propTypes = {
+  crossorigin: PropTypes.string,
+  height: PropTypes.number,
   id: PropTypes.string,
   mediaType: PropTypes.string,
-  preload: PropTypes.string,
-  width: PropTypes.number,
-  height: PropTypes.number,
-  poster: PropTypes.string,
-  sources: PropTypes.string,
   options: PropTypes.string,
+  poster: PropTypes.string,
+  preload: PropTypes.string,
+  sources: PropTypes.string,
+  tracks: PropTypes.string,
+  width: PropTypes.number,
 };
 
 export default MediaElement;
