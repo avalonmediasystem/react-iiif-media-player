@@ -4,8 +4,8 @@ import { getMediaFragment, getCanvasId } from '@Services/iiif-parser';
 import PropTypes from 'prop-types';
 
 const StructuredNavigation = ({ manifest }) => {
-  console.log('StructuredNavigation() manifest', manifest);
   if (manifest.structures) {
+    console.log('manifest.structures', manifest.structures);
     return (
       <div
         data-testid="structured-nav"

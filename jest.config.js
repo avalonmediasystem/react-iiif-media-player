@@ -67,7 +67,12 @@ module.exports = {
   moduleFileExtensions: ['js', 'json', 'jsx'],
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
-  // moduleNameMapper: { },
+  moduleNameMapper: {
+    '^@Components(.*)$': '<rootDir>/src/components$1',
+    '^@Json(.*)$': '<rootDir>/src/json$1',
+    '^@MediaElement(.*)$': '<rootDir>/src/mediaelement$1',
+    '^@Services(.*)$': '<rootDir>/src/services$1',
+  },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
@@ -114,11 +119,7 @@ module.exports = {
   // setupFiles: ['<rootDir>/jest/globals.js'],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
-  setupFilesAfterEnv: [
-    './jest.setup.js',
-    '<rootDir>/jest/setupJestDom.js',
-    '<rootDir>/jest/mockReduxManifest.js',
-  ],
+  setupFilesAfterEnv: ['./jest.setup.js'],
 
   // A list of paths to snapshot serializer modules Jest should use for snapshot testing
   // snapshotSerializers: [],

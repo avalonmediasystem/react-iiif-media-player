@@ -3,6 +3,8 @@
     "baseUrl": "./",
     "paths": {
       "@Components/*": ["src/components/*"],
+      "@Json/*": ["src/json/*"],
+      "@MediaElement/*": ["src/mediaelement/*"],
       "@Services/*": ["src/services/*"]
     }
   },

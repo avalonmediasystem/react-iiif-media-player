@@ -30,7 +30,6 @@ export function filterVisibleRangeItem({ item, manifest }) {
   const itemInManifest = parseManifest(manifest).getRangeById(item.id);
   if (itemInManifest) {
     const behavior = itemInManifest.getBehavior();
-
     if (behavior && behavior === 'no-nav') {
       return null;
     }
@@ -59,7 +58,7 @@ export function getChildCanvases({ rangeId, manifest }) {
  * @param {Number} canvasIndex Index of the current canvas in manifest
  * @returns {Array.<Object>} array of file choice objects
  */
-export function getMediaInfo(manifest, canvasIndex) {
+export function getMediaInfo({ manifest, canvasIndex }) {
   let choiceItems = [];
   try {
     choiceItems = parseManifest(manifest)
@@ -68,7 +67,7 @@ export function getMediaInfo(manifest, canvasIndex) {
       [canvasIndex].getContent()[0]
       .getBody();
   } catch (e) {
-    console.log('error fetching content');
+    console.log('error fetching content', e);
     return { error: 'Error fetching content' };
   }
 
@@ -176,27 +175,31 @@ export function getCanvasId(uri) {
 
 /**
  * Determine there is a next section to play when the current section ends
- * @param {Number} index index of the canvas in manifest
+ * @param { Object } obj
+ * @param { Number } obj.index index of the canvas in manifest
+ * @param { Object } obj.manifest
  */
 //TODO: Are we still using this?
-// export function hasNextSection(index) {
-//   let canvasIDs = getReduxManifest()
-//     .getSequences()[0]
-//     .getCanvases()
-//     .map((canvas) => canvas.id);
-//   return canvasIDs.length - 1 > index ? true : false;
-// }
+export function hasNextSection({ index, manifest }) {
+  let canvasIDs = parseManifest(manifest)
+    .getSequences()[0]
+    .getCanvases()
+    .map((canvas) => canvas.id);
+  return canvasIDs.length - 1 > index ? true : false;
+}
 
 /**
  * Identify the item at the top of the structure
- * @param {Object} item
+ * @param { Object } obj
+ * @param { Object } obj.item
+ * @param { Object } obj.manifest
  */
 //TODO: Are we still using this?
-// export function isAtTop(item) {
-//   const behavior = getReduxManifest().getRangeById(item.id).getBehavior();
+export function isAtTop({ item, manifest }) {
+  const behavior = parseManifest(manifest).getRangeById(item.id).getBehavior();
 
-//   if (behavior && behavior === 'top') {
-//     return true;
-//   }
-//   return false;
-// }
+  if (behavior && behavior === 'top') {
+    return true;
+  }
+  return false;
+}

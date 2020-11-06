@@ -2,8 +2,6 @@ import manifest from '../json/mahler-symphony-audio';
 import manifestVideo from '../json/mahler-symphony-video';
 import * as iiifParser from './iiif-parser';
 
-jest.mock('./get-redux-manifest');
-
 describe('iiif-parser', () => {
   it('canvasesInManifest() determines whether canvases exist in the manifest', () => {
     expect(iiifParser.canvasesInManifest(manifest)).toBeTruthy();
@@ -20,11 +18,17 @@ describe('iiif-parser', () => {
     const rangeIdWithoutChildCanvases =
       'https://dlib.indiana.edu/iiif_av/mahler-symphony-3/range/1';
 
-    expect(iiifParser.getChildCanvases(rangeIdWithChildCanvases)).toHaveLength(
-      1
-    );
     expect(
-      iiifParser.getChildCanvases(rangeIdWithoutChildCanvases)
+      iiifParser.getChildCanvases({
+        rangeId: rangeIdWithChildCanvases,
+        manifest,
+      })
+    ).toHaveLength(1);
+    expect(
+      iiifParser.getChildCanvases({
+        rangeId: rangeIdWithoutChildCanvases,
+        manifest,
+      })
     ).toHaveLength(0);
   });
 
@@ -46,7 +50,9 @@ describe('iiif-parser', () => {
           },
         ],
       };
-      expect(iiifParser.filterVisibleRangeItem(item)).toEqual(item);
+      expect(iiifParser.filterVisibleRangeItem({ item, manifest })).toEqual(
+        item
+      );
     });
     it('return null when behavior is equal to no-nav', () => {
       const item = {
@@ -57,7 +63,7 @@ describe('iiif-parser', () => {
           en: ['CD1 - Mahler, Symphony No.3'],
         },
       };
-      expect(iiifParser.filterVisibleRangeItem(item)).toBeNull();
+      expect(iiifParser.filterVisibleRangeItem({ item, manifest })).toBeNull();
     });
   });
 
@@ -102,14 +108,18 @@ describe('iiif-parser', () => {
         mediaType: 'video',
         error: null,
       };
-      expect(iiifParser.getMediaInfo(manifestVideo, 0)).toEqual(expectedObject);
+      expect(
+        iiifParser.getMediaInfo({ manifest: manifestVideo, canvasIndex: 0 })
+      ).toEqual(expectedObject);
     });
 
     it('should return error when invalid canvas index is given', () => {
       const expectedObject = {
         error: 'No media sources found',
       };
-      expect(iiifParser.getMediaInfo(manifestVideo, 2)).toEqual(expectedObject);
+      expect(
+        iiifParser.getMediaInfo({ manifest: manifestVideo, canvasIndex: 2 })
+      ).toEqual(expectedObject);
     });
   });
 
@@ -122,7 +132,7 @@ describe('iiif-parser', () => {
         label: 'subtitles',
       },
     ];
-    expect(iiifParser.getTracks()).toEqual(expectedObject);
+    expect(iiifParser.getTracks({ manifest })).toEqual(expectedObject);
   });
 
   describe('getLabelValue()', () => {
@@ -166,8 +176,8 @@ describe('iiif-parser', () => {
   });
 
   it('hasNextSection() returns whether a next section exists', () => {
-    expect(iiifParser.hasNextSection(0)).toBeTruthy();
-    expect(iiifParser.hasNextSection(1)).toBeFalsy();
+    expect(iiifParser.hasNextSection({ index: 0, manifest })).toBeTruthy();
+    expect(iiifParser.hasNextSection({ index: 1, manifest })).toBeFalsy();
   });
 
   describe('isAtTop()', () => {
@@ -182,7 +192,7 @@ describe('iiif-parser', () => {
         items: [],
       };
 
-      expect(iiifParser.isAtTop(item)).toBeTruthy();
+      expect(iiifParser.isAtTop({ item, manifest })).toBeTruthy();
     });
     it('returns false when an item is not at the top of the structure', () => {
       const item = {
@@ -194,7 +204,7 @@ describe('iiif-parser', () => {
         items: [],
       };
 
-      expect(iiifParser.isAtTop(item)).toBeFalsy();
+      expect(iiifParser.isAtTop({ item, manifest })).toBeFalsy();
     });
   });
 });
